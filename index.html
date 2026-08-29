@@ -446,8 +446,7 @@ let myId,myName,myPid,myHash,myAv=null,isDev=false;
 const rk={},dmk2={},users={},unread={},loaded=new Set();
 let activeCh={type:"none",id:""},activeRef=null,replyTo=null;
 
-// Theme
-window.setTheme=t=>{document.body.className=t;localStorage.setItem("slm_t",t);document.querySelectorAll(".thdot").forEach(d=>d.classList.remove("ac"));const idx=["","t-emerald","t-crimson","t-galaxy","t-arctic"].indexOf(t);const dots=document.querySelectorAll(".thdot");if(dots[idx])dots[idx].classList.add("ac");};
+// Theme load saved
 (()=>{const t=localStorage.getItem("slm_t");if(t)setTheme(t);})();
 
 // Animated BG
@@ -471,6 +470,36 @@ window.setTheme=t=>{document.body.className=t;localStorage.setItem("slm_t",t);do
     requestAnimationFrame(draw);
   }draw();
 })();
+
+// Expose critical functions globally FIRST
+window.openSB=()=>{$("sb").classList.add("op");$("ov").classList.add("on");};
+window.closeSB=()=>{$("sb").classList.remove("op");$("ov").classList.remove("on");};
+window.focusSrch=()=>{$("srchi").focus();};
+window.doSearch=async q=>{
+  const sr=$("srchres"),rl=$("recentdms"),ol=$("onlinelist");
+  if(!q.trim()){sr.style.display="none";rl.style.display="block";ol.style.display="block";return;}
+  rl.style.display="none";ol.style.display="none";sr.style.display="block";
+  sr.innerHTML='<div style="padding:10px 16px;font-size:11px;color:var(--tx3);font-family:monospace">جارٍ البحث...</div>';
+  const qt=q.toLowerCase();
+  const fbU=Object.values(users).filter(u=>u.id!==myId&&(u.name?.toLowerCase().includes(qt)||u.publicId?.toLowerCase().includes(qt)));
+  const all=await sbGet("users");
+  const seen=new Set(fbU.map(u=>u.id));
+  const merged=[...fbU];
+  (all||[]).forEach(u=>{const uid=u.code_hash.slice(0,12);if(uid!==myId&&!seen.has(uid)&&(u.username?.toLowerCase().includes(qt)||u.public_id?.toLowerCase().includes(qt))){seen.add(uid);merged.push({id:uid,name:u.username,publicId:u.public_id,avatarUrl:u.avatar_url,online:false});}});
+  if(!merged.length){sr.innerHTML=`<div style="padding:10px 16px;font-size:11px;color:var(--tx3);font-family:monospace">لا نتائج</div>`;return;}
+  sr.innerHTML="";
+  merged.forEach(u=>{
+    const item=document.createElement("div");item.className="chi";item.onclick=()=>openProfile(u);
+    const aw=document.createElement("div");aw.className="avw";aw.style.flexShrink="0";
+    aw.appendChild(mkAv(u.name||"?",u.id,26,u.avatarUrl||null));
+    if(u.online){const rg=document.createElement("div");rg.className="ring";aw.appendChild(rg);}
+    const inf=document.createElement("div");inf.style.flex="1";
+    const n=document.createElement("div");n.style.cssText="font-size:13px;font-weight:700";n.textContent=u.name;
+    const p=document.createElement("div");p.style.cssText="font-size:10px;color:var(--tx3);font-family:monospace";p.textContent=u.publicId||"";
+    inf.appendChild(n);inf.appendChild(p);item.appendChild(aw);item.appendChild(inf);sr.appendChild(item);
+  });
+};
+window.setTheme=t=>{document.body.className=t;localStorage.setItem("slm_t",t);document.querySelectorAll(".thdot").forEach(d=>d.classList.remove("ac"));const idx=["","t-emerald","t-crimson","t-galaxy","t-arctic"].indexOf(t);const dots=document.querySelectorAll(".thdot");if(dots[idx])dots[idx].classList.add("ac");};
 
 // Buttons
 $("btnreg").onclick=()=>showScr("sreg");
@@ -537,7 +566,14 @@ $("imgf").onchange=async e=>{
 async function doReg(){
   const name=$("regn").value.trim();
   if(!name||name.length<3){$("regst").className="st er";$("regst").textContent="الاسم قصير (3 أحرف على الأقل)";return;}
-  $("btndo").disabled=true;$("regst").className="st";$("regst").textContent="⚙️ جارٍ التحقق...";
+  $("btndo").disabled=true;$("regst").className="st";$("regst").textContent="⚙️ جارٍ الاتصال بـ Supabase...";
+  // Test connection first
+  try{
+    const test=await fetch(`${SU}/rest/v1/users?select=id&limit=1`,{headers:SH});
+    if(!test.ok){$("regst").className="st er";$("regst").textContent=`❌ خطأ في الاتصال: ${test.status} - ${test.statusText}`;$("btndo").disabled=false;return;}
+    const testData=await test.json();
+    $("regst").textContent=`✅ اتصال ناجح (${testData.length} مستخدم) - جارٍ التحقق من الاسم...`;
+  }catch(e){$("regst").className="st er";$("regst").textContent=`❌ فشل الاتصال: ${e.message}`;$("btndo").disabled=false;return;}
   const ex=await sbOne("users",{username:name});
   if(ex){$("regst").className="st er";$("regst").textContent="❌ الاسم محجوز";$("btndo").disabled=false;return;}
   $("regst").textContent="🔑 جارٍ توليد كودك...";
@@ -555,8 +591,14 @@ async function doReg(){
 // Login
 async function doLog(){
   const code=$("logc").value.trim();if(!code)return;
-  $("btndol").disabled=true;$("logst").className="st";$("logst").textContent="⚙️ جارٍ التحقق...";
+  $("btndol").disabled=true;$("logst").className="st";$("logst").textContent="⚙️ جارٍ الاتصال...";
+  try{
+    const test=await fetch(`${SU}/rest/v1/users?select=id&limit=1`,{headers:SH});
+    if(!test.ok){$("logst").className="st er";$("logst").textContent=`❌ خطأ: ${test.status} - ${test.statusText}`;$("btndol").disabled=false;return;}
+    $("logst").textContent="✅ متصل - جارٍ التحقق من الكود...";
+  }catch(e){$("logst").className="st er";$("logst").textContent=`❌ فشل الاتصال: ${e.message}`;$("btndol").disabled=false;return;}
   const hash=await sha(code);
+  $("logst").textContent=`🔑 هاش: ${hash.slice(0,12)}...`;
   const user=await sbOne("users",{code_hash:hash});
   if(!user){$("logst").className="st er";$("logst").textContent="❌ الكود غير صحيح";$("btndol").disabled=false;return;}
   if(user.is_banned){$("logst").className="st er";$("logst").textContent="❌ محظور: "+(user.ban_reason||"");$("btndol").disabled=false;return;}
@@ -638,33 +680,6 @@ function renderOnline(){
     list.appendChild(item);
   });
 }
-
-// Search
-window.doSearch=async q=>{
-  const sr=$("srchres"),rl=$("recentdms"),ol=$("onlinelist");
-  if(!q.trim()){sr.style.display="none";rl.style.display="block";ol.style.display="block";return;}
-  rl.style.display="none";ol.style.display="none";sr.style.display="block";
-  sr.innerHTML='<div style="padding:10px 16px;font-size:11px;color:var(--tx3);font-family:monospace">جارٍ البحث...</div>';
-  const qt=q.toLowerCase();
-  const fbU=Object.values(users).filter(u=>u.id!==myId&&(u.name?.toLowerCase().includes(qt)||u.publicId?.toLowerCase().includes(qt)));
-  const all=await sbGet("users");
-  const seen=new Set(fbU.map(u=>u.id));
-  const merged=[...fbU];
-  (all||[]).forEach(u=>{const uid=u.code_hash.slice(0,12);if(uid!==myId&&!seen.has(uid)&&(u.username?.toLowerCase().includes(qt)||u.public_id?.toLowerCase().includes(qt))){seen.add(uid);merged.push({id:uid,name:u.username,publicId:u.public_id,avatarUrl:u.avatar_url,online:false});}});
-  if(!merged.length){sr.innerHTML=`<div style="padding:10px 16px;font-size:11px;color:var(--tx3);font-family:monospace">لا نتائج</div>`;return;}
-  sr.innerHTML="";
-  merged.forEach(u=>{
-    const item=document.createElement("div");item.className="chi";item.onclick=()=>openProfile(u);
-    const aw=document.createElement("div");aw.className="avw";aw.style.flexShrink="0";
-    aw.appendChild(mkAv(u.name||"?",u.id,26,u.avatarUrl||null));
-    if(u.online){const rg=document.createElement("div");rg.className="ring";aw.appendChild(rg);}
-    const inf=document.createElement("div");inf.style.flex="1";
-    const n=document.createElement("div");n.style.cssText="font-size:13px;font-weight:700";n.textContent=u.name;
-    const p=document.createElement("div");p.style.cssText="font-size:10px;color:var(--tx3);font-family:monospace";p.textContent=u.publicId||"";
-    inf.appendChild(n);inf.appendChild(p);item.appendChild(aw);item.appendChild(inf);sr.appendChild(item);
-  });
-};
-
 window.focusSrch=()=>{$("srchi").focus();};
 
 // Profile modal
@@ -869,6 +884,10 @@ async function openDev(){
 window.openSB=function(){$("sb").classList.add("op");$("ov").classList.add("on");};
 window.closeSB=function(){$("sb").classList.remove("op");$("ov").classList.remove("on");};
 function closeSB(){$("sb").classList.remove("op");$("ov").classList.remove("on");}
+// Expose all needed functions globally
+window.doSearch=window.doSearch;
+window.focusSrch=window.focusSrch;
+window.setTheme=window.setTheme;
 </script>
 </body>
 </html>
