@@ -419,7 +419,16 @@ $("avwrap").onclick=()=>$("avf").click();
 $("avf").onchange=e=>{const f=e.target.files[0];if(!f)return;window._regAv=f;const r=new FileReader();r.onload=ev=>{$("avph").innerHTML=`<img src="${ev.target.result}" style="width:78px;height:78px;border-radius:50%;object-fit:cover">`;};r.readAsDataURL(f);};
 $("stavwrap").onclick=()=>$("stavf").click();
 $("stavf").onchange=async e=>{const f=e.target.files[0];if(!f)return;$("stgst").textContent="⬆️ جارٍ رفع الصورة...";const cm=await compress(f,400,.85);const{ok,url}=await sbUp("avatars",`${myHash}.jpg`,cm);if(ok){myAv=url;updMyAv();await sbUpd("users",{code_hash:myHash},{avatar_url:url});await set(ref(db,`users/${myId}/avatarUrl`),url);$("stgst").textContent="✅ تم!";}else $("stgst").textContent="❌ فشل";setTimeout(()=>$("stgst").textContent="",3000);};
-$("imgf").onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value="";const sm=document.createElement("div");sm.className="sysmsg";sm.textContent="⬆️ جارٍ رفع الصورة...";$("msgs").appendChild(sm);$("msgs").scrollTop=$("msgs").scrollHeight;const cm=await compress(f,1200,.85);const path=`${myId}_${Date.now()}.jpg`;const{ok,url}=await sbUp("chat-media",path,cm);sm.remove();if(!ok){const em=document.createElement("div");em.className="sysmsg";em.textContent="❌ فشل رفع الصورة";$("msgs").appendChild(em);return;}if(activeCh.type==="dm"){const dk=DMK(myId,activeCh.id);push(ref(db,`dms/${dk}/messages`),{senderId:myId,senderName:myName,publicId:myPid,avatarUrl:myAv||null,ts:Date.now(),type:"image",imageUrl:url,text:"📷 صورة"});}};
+$("imgf").onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value="";const sm=document.createElement("div");sm.className="sysmsg";sm.textContent="⬆️ جارٍ رفع الصورة...";$("msgs").appendChild(sm);$("msgs").scrollTop=$("msgs").scrollHeight;const cm=await compress(f,1200,.85);const path=`${myId}_${Date.now()}.jpg`;const{ok,url}=await sbUp("chat-media",path,cm);sm.remove();if(!ok){const em=document.createElement("div");em.className="sysmsg";em.textContent="❌ فشل رفع الصورة";$("msgs").appendChild(em);return;}// Send image message
+const imgMsg={senderId:myId,senderName:myName,publicId:myPid,avatarUrl:myAv||null,ts:Date.now(),type:"image",imageUrl:url,text:"📷 صورة"};
+const dkey=DMK(myId,activeCh.id);
+try{
+  await push(ref(db,`dms/${dkey}/messages`),imgMsg);
+  const ok2=document.createElement("div");ok2.className="sysmsg";ok2.textContent="✅ تم إرسال الصورة";$("msgs").appendChild(ok2);setTimeout(()=>ok2.remove(),2000);
+}catch(e){
+  const er=document.createElement("div");er.className="sysmsg";er.textContent="❌ فشل إرسال: "+e.message;$("msgs").appendChild(er);
+}
+};
 
 // Auto-login
 (async()=>{const sv=localStorage.getItem("slm_code");if(sv){$("welst").textContent="⚙️ جارٍ تسجيل الدخول التلقائي...";$("logc").value=sv;await doLog();}})();
