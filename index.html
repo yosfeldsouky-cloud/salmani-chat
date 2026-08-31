@@ -173,17 +173,37 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 .banbtn{background:var(--ac3);border:none;color:white;padding:6px 12px;border-radius:8px;font-size:11px;cursor:pointer;font-weight:700;font-family:'Lato',sans-serif}
 .unbanbtn{background:var(--ac);border:none;color:white;padding:6px 12px;border-radius:8px;font-size:11px;cursor:pointer;font-weight:700;font-family:'Lato',sans-serif}
 .clsbtn{background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);padding:10px;border-radius:12px;width:100%;cursor:pointer;font-size:14px;font-weight:700;margin-top:8px;font-family:'Lato',sans-serif}
-#prfm .mcard{text-align:center}
-.prfav{width:82px;height:82px;border-radius:50%;margin:0 auto 12px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;border:3px solid var(--ac)}
+/* ===== Redesigned Profile Card ===== */
+#prfm .mcard{padding:0!important;overflow:visible!important;background:transparent;border:none;box-shadow:none;max-width:380px}
+.prfwrap{background:var(--sf);border:1px solid var(--bd2);border-radius:24px;overflow:hidden;position:relative}
+.prfcover{height:132px;position:relative;overflow:hidden}
+.prfcover canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.prfcover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(13,17,23,.85) 100%)}
+.prfxbtn{position:absolute;top:10px;left:10px;z-index:3;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.35);backdrop-filter:blur(6px);border:none;color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.prfavwrap{position:relative;width:92px;height:92px;margin:-52px auto 0;z-index:2}
+.prfavglow{position:absolute;inset:-6px;border-radius:50%;filter:blur(10px);opacity:.55;z-index:0;animation:prfpulse 2.6s ease-in-out infinite}
+@keyframes prfpulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.7;transform:scale(1.06)}}
+.prfav{position:relative;z-index:1;width:92px;height:92px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;border:3.5px solid var(--sf);box-shadow:0 4px 18px rgba(0,0,0,.4)}
 .prfav img{width:100%;height:100%;object-fit:cover}
-.prfn{font-size:20px;font-weight:900;margin-bottom:4px}
-.prfp{font-size:12px;color:var(--ac);font-family:monospace;margin-bottom:14px;font-weight:700}
-.prfst{font-size:11px;color:var(--tx3);font-family:monospace;margin-bottom:16px;font-weight:700}
-.prfac{display:flex;gap:10px;justify-content:center}
-.prfdm{background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;color:white;padding:10px 20px;border-radius:12px;font-size:14px;cursor:pointer;font-weight:900;font-family:'Lato',sans-serif}
-.prfcl{background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);padding:10px 20px;border-radius:12px;font-size:14px;cursor:pointer;font-weight:700;font-family:'Lato',sans-serif}
-.prfav{width:72px;height:72px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;flex-shrink:0}
-.prfav img{width:100%;height:100%;object-fit:cover}
+.prfring{position:absolute;bottom:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--on);border:3px solid var(--sf);box-shadow:0 0 10px var(--on);z-index:2}
+.prfbody2{padding:10px 20px 20px;text-align:center}
+.prfn{font-size:19px;font-weight:900;margin-top:10px;margin-bottom:2px}
+.prfp{font-size:12px;color:var(--ac);font-family:monospace;font-weight:700;margin-bottom:2px}
+.prfst{font-size:11px;color:var(--tx3);font-family:monospace;font-weight:700;margin:6px 0 0}
+.prfbio2{font-size:13.5px;color:var(--tx2);line-height:1.7;margin:14px 0;padding:12px 14px;background:var(--sf2);border-radius:14px;border:1px solid var(--bd);text-align:right;display:none}
+.prfbio2.empty{color:var(--tx3);font-style:italic;text-align:center}
+.prfmeta{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.prfchip{font-size:10.5px;color:var(--tx2);background:var(--sf2);border:1px solid var(--bd2);border-radius:20px;padding:4px 11px;font-family:monospace;font-weight:700;display:none;align-items:center;gap:4px}
+.prfactions2{display:flex;gap:10px;margin-top:16px}
+.prfactions2 button{flex:1;padding:11px;border-radius:13px;font-size:13.5px;cursor:pointer;font-weight:900;font-family:'Lato',sans-serif;border:none}
+.prfbtnp{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff}
+.prfbtns{background:var(--sf2);border:1px solid var(--bd2)!important;color:var(--tx2)}
+
+/* Privacy settings rows */
+.privrow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd)}
+.privrow:last-child{border:none}
+.privlbl{font-size:13px;font-weight:700}
+.privsel{background:var(--sf2);border:1.5px solid var(--bd2);color:var(--tx);font-size:12px;font-weight:700;padding:6px 10px;border-radius:10px;font-family:'Lato',sans-serif;outline:none}
 </style>
 </head>
 <body>
@@ -255,12 +275,36 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
       <div class="stgrow" id="stghandle"><span class="stgico">@</span><div class="stgi"><div class="stgn">تغيير اليوزر</div><div class="stgs" id="currenthandle">جارٍ التحميل...</div></div><span class="stgar">›</span></div>
       <div class="stgrow" id="stgname"><span class="stgico">✏️</span><div class="stgi"><div class="stgn">تغيير الاسم</div><div class="stgs" id="currentname">جارٍ التحميل...</div></div><span class="stgar">›</span></div>
       <div class="stgrow" id="stgcode"><span class="stgico">🔑</span><div class="stgi"><div class="stgn">عرض كودي</div><div class="stgs">انسخ كودك الدائم</div></div><span class="stgar">›</span></div>
+      <div class="stgrow" id="stgpriv"><span class="stgico">🕶️</span><div class="stgi"><div class="stgn">الخصوصية</div><div class="stgs">تحكم بمن يرى معلوماتك</div></div><span class="stgar">›</span></div>
       <div class="stgrow" id="stgdev" style="display:none"><span class="stgico">👑</span><div class="stgi"><div class="stgn">لوحة المطور</div><div class="stgs">إدارة المستخدمين</div></div><span class="stgar">›</span></div>
       <div class="stgrow" id="stglg"><span class="stgico">🚪</span><div class="stgi"><div class="stgn" style="color:var(--ac3)">تسجيل الخروج</div><div class="stgs">ستحتاج كودك للدخول</div></div><span class="stgar">›</span></div>
     </div>
     <div class="st" id="stgst" style="margin-top:10px"></div>
   </div>
 </div>
+
+<div class="modal" id="privm"><div class="mcard" style="max-width:380px">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+    <div class="ttl" style="margin:0;font-size:18px">🕶️ الخصوصية</div>
+  </div>
+  <div class="sub" style="text-align:right;margin-bottom:10px">تحكم في مين يقدر يشوف كل معلومة في بروفايلك</div>
+  <div>
+    <div class="privrow">
+      <select class="privsel" id="privBio"><option value="everyone">الجميع</option><option value="nobody">لا أحد</option></select>
+      <div class="privlbl">📝 النبذة (Bio)</div>
+    </div>
+    <div class="privrow">
+      <select class="privsel" id="privJoined"><option value="everyone">الجميع</option><option value="nobody">لا أحد</option></select>
+      <div class="privlbl">📅 تاريخ الانضمام</div>
+    </div>
+    <div class="privrow">
+      <select class="privsel" id="privLastSeen"><option value="everyone">الجميع</option><option value="nobody">لا أحد</option></select>
+      <div class="privlbl">🟢 حالة الاتصال</div>
+    </div>
+  </div>
+  <div class="st" id="privst" style="margin-top:8px"></div>
+  <button class="clsbtn" onclick="document.getElementById('privm').classList.remove('on')">إغلاق ✕</button>
+</div></div>
 
 <div id="ov"></div>
 
@@ -273,7 +317,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
           <div><div class="lgtxt">سلماني شات</div><div class="lgsub">E2E ENCRYPTED</div></div>
         </div>
         <div class="mypro" id="mypro">
-          <div class="avw"><div class="av" id="myav" style="width:34px;height:34px;font-size:13px"></div><div class="ring"></div></div>
+          <div class="avw" id="myavw"><div class="av" id="myav" style="width:34px;height:34px;font-size:13px"></div><div class="ring"></div></div>
           <div style="flex:1;min-width:0"><div class="pname" id="myn"></div><div class="ppid" id="mypid"></div><div class="devbdg" id="devbdg">👑 مطور</div></div>
           <span style="color:var(--tx3)">⚙️</span>
         </div>
@@ -301,7 +345,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
     <div class="main">
       <div class="chdr">
         <button class="mbtn" onclick="openSB()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
-        <div class="hdri"><div class="hdrn" id="hdrn">سلماني شات</div><div class="hdrs" id="hdrs">ابدأ محادثة جديدة</div></div>
+        <div class="hdri" id="hdri" style="cursor:default"><div class="hdrn" id="hdrn">سلماني شات</div><div class="hdrs" id="hdrs">ابدأ محادثة جديدة</div></div>
         <div class="encbdg">🔒 <span>مشفّر</span></div>
       </div>
       <div class="msgs" id="msgs">
@@ -334,31 +378,30 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
   <button class="clsbtn" onclick="document.getElementById('devp').classList.remove('on')">إغلاق ✕</button>
 </div></div>
 
-<div class="modal" id="prfm"><div class="mcard" style="padding:0;overflow:hidden;max-width:360px">
-  <!-- Profile Card Header (unique generated) -->
-  <div id="prfcard" style="height:120px;position:relative;display:flex;align-items:flex-end;padding:16px">
-    <canvas id="prfcanvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
-    <div style="position:relative;z-index:1;display:flex;align-items:flex-end;gap:12px;width:100%">
-      <div class="prfav" id="prfav" style="border:3px solid rgba(255,255,255,0.3)"></div>
-      <div style="flex:1;min-width:0">
-        <div class="prfn" id="prfn" style="color:white;text-shadow:0 1px 4px rgba(0,0,0,.5)"></div>
-        <div class="prfp" id="prfp" style="color:rgba(255,255,255,.8)"></div>
+<div class="modal" id="prfm"><div class="mcard">
+  <div class="prfwrap">
+    <button class="prfxbtn" onclick="document.getElementById('prfm').classList.remove('on')">✕</button>
+    <div class="prfcover"><canvas id="prfcanvas"></canvas></div>
+    <div class="prfavwrap">
+      <div class="prfavglow" id="prfavglow"></div>
+      <div class="prfav" id="prfav"></div>
+      <div class="prfring" id="prfring" style="display:none"></div>
+    </div>
+    <div class="prfbody2">
+      <div class="prfn" id="prfn"></div>
+      <div class="prfp" id="prfp"></div>
+      <div class="prfst" id="prfst"></div>
+      <div class="prfmeta" id="prfmeta">
+        <div class="prfchip" id="prfjoined">📅</div>
       </div>
-    </div>
-  </div>
-  <!-- Profile Body -->
-  <div style="padding:16px">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-      <div class="prfst" id="prfst" style="flex:1;margin:0"></div>
-      <div id="prfjoined" style="font-size:10px;color:var(--tx3);font-family:monospace"></div>
-    </div>
-    <div id="prfbio" style="font-size:13px;color:var(--tx2);margin-bottom:16px;padding:10px 12px;background:var(--sf2);border-radius:10px;border:1px solid var(--bd);min-height:40px;display:none"></div>
-    <div id="myprfactions" style="display:none;margin-bottom:12px">
-      <button onclick="editBio()" style="width:100%;padding:9px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);border-radius:10px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700;margin-bottom:8px">✏️ تعديل النبذة</button>
-    </div>
-    <div class="prfac">
-      <button class="prfdm" id="prfdm">💬 راسله خاصاً</button>
-      <button class="prfcl" onclick="document.getElementById('prfm').classList.remove('on')">إغلاق</button>
+      <div class="prfbio2" id="prfbio"></div>
+      <div id="myprfactions" style="display:none">
+        <button onclick="editBio()" style="width:100%;padding:10px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);border-radius:12px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700">✏️ تعديل النبذة</button>
+      </div>
+      <div class="prfactions2">
+        <button class="prfbtnp prfdm" id="prfdm">💬 راسله خاصاً</button>
+        <button class="prfbtns prfcl" onclick="document.getElementById('prfm').classList.remove('on')">إغلاق</button>
+      </div>
     </div>
   </div>
 </div></div>
@@ -425,8 +468,11 @@ $("btnrb").onclick=()=>showScr("swel");
 $("btnlb").onclick=()=>showScr("swel");
 $("btnstgb").onclick=()=>{document.querySelectorAll(".scr").forEach(s=>s.classList.add("hide"));$("app").classList.add("on");};
 $("mypro").onclick=()=>{
-  // Long press = settings, tap = my profile
   openSettings();
+};
+$("myavw").onclick=e=>{
+  e.stopPropagation();
+  openProfile({id:myId,name:myName,publicId:myPid,avatarUrl:myAv,online:true});
 };
 $("btndo").onclick=doReg;
 $("btndol").onclick=doLog;
@@ -477,6 +523,7 @@ $("stgname").onclick=async()=>{
 };
 $("stgcode").onclick=()=>{const c=window._myCode||"";if(c){cpTxt(c);$("stgst").textContent="✅ تم نسخ الكود!";setTimeout(()=>$("stgst").textContent="",2000);}};
 $("stgdev").onclick=()=>openDev();
+$("stgpriv").onclick=()=>openPrivacy();
 $("stglg").onclick=()=>{if(confirm("هل تريد تسجيل الخروج؟")){localStorage.removeItem("slm_code");localStorage.removeItem("slm_dms");location.reload();}};
 
 // Avatar
@@ -551,6 +598,23 @@ async function initApp(){
 
 function updMyAv(){const av=$("myav"),c=gc(myId||"x");av.style.cssText=`width:34px;height:34px;font-size:13px;background:${c}22;border:2px solid ${c}44;color:${c};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;`;if(myAv){av.innerHTML=`<img src="${myAv}" style="width:100%;height:100%;object-fit:cover">`;}else av.textContent=(myName||"?")[0].toUpperCase();}
 
+async function openPrivacy(){
+  const user=await sbOne("users",{code_hash:myHash});
+  $("privBio").value=user?.privacy_bio||"everyone";
+  $("privJoined").value=user?.privacy_joined||"everyone";
+  $("privLastSeen").value=user?.privacy_lastseen||"everyone";
+  $("privm").classList.add("on");
+}
+window.openPrivacy=openPrivacy;
+async function savePrivacy(field,value){
+  await sbUpd("users",{code_hash:myHash},{[field]:value});
+  $("privst").textContent="✅ تم الحفظ";
+  setTimeout(()=>$("privst").textContent="",1500);
+}
+$("privBio").onchange=e=>savePrivacy("privacy_bio",e.target.value);
+$("privJoined").onchange=e=>savePrivacy("privacy_joined",e.target.value);
+$("privLastSeen").onchange=e=>savePrivacy("privacy_lastseen",e.target.value);
+
 async function openSettings(){$("stnm").textContent=myName;$("stpid").textContent=myPid;
   $("currentname").textContent=myName;
   const user=await sbOne("users",{code_hash:myHash});
@@ -565,73 +629,91 @@ function renderOnline(){const list=$("onlinelist");list.innerHTML="";const other
 
 async function openProfile(u){
   const isMe = u.id===myId;
-  const c=gc(u.id||u.name);
-  
-  // Generate unique card background
-  genProfileCard(u.id||u.name, c);
-  
-  // Avatar
+  const uid = u.id||myId;
+  const c=gc(uid||u.name);
+
+  // Generate unique cover background
+  genProfileCard(uid, c);
+
+  // Avatar + glow
   const av=$("prfav");
-  av.style.cssText=`width:72px;height:72px;border-radius:50%;background:${c}22;border:3px solid rgba(255,255,255,.4);color:${c};font-size:28px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;`;
-  if(u.avatarUrl)av.innerHTML=`<img src="${u.avatarUrl}" style="width:100%;height:100%;object-fit:cover">`;
+  av.style.cssText=`background:${c}22;color:${c};`;
+  if(u.avatarUrl)av.innerHTML=`<img src="${u.avatarUrl}">`;
   else av.textContent=(u.name||"?")[0].toUpperCase();
-  
+  $("prfavglow").style.background=c;
+  $("prfring").style.display=u.online?"block":"none";
+
   $("prfn").textContent=u.name||"...";
   $("prfp").textContent=(u.handle?"@"+u.handle+" • ":"")+(u.publicId||"");
-  $("prfst").textContent=u.online?"🟢 متصل الآن":"⚫ غير متصل";
-  
-  // Load full profile from Supabase
-  const uid = u.id||myId;
-  const codeHash = Object.values(users).find(us=>us.id===uid)?.codeHash || 
-    (isMe?myHash:null);
-  
-  // Joined date
-  $("prfjoined").textContent="";
+
+  // Reset dynamic fields
+  $("prfjoined").style.display="none";
+  $("prfst").textContent="";
   $("prfbio").style.display="none";
+  $("prfbio").className="prfbio2";
   $("myprfactions").style.display="none";
-  
-  // Try to get bio from Supabase
+
+  // Load full profile from Supabase (fields are privacy-gated)
   try{
     let supaUser = null;
     if(isMe) supaUser = await sbOne("users",{code_hash:myHash});
-    else {
-      // Search by public_id
+    else{
       const all = await sbGet("users");
       supaUser = (all||[]).find(su=>su.code_hash.slice(0,12)===uid);
     }
     if(supaUser){
-      if(supaUser.bio){
-        $("prfbio").textContent=supaUser.bio;
-        $("prfbio").style.display="block";
-      }
-      if(supaUser.created_at||supaUser.joined_at){
-        const d=new Date(supaUser.created_at||supaUser.joined_at);
-        const months=Math.floor((Date.now()-d.getTime())/(1000*60*60*24*30));
-        $("prfjoined").textContent=months<1?"انضم مؤخراً":`انضم منذ ${months} شهر`;
-      }
       if(supaUser.username_handle&&!u.handle){
         $("prfp").textContent="@"+supaUser.username_handle+" • "+(u.publicId||"");
       }
+
+      // Last seen / online status — gated by privacy_lastseen
+      const canSeeStatus = isMe || (supaUser.privacy_lastseen||"everyone")==="everyone";
+      if(canSeeStatus){
+        $("prfst").textContent=u.online?"🟢 متصل الآن":"⚫ غير متصل";
+      }else{
+        $("prfst").textContent="";
+      }
+
+      // Bio — gated by privacy_bio
+      const canSeeBio = isMe || (supaUser.privacy_bio||"everyone")==="everyone";
+      if(canSeeBio&&supaUser.bio){
+        $("prfbio").textContent=supaUser.bio;
+        $("prfbio").style.display="block";
+      }else if(isMe&&!supaUser.bio){
+        $("prfbio").textContent="لا توجد نبذة بعد — اضغط تعديل لإضافة واحدة";
+        $("prfbio").className="prfbio2 empty";
+        $("prfbio").style.display="block";
+      }
+
+      // Joined date — gated by privacy_joined
+      const canSeeJoined = isMe || (supaUser.privacy_joined||"everyone")==="everyone";
+      if(canSeeJoined&&(supaUser.created_at||supaUser.joined_at)){
+        const d=new Date(supaUser.created_at||supaUser.joined_at);
+        const months=Math.floor((Date.now()-d.getTime())/(1000*60*60*24*30));
+        $("prfjoined").textContent="📅 "+(months<1?"انضم مؤخراً":`منذ ${months} شهر`);
+        $("prfjoined").style.display="flex";
+      }
     }
   }catch(e){console.log("Profile load error:",e);}
-  
+
   if(isMe){
     $("myprfactions").style.display="block";
     $("prfdm").style.display="none";
-  } else {
+  }else{
     $("myprfactions").style.display="none";
     $("prfdm").style.display="block";
     $("prfdm").onclick=()=>{$("prfm").classList.remove("on");$("srchi").value="";doSearch("");openDM(u.id,null);closeSB();};
   }
   $("prfm").classList.add("on");
 }
+window.openProfile=openProfile;
 
 function genProfileCard(uid, baseColor){
   const cv=$("prfcanvas");
   if(!cv)return;
   const ctx=cv.getContext("2d");
-  cv.width=cv.offsetWidth||360;
-  cv.height=120;
+  cv.width=cv.parentElement.offsetWidth||380;
+  cv.height=132;
   
   // Generate colors from uid
   const hash=[...uid].reduce((a,c)=>((a<<5)-a)+c.charCodeAt(0),0);
@@ -670,14 +752,21 @@ window.editBio=async()=>{
   if(newBio===null)return;
   const bio=newBio.trim().slice(0,150);
   await sbUpd("users",{code_hash:myHash},{bio});
-  if(bio){$("prfbio").textContent=bio;$("prfbio").style.display="block";}
-  else $("prfbio").style.display="none";
+  if(bio){
+    $("prfbio").textContent=bio;
+    $("prfbio").className="prfbio2";
+    $("prfbio").style.display="block";
+  }else{
+    $("prfbio").textContent="لا توجد نبذة بعد — اضغط تعديل لإضافة واحدة";
+    $("prfbio").className="prfbio2 empty";
+    $("prfbio").style.display="block";
+  }
 };
 
 async function openDM(uid,el){document.querySelectorAll(".chi").forEach(e=>e.classList.remove("ac"));el?.classList.add("ac");activeCh={type:"dm",id:uid};const dk=DMK(myId,uid);delete unread[dk];replyTo=null;$("rplybar").classList.remove("on");if(!dmk2[dk])dmk2[dk]=await dkf(RP+dk,dk);saveRecent(uid);renderRecent();renderOnline();loadCh();closeSB();}
 async function dkf(p,s){return dk(p,s);}
 
-function loadCh(){if(activeRef){off(activeRef);activeRef=null;}loaded.clear();const area=$("msgs");if(activeCh.type==="none"){area.innerHTML='<div class="empty"><div class="eico">💬</div><p>لا توجد محادثات بعد<br><span onclick="openSB()">ابحث لإضافة صديق</span></p></div>';$("hdrn").textContent="سلماني شات";$("hdrs").textContent="ابدأ محادثة جديدة";return;}area.innerHTML='<div class="sysmsg">🔐 رسائل مشفرة • تختفي بعد 48 ساعة</div>';const u=users[activeCh.id];$("hdrn").textContent=u?.name||"...";$("hdrs").textContent="رسالة خاصة • AES-256-GCM";$("msgi").placeholder=`رسالة لـ ${u?.name||"..."}`;const dkey=DMK(myId,activeCh.id);const dbRef=ref(db,`dms/${dkey}/messages`);activeRef=dbRef;const cut=Date.now()-48*60*60*1000;onValue(dbRef,async snap=>{const d=snap.val();if(!d)return;for(const[id,msg]of Object.entries(d)){if(loaded.has(id)){updReacts(id,msg.reactions||{});updRead(id,msg.readBy||{});updBbl(id,msg);continue;}if(msg.ts<cut)continue;loaded.add(id);let text=msg.text||"";if(msg.type!=="image"&&msg.ciphertext){if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);text=await dec(dmk2[dkey],msg.ciphertext);}appendBbl({...msg,id,text},msg.senderId===myId,`dms/${dkey}/messages`);if(msg.senderId!==myId)markRead(id,`dms/${dkey}/messages`);}});}
+function loadCh(){if(activeRef){off(activeRef);activeRef=null;}loaded.clear();const area=$("msgs");if(activeCh.type==="none"){area.innerHTML='<div class="empty"><div class="eico">💬</div><p>لا توجد محادثات بعد<br><span onclick="openSB()">ابحث لإضافة صديق</span></p></div>';$("hdrn").textContent="سلماني شات";$("hdrs").textContent="ابدأ محادثة جديدة";return;}area.innerHTML='<div class="sysmsg">🔐 رسائل مشفرة • تختفي بعد 48 ساعة</div>';const u=users[activeCh.id];$("hdrn").textContent=u?.name||"...";$("hdrs").textContent="رسالة خاصة • AES-256-GCM";$("msgi").placeholder=`رسالة لـ ${u?.name||"..."}`;$("hdri").style.cursor="pointer";$("hdri").onclick=()=>openProfile({id:activeCh.id,name:u?.name,publicId:u?.publicId,avatarUrl:u?.avatarUrl,online:u?.online});const dkey=DMK(myId,activeCh.id);const dbRef=ref(db,`dms/${dkey}/messages`);activeRef=dbRef;const cut=Date.now()-48*60*60*1000;onValue(dbRef,async snap=>{const d=snap.val();if(!d)return;for(const[id,msg]of Object.entries(d)){if(loaded.has(id)){updReacts(id,msg.reactions||{});updRead(id,msg.readBy||{});updBbl(id,msg);continue;}if(msg.ts<cut)continue;loaded.add(id);let text=msg.text||"";if(msg.type!=="image"&&msg.ciphertext){if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);text=await dec(dmk2[dkey],msg.ciphertext);}appendBbl({...msg,id,text},msg.senderId===myId,`dms/${dkey}/messages`);if(msg.senderId!==myId)markRead(id,`dms/${dkey}/messages`);}});}
 
 async function markRead(id,path){await update(ref(db,`${path}/${id}/readBy`),{[myId]:true});}
 
@@ -686,7 +775,7 @@ window.sendMsg=sendMsg;
 
 async function updBbl(id,msg){const tick=document.querySelector(`[data-tid="${id}"]`);if(!tick)return;const row=tick.closest(".mrow");if(!row)return;const bbl=row.querySelector(".bbl");if(!bbl)return;if(msg.deleted){if(!isDev){bbl.innerHTML='<span style="opacity:.5;font-style:italic;font-size:12px">🗑️ تم حذف هذه الرسالة</span>';bbl.style.background="var(--sf2)";bbl.style.border="1px solid var(--bd2)";}else{bbl.style.opacity="0.6";bbl.style.borderStyle="dashed";}}else if(msg.edited&&msg.ciphertext){const dkey=DMK(myId,activeCh.id);if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);const newText=await dec(dmk2[dkey],msg.ciphertext);const txEl=bbl.querySelector(".txtcnt");if(txEl)txEl.textContent=newText;if(!bbl.querySelector(".edittag")){const tag=document.createElement("div");tag.className="edittag";tag.style.cssText="font-size:9px;color:var(--tx3);font-family:monospace;margin-top:2px";tag.textContent="(معدّلة)";bbl.appendChild(tag);}}}
 
-function appendBbl(msg,isMe,path){const area=$("msgs");const empty=area.querySelector(".empty");if(empty)empty.remove();const prev=area.lastElementChild;const showAv=prev?.dataset?.sender!==msg.senderId;const row=document.createElement("div");row.className=`mrow ${isMe?"me":""}`;row.dataset.sender=msg.senderId;const avw=document.createElement("div");if(showAv)avw.appendChild(mkAv(msg.senderName||"?",msg.senderId,30,msg.avatarUrl));else{avw.className="mav gh";}const body=document.createElement("div");body.className="mbody";if(showAv&&!isMe){const n=document.createElement("div");n.className="msdr";n.textContent=`${msg.senderName} ${msg.publicId||""}`;body.appendChild(n);}const bbl=document.createElement("div");bbl.className=`bbl ${isMe?"mn":"th"}${msg.deleted?" del":""}`;if(msg.replyTo){const rp=document.createElement("div");rp.className="rply";rp.innerHTML=`<div class="rplynm">${msg.replyTo.senderName}</div><div>${(msg.replyTo.text||"").slice(0,60)}</div>`;bbl.appendChild(rp);}if(msg.deleted&&!isDev){bbl.innerHTML+='<span style="opacity:.5;font-style:italic;font-size:12px">🗑️ تم حذف هذه الرسالة</span>';}else if(msg.type==="image"&&msg.imageUrl){const img=document.createElement("img");img.className="cimg";img.src=msg.imageUrl;img.onclick=()=>window.open(msg.imageUrl,"_blank");bbl.appendChild(img);}else{const tx=document.createElement("div");tx.className="txtcnt";tx.textContent=msg.text;bbl.appendChild(tx);}if(msg.deleted&&isDev){const tag=document.createElement("div");tag.style.cssText="font-size:9px;color:var(--ac3);font-family:monospace;margin-top:3px";tag.textContent="🗑️ محذوفة (مرئية للمطور)";bbl.appendChild(tag);}if(msg.edited&&!msg.deleted){const tag=document.createElement("div");tag.className="edittag";tag.style.cssText="font-size:9px;color:var(--tx3);font-family:monospace;margin-top:2px";tag.textContent="(معدّلة)";bbl.appendChild(tag);}const ft2=document.createElement("div");ft2.className="mft";const tm=document.createElement("div");tm.className="mtime";tm.innerHTML=`🔒 ${ft(msg.ts)}`;if(isMe){const tick=document.createElement("span");tick.className="tick";tick.dataset.tid=msg.id;tick.textContent="✓";ft2.appendChild(tm);ft2.appendChild(tick);if(!msg.deleted){const eb=document.createElement("button");eb.className="mbtn2";eb.textContent="✏️";eb.onclick=e=>{e.stopPropagation();editMsg(msg.id,path,msg.text);};const db2=document.createElement("button");db2.className="mbtn2";db2.textContent="🗑️";db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(eb);ft2.appendChild(db2);}const rb=document.createElement("span");rb.className="rbtn";rb.textContent="☺";rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);}else{const rb=document.createElement("span");rb.className="rbtn";rb.textContent="☺";rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);if(isDev&&!msg.deleted){const db2=document.createElement("button");db2.className="mbtn2";db2.textContent="🗑️";db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(db2);}ft2.appendChild(tm);}body.appendChild(bbl);body.appendChild(ft2);const rbar=document.createElement("div");rbar.className="rbar";rbar.dataset.path=path;body.appendChild(rbar);let ptm;bbl.addEventListener("touchstart",()=>{ptm=setTimeout(()=>setReply(msg),500);});bbl.addEventListener("touchend",()=>clearTimeout(ptm));bbl.ondblclick=()=>setReply(msg);if(isMe){row.appendChild(body);row.appendChild(avw);}else{row.appendChild(avw);row.appendChild(body);}area.appendChild(row);area.scrollTop=area.scrollHeight;if(msg.reactions)updReacts(msg.id,msg.reactions);if(msg.readBy)updRead(msg.id,msg.readBy);}
+function appendBbl(msg,isMe,path){const area=$("msgs");const empty=area.querySelector(".empty");if(empty)empty.remove();const prev=area.lastElementChild;const showAv=prev?.dataset?.sender!==msg.senderId;const row=document.createElement("div");row.className=`mrow ${isMe?"me":""}`;row.dataset.sender=msg.senderId;const avw=document.createElement("div");if(showAv){avw.style.cursor="pointer";avw.onclick=()=>openProfile({id:msg.senderId,name:msg.senderName,publicId:msg.publicId,avatarUrl:msg.avatarUrl,online:!!users[msg.senderId]?.online});avw.appendChild(mkAv(msg.senderName||"?",msg.senderId,30,msg.avatarUrl));}else{avw.className="mav gh";}const body=document.createElement("div");body.className="mbody";if(showAv&&!isMe){const n=document.createElement("div");n.className="msdr";n.textContent=`${msg.senderName} ${msg.publicId||""}`;body.appendChild(n);}const bbl=document.createElement("div");bbl.className=`bbl ${isMe?"mn":"th"}${msg.deleted?" del":""}`;if(msg.replyTo){const rp=document.createElement("div");rp.className="rply";rp.innerHTML=`<div class="rplynm">${msg.replyTo.senderName}</div><div>${(msg.replyTo.text||"").slice(0,60)}</div>`;bbl.appendChild(rp);}if(msg.deleted&&!isDev){bbl.innerHTML+='<span style="opacity:.5;font-style:italic;font-size:12px">🗑️ تم حذف هذه الرسالة</span>';}else if(msg.type==="image"&&msg.imageUrl){const img=document.createElement("img");img.className="cimg";img.src=msg.imageUrl;img.onclick=()=>window.open(msg.imageUrl,"_blank");bbl.appendChild(img);}else{const tx=document.createElement("div");tx.className="txtcnt";tx.textContent=msg.text;bbl.appendChild(tx);}if(msg.deleted&&isDev){const tag=document.createElement("div");tag.style.cssText="font-size:9px;color:var(--ac3);font-family:monospace;margin-top:3px";tag.textContent="🗑️ محذوفة (مرئية للمطور)";bbl.appendChild(tag);}if(msg.edited&&!msg.deleted){const tag=document.createElement("div");tag.className="edittag";tag.style.cssText="font-size:9px;color:var(--tx3);font-family:monospace;margin-top:2px";tag.textContent="(معدّلة)";bbl.appendChild(tag);}const ft2=document.createElement("div");ft2.className="mft";const tm=document.createElement("div");tm.className="mtime";tm.innerHTML=`🔒 ${ft(msg.ts)}`;if(isMe){const tick=document.createElement("span");tick.className="tick";tick.dataset.tid=msg.id;tick.textContent="✓";ft2.appendChild(tm);ft2.appendChild(tick);if(!msg.deleted){const eb=document.createElement("button");eb.className="mbtn2";eb.textContent="✏️";eb.onclick=e=>{e.stopPropagation();editMsg(msg.id,path,msg.text);};const db2=document.createElement("button");db2.className="mbtn2";db2.textContent="🗑️";db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(eb);ft2.appendChild(db2);}const rb=document.createElement("span");rb.className="rbtn";rb.textContent="☺";rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);}else{const rb=document.createElement("span");rb.className="rbtn";rb.textContent="☺";rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);if(isDev&&!msg.deleted){const db2=document.createElement("button");db2.className="mbtn2";db2.textContent="🗑️";db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(db2);}ft2.appendChild(tm);}body.appendChild(bbl);body.appendChild(ft2);const rbar=document.createElement("div");rbar.className="rbar";rbar.dataset.path=path;body.appendChild(rbar);let ptm;bbl.addEventListener("touchstart",()=>{ptm=setTimeout(()=>setReply(msg),500);});bbl.addEventListener("touchend",()=>clearTimeout(ptm));bbl.ondblclick=()=>setReply(msg);if(isMe){row.appendChild(body);row.appendChild(avw);}else{row.appendChild(avw);row.appendChild(body);}area.appendChild(row);area.scrollTop=area.scrollHeight;if(msg.reactions)updReacts(msg.id,msg.reactions);if(msg.readBy)updRead(msg.id,msg.readBy);}
 
 function updReacts(id,reactions){const tick=document.querySelector(`[data-tid="${id}"]`);if(!tick)return;const mrow=tick.closest(".mrow");if(!mrow)return;const bar=mrow.querySelector(".rbar");if(!bar)return;bar.innerHTML="";Object.entries(reactions).forEach(([emoji,uids])=>{if(!uids)return;const cnt=Object.keys(uids).length;if(!cnt)return;const mine=!!uids[myId];const chip=document.createElement("div");chip.className=`rchip ${mine?"mn":""}`;chip.innerHTML=`${emoji}<span>${cnt}</span>`;chip.onclick=()=>togReact(id,bar.dataset.path,emoji);bar.appendChild(chip);});}
 function updRead(id,readBy){const tick=document.querySelector(`[data-tid="${id}"]`);if(!tick)return;const others=Object.keys(readBy||{}).filter(i=>i!==myId);tick.textContent=others.length?"✓✓":"✓";if(others.length)tick.classList.add("seen");else tick.classList.remove("seen");}
