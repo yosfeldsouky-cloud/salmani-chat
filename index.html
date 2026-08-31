@@ -182,6 +182,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 .prfac{display:flex;gap:10px;justify-content:center}
 .prfdm{background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;color:white;padding:10px 20px;border-radius:12px;font-size:14px;cursor:pointer;font-weight:900;font-family:'Lato',sans-serif}
 .prfcl{background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);padding:10px 20px;border-radius:12px;font-size:14px;cursor:pointer;font-weight:700;font-family:'Lato',sans-serif}
+.prfav{width:72px;height:72px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;flex-shrink:0}
+.prfav img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body>
@@ -205,7 +207,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
     <div class="ttl">حساب جديد</div>
     <div class="sub">اختر اسمك — سيكون ثابتاً إلى الأبد</div>
     <div class="avwrap" id="avwrap"><div class="avph" id="avph">📷</div><div class="avbtn">✏️</div><input type="file" id="avf" accept="image/*"></div>
-    <input class="inp" id="regn" placeholder="اسمك المستعار..." maxlength="20">
+    <input class="inp" id="regn" placeholder="اسمك (يظهر للجميع)..." maxlength="20">
+    <input class="inp" id="regh" placeholder="@يوزرك (اختياري - بدون @)..." maxlength="20" style="direction:ltr;text-align:left">
+    <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-family:monospace">يمكن تغييره لاحقاً مرة كل 30 يوم</div>
     <button class="btn" id="btndo">إنشاء حساب وكود دائم 🔐</button>
     <button class="btn btn-ol" id="btnrb">رجوع</button>
     <div class="st" id="regst"></div>
@@ -248,6 +252,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
     </div>
     <div>
       <div class="stgrow" id="stgav"><span class="stgico">🖼️</span><div class="stgi"><div class="stgn">تغيير صورة البروفايل</div><div class="stgs">JPG أو PNG</div></div><span class="stgar">›</span></div>
+      <div class="stgrow" id="stghandle"><span class="stgico">@</span><div class="stgi"><div class="stgn">تغيير اليوزر</div><div class="stgs" id="currenthandle">جارٍ التحميل...</div></div><span class="stgar">›</span></div>
+      <div class="stgrow" id="stgname"><span class="stgico">✏️</span><div class="stgi"><div class="stgn">تغيير الاسم</div><div class="stgs" id="currentname">جارٍ التحميل...</div></div><span class="stgar">›</span></div>
       <div class="stgrow" id="stgcode"><span class="stgico">🔑</span><div class="stgi"><div class="stgn">عرض كودي</div><div class="stgs">انسخ كودك الدائم</div></div><span class="stgar">›</span></div>
       <div class="stgrow" id="stgdev" style="display:none"><span class="stgico">👑</span><div class="stgi"><div class="stgn">لوحة المطور</div><div class="stgs">إدارة المستخدمين</div></div><span class="stgar">›</span></div>
       <div class="stgrow" id="stglg"><span class="stgico">🚪</span><div class="stgi"><div class="stgn" style="color:var(--ac3)">تسجيل الخروج</div><div class="stgs">ستحتاج كودك للدخول</div></div><span class="stgar">›</span></div>
@@ -328,14 +334,32 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
   <button class="clsbtn" onclick="document.getElementById('devp').classList.remove('on')">إغلاق ✕</button>
 </div></div>
 
-<div class="modal" id="prfm"><div class="mcard">
-  <div class="prfav" id="prfav"></div>
-  <div class="prfn" id="prfn"></div>
-  <div class="prfp" id="prfp"></div>
-  <div class="prfst" id="prfst"></div>
-  <div class="prfac">
-    <button class="prfdm" id="prfdm">💬 راسله خاصاً</button>
-    <button class="prfcl" onclick="document.getElementById('prfm').classList.remove('on')">إغلاق</button>
+<div class="modal" id="prfm"><div class="mcard" style="padding:0;overflow:hidden;max-width:360px">
+  <!-- Profile Card Header (unique generated) -->
+  <div id="prfcard" style="height:120px;position:relative;display:flex;align-items:flex-end;padding:16px">
+    <canvas id="prfcanvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+    <div style="position:relative;z-index:1;display:flex;align-items:flex-end;gap:12px;width:100%">
+      <div class="prfav" id="prfav" style="border:3px solid rgba(255,255,255,0.3)"></div>
+      <div style="flex:1;min-width:0">
+        <div class="prfn" id="prfn" style="color:white;text-shadow:0 1px 4px rgba(0,0,0,.5)"></div>
+        <div class="prfp" id="prfp" style="color:rgba(255,255,255,.8)"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Profile Body -->
+  <div style="padding:16px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div class="prfst" id="prfst" style="flex:1;margin:0"></div>
+      <div id="prfjoined" style="font-size:10px;color:var(--tx3);font-family:monospace"></div>
+    </div>
+    <div id="prfbio" style="font-size:13px;color:var(--tx2);margin-bottom:16px;padding:10px 12px;background:var(--sf2);border-radius:10px;border:1px solid var(--bd);min-height:40px;display:none"></div>
+    <div id="myprfactions" style="display:none;margin-bottom:12px">
+      <button onclick="editBio()" style="width:100%;padding:9px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);border-radius:10px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700;margin-bottom:8px">✏️ تعديل النبذة</button>
+    </div>
+    <div class="prfac">
+      <button class="prfdm" id="prfdm">💬 راسله خاصاً</button>
+      <button class="prfcl" onclick="document.getElementById('prfm').classList.remove('on')">إغلاق</button>
+    </div>
   </div>
 </div></div>
 
@@ -400,7 +424,10 @@ $("btnlog").onclick=()=>showScr("slog");
 $("btnrb").onclick=()=>showScr("swel");
 $("btnlb").onclick=()=>showScr("swel");
 $("btnstgb").onclick=()=>{document.querySelectorAll(".scr").forEach(s=>s.classList.add("hide"));$("app").classList.add("on");};
-$("mypro").onclick=openSettings;
+$("mypro").onclick=()=>{
+  // Long press = settings, tap = my profile
+  openSettings();
+};
 $("btndo").onclick=doReg;
 $("btndol").onclick=doLog;
 $("btnent").onclick=initApp;
@@ -410,6 +437,44 @@ $("logc").onkeydown=e=>{if(e.key==="Enter")doLog();};
 $("msgi").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey&&window.innerWidth>640){e.preventDefault();sendMsg();}};
 $("msgi").oninput=()=>{const i=$("msgi");i.style.height="auto";i.style.height=Math.min(i.scrollHeight,120)+"px";};
 $("stgav").onclick=()=>$("stavf").click();
+$("stghandle").onclick=async()=>{
+  // Check if can change (30 days)
+  const user=await sbOne("users",{code_hash:myHash});
+  if(user?.handle_changed_at){
+    const last=new Date(user.handle_changed_at);
+    const diff=(Date.now()-last.getTime())/(1000*60*60*24);
+    if(diff<30){
+      const rem=Math.ceil(30-diff);
+      $("stgst").className="st er";
+      $("stgst").textContent=`❌ يمكنك التغيير بعد ${rem} يوم`;
+      setTimeout(()=>$("stgst").textContent="",3000);return;
+    }
+  }
+  const newHandle=prompt("أدخل يوزرك الجديد (بدون @):",user?.username_handle||"");
+  if(!newHandle||newHandle.trim()==="")return;
+  const h=newHandle.trim().replace("@","").toLowerCase();
+  if(h.length<3){$("stgst").className="st er";$("stgst").textContent="❌ اليوزر قصير (3 أحرف على الأقل)";setTimeout(()=>$("stgst").textContent="",3000);return;}
+  const hexist=await sbOne("users",{username_handle:h});
+  if(hexist&&hexist.code_hash!==myHash){$("stgst").className="st er";$("stgst").textContent="❌ هذا اليوزر محجوز";setTimeout(()=>$("stgst").textContent="",3000);return;}
+  await sbUpd("users",{code_hash:myHash},{username_handle:h,handle_changed_at:new Date().toISOString()});
+  $("stgst").textContent="✅ تم تغيير اليوزر إلى @"+h;
+  $("currenthandle").textContent="@"+h;
+  setTimeout(()=>$("stgst").textContent="",3000);
+};
+$("stgname").onclick=async()=>{
+  const newName=prompt("أدخل اسمك الجديد:",myName);
+  if(!newName||newName.trim()===""||newName.trim()===myName)return;
+  const n=newName.trim();
+  if(n.length<3){$("stgst").className="st er";$("stgst").textContent="❌ الاسم قصير";setTimeout(()=>$("stgst").textContent="",3000);return;}
+  const nexist=await sbOne("users",{username:n});
+  if(nexist&&nexist.code_hash!==myHash){$("stgst").className="st er";$("stgst").textContent="❌ هذا الاسم محجوز";setTimeout(()=>$("stgst").textContent="",3000);return;}
+  await sbUpd("users",{code_hash:myHash},{username:n});
+  await set(ref(db,`users/${myId}/name`),n);
+  myName=n;$("myn").textContent=n;updMyAv();
+  $("stgst").textContent="✅ تم تغيير الاسم";
+  $("currentname").textContent=n;
+  setTimeout(()=>$("stgst").textContent="",3000);
+};
 $("stgcode").onclick=()=>{const c=window._myCode||"";if(c){cpTxt(c);$("stgst").textContent="✅ تم نسخ الكود!";setTimeout(()=>$("stgst").textContent="",2000);}};
 $("stgdev").onclick=()=>openDev();
 $("stglg").onclick=()=>{if(confirm("هل تريد تسجيل الخروج؟")){localStorage.removeItem("slm_code");localStorage.removeItem("slm_dms");location.reload();}};
@@ -444,7 +509,16 @@ async function doReg(){
   let avUrl=null;
   if(window._regAv){$("regst").textContent="⬆️ جارٍ رفع الصورة...";const cm=await compress(window._regAv,400,.85);const{ok,url}=await sbUp("avatars",`${hash}.jpg`,cm);if(ok)avUrl=url;}
   $("regst").textContent="☁️ جارٍ الحفظ...";
-  const{ok,err}=await sbIns("users",{code_hash:hash,public_id:pid,username:name,avatar_url:avUrl});
+  const handle=$("regh").value.trim().replace("@","").toLowerCase();
+  const userObj={code_hash:hash,public_id:pid,username:name,avatar_url:avUrl};
+  if(handle){
+    // Check handle unique
+    const hexist=await sbOne("users",{username_handle:handle});
+    if(hexist){$("regst").className="st er";$("regst").textContent="❌ هذا اليوزر محجوز";$("btndo").disabled=false;return;}
+    userObj.username_handle=handle;
+    userObj.handle_changed_at=new Date().toISOString();
+  }
+  const{ok,err}=await sbIns("users",userObj);
   if(!ok){$("regst").className="st er";$("regst").textContent="❌ "+err;$("btndo").disabled=false;return;}
   myId=hash.slice(0,12);myName=name;myPid=pid;myHash=hash;myAv=avUrl;window._myCode=code;
   $("cval").textContent=code;showScr("scod");
@@ -477,13 +551,128 @@ async function initApp(){
 
 function updMyAv(){const av=$("myav"),c=gc(myId||"x");av.style.cssText=`width:34px;height:34px;font-size:13px;background:${c}22;border:2px solid ${c}44;color:${c};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;`;if(myAv){av.innerHTML=`<img src="${myAv}" style="width:100%;height:100%;object-fit:cover">`;}else av.textContent=(myName||"?")[0].toUpperCase();}
 
-function openSettings(){$("stnm").textContent=myName;$("stpid").textContent=myPid;const av=$("stavph"),c=gc(myId);if(myAv)av.innerHTML=`<img src="${myAv}" style="width:78px;height:78px;border-radius:50%;object-fit:cover;border:3px solid var(--ac)">`;else{av.style.cssText=`width:78px;height:78px;border-radius:50%;background:${c}22;border:3px solid ${c};display:flex;align-items:center;justify-content:center;font-size:30px;color:${c};font-weight:900;`;av.textContent=myName[0].toUpperCase();}$("app").classList.remove("on");showScr("sstg");}
+async function openSettings(){$("stnm").textContent=myName;$("stpid").textContent=myPid;
+  $("currentname").textContent=myName;
+  const user=await sbOne("users",{code_hash:myHash});
+  if(user?.username_handle){
+    $("currenthandle").textContent="@"+user.username_handle;
+    if(user.handle_changed_at){const diff=(Date.now()-new Date(user.handle_changed_at).getTime())/(1000*60*60*24);if(diff<30)$("currenthandle").textContent+=" (يمكن التغيير بعد "+Math.ceil(30-diff)+" يوم)";}
+  } else $("currenthandle").textContent="لم يُعيَّن بعد";const av=$("stavph"),c=gc(myId);if(myAv)av.innerHTML=`<img src="${myAv}" style="width:78px;height:78px;border-radius:50%;object-fit:cover;border:3px solid var(--ac)">`;else{av.style.cssText=`width:78px;height:78px;border-radius:50%;background:${c}22;border:3px solid ${c};display:flex;align-items:center;justify-content:center;font-size:30px;color:${c};font-weight:900;`;av.textContent=myName[0].toUpperCase();}$("app").classList.remove("on");showScr("sstg");}
 
 function saveRecent(uid){let dms=JSON.parse(localStorage.getItem("slm_dms")||"[]");dms=dms.filter(i=>i!==uid);dms.unshift(uid);localStorage.setItem("slm_dms",JSON.stringify(dms.slice(0,20)));renderRecent();}
 function renderRecent(){const list=$("recentdms"),dms=JSON.parse(localStorage.getItem("slm_dms")||"[]");list.innerHTML="";if(!dms.length){list.innerHTML='<div style="padding:12px 16px;font-size:12px;color:var(--tx3);text-align:center;line-height:1.8">لا توجد محادثات<br><span style="color:var(--ac);font-weight:700;cursor:pointer" onclick="document.getElementById(\'srchi\').focus()">ابحث لإضافة صديق</span></div>';return;}dms.forEach(uid=>{const u=users[uid]||{id:uid,name:"...",online:false};const isA=activeCh.type==="dm"&&activeCh.id===uid;const item=document.createElement("div");item.className=`chi ${isA?"ac":""}`;item.onclick=()=>openDM(uid,item);const aw=document.createElement("div");aw.className="avw";aw.style.flexShrink="0";aw.appendChild(mkAv(u.name||"?",u.id||uid,28,u.avatarUrl||null));if(u.online){const rg=document.createElement("div");rg.className="ring";aw.appendChild(rg);}const inf=document.createElement("div");inf.style.cssText="flex:1;min-width:0";const n=document.createElement("div");n.style.cssText="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis";n.textContent=u.name||uid;const p=document.createElement("div");p.style.cssText=`font-size:10px;font-family:monospace;color:${u.online?"var(--on)":"var(--tx3)"}`;p.textContent=u.online?"● متصل":"○ غير متصل";inf.appendChild(n);inf.appendChild(p);item.appendChild(aw);item.appendChild(inf);const cnt=unread[DMK(myId,uid)];if(cnt){const b=document.createElement("span");b.className="bdg";b.textContent=cnt;item.appendChild(b);}list.appendChild(item);});}
 function renderOnline(){const list=$("onlinelist");list.innerHTML="";const others=Object.values(users).filter(u=>u.id!==myId&&u.online);const dms=JSON.parse(localStorage.getItem("slm_dms")||"[]");const extra=others.filter(u=>!dms.includes(u.id));if(!extra.length){list.innerHTML='<div style="padding:8px 16px;font-size:11px;color:var(--tx3);font-family:monospace">لا يوجد مستخدمون آخرون</div>';return;}extra.forEach(u=>{const item=document.createElement("div");item.className="chi";item.onclick=()=>openProfile(u);const aw=document.createElement("div");aw.className="avw";aw.style.flexShrink="0";aw.appendChild(mkAv(u.name,u.id,26,u.avatarUrl||null));const rg=document.createElement("div");rg.className="ring";aw.appendChild(rg);const inf=document.createElement("div");inf.style.flex="1";const n=document.createElement("div");n.style.cssText="font-size:13px;font-weight:700";n.textContent=u.name;inf.appendChild(n);item.appendChild(aw);item.appendChild(inf);list.appendChild(item);});}
 
-function openProfile(u){const av=$("prfav"),c=gc(u.id||u.name);if(u.avatarUrl)av.innerHTML=`<img src="${u.avatarUrl}" style="width:100%;height:100%;object-fit:cover">`;else{av.style.cssText=`width:82px;height:82px;border-radius:50%;background:${c}22;border:3px solid ${c};color:${c};font-size:32px;font-weight:900;display:flex;align-items:center;justify-content:center;`;av.textContent=(u.name||"?")[0].toUpperCase();}$("prfn").textContent=u.name;$("prfp").textContent=u.publicId||"";$("prfst").textContent=u.online?"🟢 متصل الآن":"⚫ غير متصل";$("prfdm").onclick=()=>{$("prfm").classList.remove("on");$("srchi").value="";doSearch("");openDM(u.id,null);closeSB();};$("prfm").classList.add("on");}
+async function openProfile(u){
+  const isMe = u.id===myId;
+  const c=gc(u.id||u.name);
+  
+  // Generate unique card background
+  genProfileCard(u.id||u.name, c);
+  
+  // Avatar
+  const av=$("prfav");
+  av.style.cssText=`width:72px;height:72px;border-radius:50%;background:${c}22;border:3px solid rgba(255,255,255,.4);color:${c};font-size:28px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;`;
+  if(u.avatarUrl)av.innerHTML=`<img src="${u.avatarUrl}" style="width:100%;height:100%;object-fit:cover">`;
+  else av.textContent=(u.name||"?")[0].toUpperCase();
+  
+  $("prfn").textContent=u.name||"...";
+  $("prfp").textContent=(u.handle?"@"+u.handle+" • ":"")+(u.publicId||"");
+  $("prfst").textContent=u.online?"🟢 متصل الآن":"⚫ غير متصل";
+  
+  // Load full profile from Supabase
+  const uid = u.id||myId;
+  const codeHash = Object.values(users).find(us=>us.id===uid)?.codeHash || 
+    (isMe?myHash:null);
+  
+  // Joined date
+  $("prfjoined").textContent="";
+  $("prfbio").style.display="none";
+  $("myprfactions").style.display="none";
+  
+  // Try to get bio from Supabase
+  try{
+    let supaUser = null;
+    if(isMe) supaUser = await sbOne("users",{code_hash:myHash});
+    else {
+      // Search by public_id
+      const all = await sbGet("users");
+      supaUser = (all||[]).find(su=>su.code_hash.slice(0,12)===uid);
+    }
+    if(supaUser){
+      if(supaUser.bio){
+        $("prfbio").textContent=supaUser.bio;
+        $("prfbio").style.display="block";
+      }
+      if(supaUser.created_at||supaUser.joined_at){
+        const d=new Date(supaUser.created_at||supaUser.joined_at);
+        const months=Math.floor((Date.now()-d.getTime())/(1000*60*60*24*30));
+        $("prfjoined").textContent=months<1?"انضم مؤخراً":`انضم منذ ${months} شهر`;
+      }
+      if(supaUser.username_handle&&!u.handle){
+        $("prfp").textContent="@"+supaUser.username_handle+" • "+(u.publicId||"");
+      }
+    }
+  }catch(e){console.log("Profile load error:",e);}
+  
+  if(isMe){
+    $("myprfactions").style.display="block";
+    $("prfdm").style.display="none";
+  } else {
+    $("myprfactions").style.display="none";
+    $("prfdm").style.display="block";
+    $("prfdm").onclick=()=>{$("prfm").classList.remove("on");$("srchi").value="";doSearch("");openDM(u.id,null);closeSB();};
+  }
+  $("prfm").classList.add("on");
+}
+
+function genProfileCard(uid, baseColor){
+  const cv=$("prfcanvas");
+  if(!cv)return;
+  const ctx=cv.getContext("2d");
+  cv.width=cv.offsetWidth||360;
+  cv.height=120;
+  
+  // Generate colors from uid
+  const hash=[...uid].reduce((a,c)=>((a<<5)-a)+c.charCodeAt(0),0);
+  const h1=Math.abs(hash)%360;
+  const h2=(h1+60)%360;
+  const h3=(h1+120)%360;
+  
+  // Gradient background
+  const grad=ctx.createLinearGradient(0,0,cv.width,cv.height);
+  grad.addColorStop(0,`hsl(${h1},70%,30%)`);
+  grad.addColorStop(0.5,`hsl(${h2},65%,25%)`);
+  grad.addColorStop(1,`hsl(${h3},75%,20%)`);
+  ctx.fillStyle=grad;
+  ctx.fillRect(0,0,cv.width,cv.height);
+  
+  // Geometric shapes
+  const shapes=Math.abs(hash>>4)%4;
+  ctx.globalAlpha=0.15;
+  for(let i=0;i<6;i++){
+    const x=(Math.abs(hash*(i+1))%cv.width);
+    const y=(Math.abs(hash*(i+2))%cv.height);
+    const r=20+Math.abs(hash*(i+3))%40;
+    ctx.beginPath();
+    if(shapes===0)ctx.arc(x,y,r,0,Math.PI*2);
+    else if(shapes===1){ctx.moveTo(x,y-r);ctx.lineTo(x+r,y+r);ctx.lineTo(x-r,y+r);ctx.closePath();}
+    else{ctx.rect(x-r/2,y-r/2,r,r);}
+    ctx.fillStyle=`hsl(${(h1+i*30)%360},80%,70%)`;
+    ctx.fill();
+  }
+  ctx.globalAlpha=1;
+}
+
+window.editBio=async()=>{
+  const user=await sbOne("users",{code_hash:myHash});
+  const newBio=prompt("نبذة قصيرة عنك (150 حرف):",user?.bio||"");
+  if(newBio===null)return;
+  const bio=newBio.trim().slice(0,150);
+  await sbUpd("users",{code_hash:myHash},{bio});
+  if(bio){$("prfbio").textContent=bio;$("prfbio").style.display="block";}
+  else $("prfbio").style.display="none";
+};
 
 async function openDM(uid,el){document.querySelectorAll(".chi").forEach(e=>e.classList.remove("ac"));el?.classList.add("ac");activeCh={type:"dm",id:uid};const dk=DMK(myId,uid);delete unread[dk];replyTo=null;$("rplybar").classList.remove("on");if(!dmk2[dk])dmk2[dk]=await dkf(RP+dk,dk);saveRecent(uid);renderRecent();renderOnline();loadCh();closeSB();}
 async function dkf(p,s){return dk(p,s);}
