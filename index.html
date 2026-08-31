@@ -204,6 +204,56 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 .privrow:last-child{border:none}
 .privlbl{font-size:13px;font-weight:700}
 .privsel{background:var(--sf2);border:1.5px solid var(--bd2);color:var(--tx);font-size:12px;font-weight:700;padding:6px 10px;border-radius:10px;font-family:'Lato',sans-serif;outline:none}
+
+/* ===== Groups System ===== */
+.grpchi{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;border-right:3px solid transparent;-webkit-tap-highlight-color:transparent}
+.grpchi:active,.grpchi:hover{background:var(--sf2)}
+.grpchi.ac{background:rgba(56,189,248,0.07);border-right-color:var(--ac)}
+.grpav{width:34px;height:34px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0;overflow:hidden;background:var(--sf2);border:1.5px solid var(--bd2)}
+.grpav img{width:100%;height:100%;object-fit:cover}
+.grpav.lg{width:64px;height:64px;border-radius:20px;font-size:26px}
+.addgrpbtn{margin:6px 16px 10px;padding:10px;border-radius:12px;background:var(--sf2);border:1.5px dashed var(--bd2);color:var(--tx2);font-size:12.5px;font-weight:700;text-align:center;cursor:pointer;font-family:'Lato',sans-serif}
+.addgrpbtn:active{opacity:.7}
+
+.grphdr{display:flex;align-items:center;gap:12px;padding:16px;background:var(--sf);border-bottom:1px solid var(--bd2);border-radius:20px 20px 0 0}
+.grpn{font-size:16px;font-weight:900}
+.grpsub{font-size:10.5px;color:var(--tx2);font-family:monospace;margin-top:2px}
+
+.roleform{background:var(--sf2);border:1px solid var(--bd2);border-radius:14px;padding:14px;margin-bottom:12px}
+.rolechip{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:20px;font-size:11.5px;font-weight:800;font-family:monospace}
+.roledot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.permrow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bd)}
+.permrow:last-child{border:none}
+.permlbl{font-size:12.5px;font-weight:700;color:var(--tx2)}
+.toggle{position:relative;width:42px;height:24px;border-radius:20px;background:var(--bd2);cursor:pointer;flex-shrink:0;transition:background .2s;border:none}
+.toggle.on{background:var(--ac)}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.toggle.on::after{transform:translateX(18px)}
+[dir="rtl"] .toggle::after{left:auto;right:2px}
+[dir="rtl"] .toggle.on::after{transform:translateX(-18px)}
+
+.memrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd)}
+.memrow:last-child{border:none}
+.meminf{flex:1;min-width:0}
+.memnm{font-size:13px;font-weight:700}
+.memrl{font-size:10px;font-family:monospace;font-weight:700;margin-top:1px}
+.memkick{background:none;border:none;color:var(--ac3);font-size:16px;cursor:pointer;padding:4px 6px}
+
+.reqrow{display:flex;align-items:center;gap:10px;padding:10px;background:var(--sf2);border-radius:12px;margin-bottom:8px;border:1px solid var(--bd2)}
+.reqbtns{display:flex;gap:6px}
+.reqbtn{padding:6px 12px;border-radius:9px;font-size:11px;font-weight:800;cursor:pointer;border:none;font-family:'Lato',sans-serif}
+.reqok{background:var(--on);color:#fff}
+.reqno{background:var(--sf2);border:1px solid var(--bd2)!important;color:var(--tx2)}
+
+.gtabbar{display:flex;gap:4px;padding:4px;background:var(--sf2);border-radius:12px;margin-bottom:14px}
+.gtab{flex:1;text-align:center;padding:8px;border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;color:var(--tx2)}
+.gtab.ac{background:var(--ac);color:#fff}
+
+.grpico{width:78px;height:78px;border-radius:24px;background:var(--sf2);border:2px dashed var(--ac);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 14px;cursor:pointer;overflow:hidden}
+.grpico img{width:100%;height:100%;object-fit:cover;border-radius:22px}
+.invbox{background:var(--sf2);border:1.5px solid var(--bd2);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;margin:10px 0}
+.invcode{flex:1;font-family:monospace;font-weight:900;color:var(--ac);font-size:13px;letter-spacing:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.invcpy{background:none;border:none;color:var(--tx2);font-size:16px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -306,6 +356,82 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
   <button class="clsbtn" onclick="document.getElementById('privm').classList.remove('on')">إغلاق ✕</button>
 </div></div>
 
+<!-- إنشاء مجموعة -->
+<div class="modal" id="cgrpm"><div class="mcard" style="max-width:380px;text-align:center">
+  <div class="ttl" style="margin-bottom:14px">إنشاء مجموعة ✨</div>
+  <div class="grpico" id="cgrpico"><span id="cgrpicoph">🖼️</span><input type="file" id="cgrpicof" accept="image/*" style="display:none"></div>
+  <input class="inp" id="cgrpname" placeholder="اسم المجموعة..." maxlength="30">
+  <button class="btn" id="btncgrpdo">إنشاء 🚀</button>
+  <button class="btn btn-ol" onclick="document.getElementById('cgrpm').classList.remove('on')">إلغاء</button>
+  <div class="st" id="cgrpst"></div>
+</div></div>
+
+<!-- الانضمام برابط دعوة -->
+<div class="modal" id="joingm"><div class="mcard" style="max-width:380px;text-align:center">
+  <div class="logo">🔗</div>
+  <div class="ttl" id="joingname">مجموعة</div>
+  <div class="sub" id="joingsub">ادعوتك للانضمام</div>
+  <button class="btn" id="btnjoindo">انضمام ✅</button>
+  <button class="btn btn-ol" onclick="document.getElementById('joingm').classList.remove('on')">إلغاء</button>
+  <div class="st" id="joingst"></div>
+</div></div>
+
+<!-- إعدادات/تفاصيل المجموعة -->
+<div class="modal" id="grpm"><div class="mcard" style="max-width:420px;max-height:88vh">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+    <div class="grpav lg" id="grpmav"></div>
+    <div style="flex:1;min-width:0">
+      <div class="grpn" id="grpmname"></div>
+      <div class="grpsub" id="grpmsub"></div>
+    </div>
+    <button style="background:none;border:none;color:var(--tx2);font-size:20px;cursor:pointer" onclick="document.getElementById('grpm').classList.remove('on')">✕</button>
+  </div>
+  <div class="gtabbar" id="grptabs">
+    <div class="gtab ac" data-tab="info">المجموعة</div>
+    <div class="gtab" data-tab="members">الأعضاء</div>
+    <div class="gtab" data-tab="roles">الرتب</div>
+    <div class="gtab" data-tab="requests" id="tabreq" style="display:none">الطلبات</div>
+  </div>
+  <div id="gtab-info">
+    <div class="invbox">
+      <span class="invcode" id="grpinvcode">—</span>
+      <button class="invcpy" onclick="cpTxt($('grpinvcode').textContent);$('grpinvst').textContent='✅ تم النسخ'">📋</button>
+    </div>
+    <div class="st" id="grpinvst"></div>
+    <div class="privrow"><label class="toggle" id="tgInvite"></label><div class="privlbl">🔗 السماح بالانضمام عبر الرابط</div></div>
+    <div class="privrow"><label class="toggle" id="tgDirectAdd"></label><div class="privlbl">👤 السماح بالإضافة المباشرة بالبحث</div></div>
+    <button class="clsbtn" style="color:var(--ac3);margin-top:14px" id="btnleavegrp">🚪 مغادرة المجموعة</button>
+  </div>
+  <div id="gtab-members" style="display:none">
+    <div id="memberslist"></div>
+  </div>
+  <div id="gtab-roles" style="display:none">
+    <div id="roleslist"></div>
+    <button class="addgrpbtn" style="margin:8px 0 0" onclick="openRoleEditor(null)">➕ رتبة جديدة</button>
+  </div>
+  <div id="gtab-requests" style="display:none">
+    <div id="requestslist"></div>
+  </div>
+</div></div>
+
+<!-- محرر الرتبة -->
+<div class="modal" id="rolem"><div class="mcard" style="max-width:380px">
+  <div class="ttl" style="margin-bottom:14px" id="roleedittitle">رتبة جديدة</div>
+  <input class="inp" id="roleName" placeholder="اسم الرتبة..." maxlength="20">
+  <div style="display:flex;gap:8px;justify-content:center;margin:10px 0 16px" id="rolecolors"></div>
+  <div class="roleform">
+    <div class="permrow"><button class="toggle" id="permManageMembers"></button><div class="permlbl">طرد وحظر الأعضاء</div></div>
+    <div class="permrow"><button class="toggle" id="permManageRoles"></button><div class="permlbl">إدارة الرتب</div></div>
+    <div class="permrow"><button class="toggle" id="permManageGroup"></button><div class="permlbl">تعديل بيانات المجموعة</div></div>
+    <div class="permrow"><button class="toggle" id="permDeleteMsgs"></button><div class="permlbl">حذف رسائل الآخرين</div></div>
+    <div class="permrow"><button class="toggle" id="permFreeAdd"></button><div class="permlbl">إضافة أعضاء بدون موافقة</div></div>
+  </div>
+  <button class="btn" id="btnrolesave">حفظ 💾</button>
+  <button class="btn btn-ol" id="btnroledel" style="display:none;color:var(--ac3)">حذف الرتبة 🗑️</button>
+  <button class="btn btn-ol" onclick="document.getElementById('rolem').classList.remove('on')">إلغاء</button>
+  <div class="st" id="rolest"></div>
+</div></div>
+
 <div id="ov"></div>
 
 <div id="app">
@@ -331,6 +457,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
           <div class="thdot" style="background:linear-gradient(135deg,#c084fc,#f472b6)" onclick="setTheme('t-galaxy')"></div>
           <div class="thdot" style="background:linear-gradient(135deg,#7dd3fc,#a5b4fc)" onclick="setTheme('t-arctic')"></div>
         </div>
+        <div class="seclbl">— المجموعات</div>
+        <div id="grouplist"></div>
+        <div class="addgrpbtn" onclick="openCreateGroup()">➕ إنشاء مجموعة</div>
         <div class="seclbl">— المحادثات</div>
         <div class="srchbox">
           <span class="srchico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg></span>
@@ -398,6 +527,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
       <div id="myprfactions" style="display:none">
         <button onclick="editBio()" style="width:100%;padding:10px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);border-radius:12px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700">✏️ تعديل النبذة</button>
       </div>
+      <div id="prfaddgrp" style="display:none;margin-bottom:10px">
+        <select class="privsel" id="prfgrpsel" style="width:100%;text-align:center;padding:10px"></select>
+        <button onclick="addToGroupFromProfile()" style="width:100%;padding:10px;margin-top:6px;background:var(--sf2);border:1px solid var(--bd2);color:var(--ac);border-radius:12px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700">➕ إضافة لمجموعة</button>
+      </div>
       <div class="prfactions2">
         <button class="prfbtnp prfdm" id="prfdm">💬 راسله خاصاً</button>
         <button class="prfbtns prfcl" onclick="document.getElementById('prfm').classList.remove('on')">إغلاق</button>
@@ -420,7 +553,9 @@ const db=getDatabase(fb);
 async function sbGet(t,f={}){const q=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join("&");const r=await fetch(`${SU}/rest/v1/${t}?select=*${q?"&"+q:""}`,{headers:SH});return r.json();}
 async function sbOne(t,f={}){const d=await sbGet(t,f);return Array.isArray(d)?d[0]||null:null;}
 async function sbIns(t,o){const r=await fetch(`${SU}/rest/v1/${t}`,{method:"POST",headers:{...SH,"Prefer":"return=minimal"},body:JSON.stringify(o)});return{ok:r.ok,err:r.ok?null:await r.text()};}
+async function sbInsR(t,o){const r=await fetch(`${SU}/rest/v1/${t}`,{method:"POST",headers:{...SH,"Prefer":"return=representation"},body:JSON.stringify(o)});const d=await r.json();return{ok:r.ok,row:r.ok?(Array.isArray(d)?d[0]:d):null,err:r.ok?null:d};}
 async function sbUpd(t,f,o){const q=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join("&");await fetch(`${SU}/rest/v1/${t}?${q}`,{method:"PATCH",headers:{...SH,"Prefer":"return=minimal"},body:JSON.stringify(o)});}
+async function sbDel(t,f){const q=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join("&");await fetch(`${SU}/rest/v1/${t}?${q}`,{method:"DELETE",headers:SH});}
 async function sbUp(bkt,path,file){const r=await fetch(`${SU}/storage/v1/object/${bkt}/${path}`,{method:"PUT",headers:{"apikey":SK,"Authorization":`Bearer ${SK}`,"Content-Type":file.type,"x-upsert":"true"},body:file});return{ok:r.ok,url:`${SU}/storage/v1/object/public/${bkt}/${path}?t=${Date.now()}`};}
 
 const RP="salmani_secure_2024";
@@ -531,11 +666,11 @@ $("avwrap").onclick=()=>$("avf").click();
 $("avf").onchange=e=>{const f=e.target.files[0];if(!f)return;window._regAv=f;const r=new FileReader();r.onload=ev=>{$("avph").innerHTML=`<img src="${ev.target.result}" style="width:78px;height:78px;border-radius:50%;object-fit:cover">`;};r.readAsDataURL(f);};
 $("stavwrap").onclick=()=>$("stavf").click();
 $("stavf").onchange=async e=>{const f=e.target.files[0];if(!f)return;$("stgst").textContent="⬆️ جارٍ رفع الصورة...";const cm=await compress(f,400,.85);const{ok,url}=await sbUp("avatars",`${myHash}.jpg`,cm);if(ok){myAv=url;updMyAv();await sbUpd("users",{code_hash:myHash},{avatar_url:url});await set(ref(db,`users/${myId}/avatarUrl`),url);$("stgst").textContent="✅ تم!";}else $("stgst").textContent="❌ فشل";setTimeout(()=>$("stgst").textContent="",3000);};
-$("imgf").onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value="";const sm=document.createElement("div");sm.className="sysmsg";sm.textContent="⬆️ جارٍ رفع الصورة...";$("msgs").appendChild(sm);$("msgs").scrollTop=$("msgs").scrollHeight;const cm=await compress(f,1200,.85);const path=`${myId}_${Date.now()}.jpg`;const{ok,url}=await sbUp("chat-media",path,cm);sm.remove();if(!ok){const em=document.createElement("div");em.className="sysmsg";em.textContent="❌ فشل رفع الصورة";$("msgs").appendChild(em);return;}// Send image message
+$("imgf").onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value="";if(activeCh.type==="none")return;const sm=document.createElement("div");sm.className="sysmsg";sm.textContent="⬆️ جارٍ رفع الصورة...";$("msgs").appendChild(sm);$("msgs").scrollTop=$("msgs").scrollHeight;const cm=await compress(f,1200,.85);const path=`${myId}_${Date.now()}.jpg`;const{ok,url}=await sbUp("chat-media",path,cm);sm.remove();if(!ok){const em=document.createElement("div");em.className="sysmsg";em.textContent="❌ فشل رفع الصورة";$("msgs").appendChild(em);return;}// Send image message
 const imgMsg={senderId:myId,senderName:myName,publicId:myPid,avatarUrl:myAv||null,ts:Date.now(),type:"image",imageUrl:url,text:"📷 صورة"};
-const dkey=DMK(myId,activeCh.id);
+const msgPath=activeCh.type==="group"?`groups/${activeCh.id}/messages`:`dms/${DMK(myId,activeCh.id)}/messages`;
 try{
-  await push(ref(db,`dms/${dkey}/messages`),imgMsg);
+  await push(ref(db,msgPath),imgMsg);
   const ok2=document.createElement("div");ok2.className="sysmsg";ok2.textContent="✅ تم إرسال الصورة";$("msgs").appendChild(ok2);setTimeout(()=>ok2.remove(),2000);
 }catch(e){
   const er=document.createElement("div");er.className="sysmsg";er.textContent="❌ فشل إرسال: "+e.message;$("msgs").appendChild(er);
@@ -594,6 +729,8 @@ async function initApp(){
   onValue(ref(db,"users"),snap=>{const d=snap.val()||{};Object.entries(d).forEach(([id,u])=>{users[id]={...u,id};});renderOnline();renderRecent();});
   document.querySelectorAll(".scr").forEach(s=>s.classList.add("hide"));$("app").classList.add("on");
   renderRecent();loadCh();
+  loadMyGroups();
+  checkPendingInvite();
 }
 
 function updMyAv(){const av=$("myav"),c=gc(myId||"x");av.style.cssText=`width:34px;height:34px;font-size:13px;background:${c}22;border:2px solid ${c}44;color:${c};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;`;if(myAv){av.innerHTML=`<img src="${myAv}" style="width:100%;height:100%;object-fit:cover">`;}else av.textContent=(myName||"?")[0].toUpperCase();}
@@ -699,14 +836,37 @@ async function openProfile(u){
   if(isMe){
     $("myprfactions").style.display="block";
     $("prfdm").style.display="none";
+    $("prfaddgrp").style.display="none";
   }else{
     $("myprfactions").style.display="none";
     $("prfdm").style.display="block";
     $("prfdm").onclick=()=>{$("prfm").classList.remove("on");$("srchi").value="";doSearch("");openDM(u.id,null);closeSB();};
+    // إضافة لمجموعة - فقط لو عندي مجموعات
+    const targetHash=Object.values(users).find(us=>us.id===uid)?.codeHash;
+    if(myGroups&&myGroups.length){
+      const sel=$("prfgrpsel");
+      sel.innerHTML=myGroups.map(g=>`<option value="${g.id}">${g.name}</option>`).join("");
+      $("prfaddgrp").style.display="block";
+      window._prfTargetUid=uid;
+    }else{
+      $("prfaddgrp").style.display="none";
+    }
   }
   $("prfm").classList.add("on");
 }
 window.openProfile=openProfile;
+
+window.addToGroupFromProfile=async()=>{
+  const gid=$("prfgrpsel").value;
+  const targetUid=window._prfTargetUid;
+  if(!gid||!targetUid)return;
+  // نحتاج code_hash الكامل بتاع الهدف، مش بس أول 12 حرف من الـ id
+  const all=await sbGet("users");
+  const targetUser=(all||[]).find(su=>su.code_hash.slice(0,12)===targetUid);
+  if(!targetUser){alert("تعذر إيجاد بيانات المستخدم");return;}
+  const{ok,msg}=await addUserToGroup(gid,targetUser.code_hash);
+  alert(msg);
+};
 
 function genProfileCard(uid, baseColor){
   const cv=$("prfcanvas");
@@ -763,14 +923,376 @@ window.editBio=async()=>{
   }
 };
 
-async function openDM(uid,el){document.querySelectorAll(".chi").forEach(e=>e.classList.remove("ac"));el?.classList.add("ac");activeCh={type:"dm",id:uid};const dk=DMK(myId,uid);delete unread[dk];replyTo=null;$("rplybar").classList.remove("on");if(!dmk2[dk])dmk2[dk]=await dkf(RP+dk,dk);saveRecent(uid);renderRecent();renderOnline();loadCh();closeSB();}
+// ============================================
+// نظام المجموعات (Groups)
+// ============================================
+const ROLE_COLORS=["#94a3b8","#38bdf8","#34d399","#f87171","#fbbf24","#c084fc","#f472b6","#fb923c"];
+let myGroups=[],activeGroup=null,myMemberships={},editingRoleId=null,activeGroupTab="info";
+
+function genInvite(){const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let s="";for(let i=0;i<8;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
+
+async function loadMyGroups(){
+  const mems=await sbGet("group_members",{code_hash:myHash});
+  myMemberships={};
+  if(!mems||!mems.length){myGroups=[];renderGroupList();return;}
+  const groupIds=[...new Set(mems.map(m=>m.group_id))];
+  const all=[];
+  for(const gid of groupIds){
+    const g=await sbOne("groups",{id:gid});
+    if(g){
+      const mine=mems.find(m=>m.group_id===gid);
+      myMemberships[gid]=mine;
+      all.push(g);
+    }
+  }
+  myGroups=all;
+  renderGroupList();
+}
+
+function renderGroupList(){
+  const list=$("grouplist");
+  if(!myGroups.length){list.innerHTML='<div style="padding:6px 16px 4px;font-size:11px;color:var(--tx3);font-family:monospace">لا توجد مجموعات بعد</div>';return;}
+  list.innerHTML="";
+  myGroups.forEach(g=>{
+    const isA=activeCh.type==="group"&&activeCh.id===g.id;
+    const item=document.createElement("div");
+    item.className=`grpchi ${isA?"ac":""}`;
+    item.onclick=()=>openGroupChat(g.id,item);
+    const av=document.createElement("div");
+    av.className="grpav";
+    if(g.avatar_url)av.innerHTML=`<img src="${g.avatar_url}">`;
+    else av.textContent=(g.name||"?")[0].toUpperCase();
+    const inf=document.createElement("div");
+    inf.style.cssText="flex:1;min-width:0";
+    const n=document.createElement("div");
+    n.style.cssText="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis";
+    n.textContent=g.name;
+    inf.appendChild(n);
+    item.appendChild(av);item.appendChild(inf);
+    list.appendChild(item);
+  });
+}
+
+// ---- إنشاء مجموعة ----
+window.openCreateGroup=()=>{$("cgrpname").value="";$("cgrpst").textContent="";window._cgrpAv=null;$("cgrpicoph").textContent="🖼️";$("cgrpm").classList.add("on");};
+$("cgrpico").onclick=()=>$("cgrpicof").click();
+function bindGrpIcoInput(){
+  const inp=$("cgrpicof");
+  inp.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    window._cgrpAv=f;
+    const r=new FileReader();
+    r.onload=ev=>{
+      $("cgrpico").innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:22px"><input type="file" id="cgrpicof" accept="image/*" style="display:none">`;
+      bindGrpIcoInput();
+    };
+    r.readAsDataURL(f);
+  };
+}
+bindGrpIcoInput();
+
+$("btncgrpdo").onclick=async()=>{
+  const name=$("cgrpname").value.trim();
+  if(!name||name.length<3){$("cgrpst").className="st er";$("cgrpst").textContent="❌ اسم قصير (3 أحرف على الأقل)";return;}
+  $("btncgrpdo").disabled=true;$("cgrpst").className="st";$("cgrpst").textContent="⚙️ جارٍ الإنشاء...";
+  let avUrl=null;
+  if(window._cgrpAv){const cm=await compress(window._cgrpAv,400,.85);const{ok,url}=await sbUp("avatars",`grp_${Date.now()}.jpg`,cm);if(ok)avUrl=url;}
+  const invite=genInvite();
+  const{ok,row,err}=await sbInsR("groups",{name,avatar_url:avUrl,owner_code_hash:myHash,invite_code:invite,invite_enabled:true,direct_add_enabled:true});
+  if(!ok){$("cgrpst").className="st er";$("cgrpst").textContent="❌ فشل الإنشاء";$("btncgrpdo").disabled=false;return;}
+  // رتبة افتراضية للأعضاء
+  const{row:defRole}=await sbInsR("group_roles",{group_id:row.id,name:"عضو",color:"#94a3b8",position:0,is_default:true});
+  // رتبة المالك (كل الصلاحيات)
+  const{row:ownerRole}=await sbInsR("group_roles",{group_id:row.id,name:"مالك",color:"#f472b6",position:100,can_manage_members:true,can_manage_roles:true,can_manage_group:true,can_delete_messages:true,can_free_add:true});
+  await sbIns("group_members",{group_id:row.id,code_hash:myHash,role_id:ownerRole?.id||null});
+  $("btncgrpdo").disabled=false;
+  $("cgrpm").classList.remove("on");
+  await loadMyGroups();
+  openGroupChat(row.id,null);
+};
+
+// ---- فتح محادثة المجموعة ----
+async function openGroupChat(gid,el){
+  document.querySelectorAll(".chi,.grpchi").forEach(e=>e.classList.remove("ac"));
+  el?.classList.add("ac");
+  activeCh={type:"group",id:gid};
+  replyTo=null;$("rplybar").classList.remove("on");
+  closeSB();
+  renderGroupList();
+  await loadGroupCh();
+}
+window.openGroupChat=openGroupChat;
+
+async function ensureGroupKey(gid){
+  if(!dmk2["g_"+gid])dmk2["g_"+gid]=await dkf(RP+"group_"+gid,"group_"+gid);
+  return dmk2["g_"+gid];
+}
+
+async function myGroupRole(gid){
+  let mem=myMemberships[gid];
+  if(!mem)mem=await sbOne("group_members",{group_id:gid,code_hash:myHash});
+  if(!mem)return null;
+  const role=mem.role_id?await sbOne("group_roles",{id:mem.role_id}):null;
+  return role;
+}
+
+function loadGroupCh(){
+  if(activeRef){off(activeRef);activeRef=null;}
+  loaded.clear();
+  const area=$("msgs");
+  const g=myGroups.find(x=>x.id===activeCh.id);
+  area.innerHTML='<div class="sysmsg">👥 محادثة جماعية • غير مشفّرة بنفس مفتاح خاص</div>';
+  $("hdrn").textContent=g?.name||"مجموعة";
+  $("hdrs").textContent="مجموعة • اضغط للتفاصيل";
+  $("msgi").placeholder=`رسالة في ${g?.name||"..."}`;
+  $("hdri").style.cursor="pointer";
+  $("hdri").onclick=()=>openGroupInfo(activeCh.id);
+  const dbRef=ref(db,`groups/${activeCh.id}/messages`);
+  activeRef=dbRef;
+  onValue(dbRef,async snap=>{
+    const d=snap.val();if(!d)return;
+    const key=await ensureGroupKey(activeCh.id);
+    for(const[id,msg]of Object.entries(d)){
+      if(loaded.has(id)){updReacts(id,msg.reactions||{});continue;}
+      loaded.add(id);
+      let text=msg.text||"";
+      if(msg.type!=="image"&&msg.ciphertext)text=await dec(key,msg.ciphertext);
+      appendBbl({...msg,id,text},msg.senderId===myId,`groups/${activeCh.id}/messages`);
+    }
+  });
+}
+
+async function sendGroupMsg(text){
+  const key=await ensureGroupKey(activeCh.id);
+  const ct=await enc(key,text);
+  const msg={senderId:myId,senderName:myName,publicId:myPid,avatarUrl:myAv||null,ts:Date.now(),ciphertext:ct,reactions:{}};
+  if(replyTo)msg.replyTo={id:replyTo.id,senderName:replyTo.senderName,text:replyTo.text};
+  replyTo=null;$("rplybar").classList.remove("on");
+  push(ref(db,`groups/${activeCh.id}/messages`),msg);
+}
+
+// ---- تفاصيل/إعدادات المجموعة ----
+async function openGroupInfo(gid){
+  const g=await sbOne("groups",{id:gid});
+  if(!g)return;
+  activeGroup=g;
+  const myRole=await myGroupRole(gid);
+  const canManageGroup=!!myRole?.can_manage_group||g.owner_code_hash===myHash;
+  const canManageRoles=!!myRole?.can_manage_roles||g.owner_code_hash===myHash;
+  const canManageMembers=!!myRole?.can_manage_members||g.owner_code_hash===myHash;
+
+  $("grpmav").innerHTML=g.avatar_url?`<img src="${g.avatar_url}">`:(g.name||"?")[0].toUpperCase();
+  $("grpmname").textContent=g.name;
+  $("grpmsub").textContent=`مالك: ${g.owner_code_hash===myHash?"أنت":"—"}`;
+  $("grpinvcode").textContent=g.invite_code?`slm.chat/join/${g.invite_code}`:"—";
+  $("tgInvite").className="toggle"+(g.invite_enabled?" on":"");
+  $("tgDirectAdd").className="toggle"+(g.direct_add_enabled?" on":"");
+  $("tgInvite").onclick=canManageGroup?async()=>{const v=!g.invite_enabled;g.invite_enabled=v;$("tgInvite").className="toggle"+(v?" on":"");await sbUpd("groups",{id:gid},{invite_enabled:v});}:null;
+  $("tgDirectAdd").onclick=canManageGroup?async()=>{const v=!g.direct_add_enabled;g.direct_add_enabled=v;$("tgDirectAdd").className="toggle"+(v?" on":"");await sbUpd("groups",{id:gid},{direct_add_enabled:v});}:null;
+
+  $("tabreq").style.display=canManageMembers?"block":"none";
+
+  // Tabs
+  document.querySelectorAll(".gtab").forEach(t=>{
+    t.onclick=()=>switchGroupTab(t.dataset.tab);
+    t.classList.toggle("ac",t.dataset.tab==="info");
+  });
+  switchGroupTab("info");
+
+  $("btnleavegrp").onclick=async()=>{
+    if(g.owner_code_hash===myHash){alert("لا يمكنك مغادرة مجموعة أنت مالكها. احذفها أو انقل الملكية أولاً.");return;}
+    if(!confirm("مغادرة المجموعة؟"))return;
+    await sbDel("group_members",{group_id:gid,code_hash:myHash});
+    $("grpm").classList.remove("on");
+    activeCh={type:"none",id:""};
+    await loadMyGroups();loadCh();
+  };
+
+  await renderGroupMembers(gid,canManageMembers);
+  await renderGroupRoles(gid,canManageRoles);
+  if(canManageMembers)await renderGroupRequests(gid);
+
+  $("grpm").classList.add("on");
+}
+window.openGroupInfo=openGroupInfo;
+
+function switchGroupTab(tab){
+  activeGroupTab=tab;
+  document.querySelectorAll(".gtab").forEach(t=>t.classList.toggle("ac",t.dataset.tab===tab));
+  ["info","members","roles","requests"].forEach(t=>{$("gtab-"+t).style.display=t===tab?"block":"none";});
+}
+
+async function renderGroupMembers(gid,canManage){
+  const mems=await sbGet("group_members",{group_id:gid});
+  const list=$("memberslist");
+  list.innerHTML="";
+  for(const m of (mems||[])){
+    const u=await sbOne("users",{code_hash:m.code_hash});
+    const role=m.role_id?await sbOne("group_roles",{id:m.role_id}):null;
+    const row=document.createElement("div");
+    row.className="memrow";
+    const av=mkAv(u?.username||"?",m.code_hash,32,u?.avatar_url);
+    const inf=document.createElement("div");
+    inf.className="meminf";
+    inf.innerHTML=`<div class="memnm">${u?.username||"..."}${activeGroup.owner_code_hash===m.code_hash?" 👑":""}</div><div class="memrl" style="color:${role?.color||"var(--tx3)"}">${role?.name||"بلا رتبة"}</div>`;
+    row.appendChild(av);row.appendChild(inf);
+    if(canManage&&m.code_hash!==myHash&&activeGroup.owner_code_hash!==m.code_hash){
+      const kick=document.createElement("button");
+      kick.className="memkick";kick.textContent="🗑️";
+      kick.onclick=async()=>{if(!confirm(`طرد ${u?.username}؟`))return;await sbDel("group_members",{group_id:gid,code_hash:m.code_hash});renderGroupMembers(gid,canManage);};
+      row.appendChild(kick);
+    }
+    list.appendChild(row);
+  }
+}
+
+async function renderGroupRoles(gid,canManage){
+  const roles=await sbGet("group_roles",{group_id:gid});
+  const list=$("roleslist");
+  list.innerHTML="";
+  (roles||[]).sort((a,b)=>b.position-a.position).forEach(r=>{
+    const row=document.createElement("div");
+    row.className="memrow";
+    row.style.cursor=canManage?"pointer":"default";
+    row.innerHTML=`<span class="rolechip" style="background:${r.color}22;color:${r.color};border:1px solid ${r.color}55"><span class="roledot" style="background:${r.color}"></span>${r.name}</span>`;
+    if(canManage)row.onclick=()=>openRoleEditor(r);
+    list.appendChild(row);
+  });
+}
+
+async function renderGroupRequests(gid){
+  const reqs=await sbGet("group_join_requests",{group_id:gid,status:"pending"});
+  const list=$("requestslist");
+  list.innerHTML="";
+  if(!reqs||!reqs.length){list.innerHTML='<div style="padding:10px;font-size:12px;color:var(--tx3);text-align:center">لا توجد طلبات معلّقة</div>';return;}
+  for(const rq of reqs){
+    const u=await sbOne("users",{code_hash:rq.code_hash});
+    const row=document.createElement("div");
+    row.className="reqrow";
+    const av=mkAv(u?.username||"?",rq.code_hash,30,u?.avatar_url);
+    const inf=document.createElement("div");inf.style.flex="1";inf.innerHTML=`<div style="font-size:13px;font-weight:700">${u?.username||"..."}</div>`;
+    const btns=document.createElement("div");btns.className="reqbtns";
+    const ok=document.createElement("button");ok.className="reqbtn reqok";ok.textContent="قبول";
+    ok.onclick=async()=>{
+      const defRole=await sbOne("group_roles",{group_id:gid,is_default:true});
+      await sbIns("group_members",{group_id:gid,code_hash:rq.code_hash,role_id:defRole?.id||null,invited_by:rq.requested_by});
+      await sbUpd("group_join_requests",{id:rq.id},{status:"approved"});
+      renderGroupRequests(gid);renderGroupMembers(gid,true);
+    };
+    const no=document.createElement("button");no.className="reqbtn reqno";no.textContent="رفض";
+    no.onclick=async()=>{await sbUpd("group_join_requests",{id:rq.id},{status:"rejected"});renderGroupRequests(gid);};
+    btns.appendChild(ok);btns.appendChild(no);
+    row.appendChild(av);row.appendChild(inf);row.appendChild(btns);
+    list.appendChild(row);
+  }
+}
+
+// ---- محرر الرتب ----
+function openRoleEditor(role){
+  editingRoleId=role?.id||null;
+  $("roleedittitle").textContent=role?"تعديل الرتبة":"رتبة جديدة";
+  $("roleName").value=role?.name||"";
+  $("rolest").textContent="";
+  const perms={permManageMembers:role?.can_manage_members,permManageRoles:role?.can_manage_roles,permManageGroup:role?.can_manage_group,permDeleteMsgs:role?.can_delete_messages,permFreeAdd:role?.can_free_add};
+  Object.entries(perms).forEach(([id,v])=>{$(id).className="toggle"+(v?" on":"");$(id).onclick=()=>$(id).classList.toggle("on");});
+  const colorsWrap=$("rolecolors");
+  colorsWrap.innerHTML="";
+  const selColor=role?.color||ROLE_COLORS[1];
+  window._selRoleColor=selColor;
+  ROLE_COLORS.forEach(c=>{
+    const dot=document.createElement("div");
+    dot.style.cssText=`width:26px;height:26px;border-radius:50%;background:${c};cursor:pointer;border:2.5px solid ${c===selColor?"#fff":"transparent"}`;
+    dot.onclick=()=>{window._selRoleColor=c;colorsWrap.querySelectorAll("div").forEach(d=>d.style.borderColor="transparent");dot.style.borderColor="#fff";};
+    colorsWrap.appendChild(dot);
+  });
+  $("btnroledel").style.display=role&&!role.is_default?"block":"none";
+  $("btnroledel").onclick=async()=>{
+    if(!confirm("حذف هذه الرتبة؟"))return;
+    await sbDel("group_roles",{id:role.id});
+    $("rolem").classList.remove("on");
+    renderGroupRoles(activeGroup.id,true);
+  };
+  $("btnrolesave").onclick=async()=>{
+    const name=$("roleName").value.trim();
+    if(!name){$("rolest").className="st er";$("rolest").textContent="❌ أدخل اسم الرتبة";return;}
+    const obj={
+      name,color:window._selRoleColor,
+      can_manage_members:$("permManageMembers").classList.contains("on"),
+      can_manage_roles:$("permManageRoles").classList.contains("on"),
+      can_manage_group:$("permManageGroup").classList.contains("on"),
+      can_delete_messages:$("permDeleteMsgs").classList.contains("on"),
+      can_free_add:$("permFreeAdd").classList.contains("on"),
+    };
+    if(editingRoleId){
+      await sbUpd("group_roles",{id:editingRoleId},obj);
+    }else{
+      const roles=await sbGet("group_roles",{group_id:activeGroup.id});
+      obj.group_id=activeGroup.id;
+      obj.position=(roles||[]).length;
+      await sbIns("group_roles",obj);
+    }
+    $("rolem").classList.remove("on");
+    renderGroupRoles(activeGroup.id,true);
+  };
+  $("rolem").classList.add("on");
+}
+window.openRoleEditor=openRoleEditor;
+
+// ---- الانضمام عبر رابط دعوة ----
+async function checkPendingInvite(){
+  const hash=location.hash;
+  const m=hash.match(/#join=([A-Za-z0-9]+)/);
+  if(!m)return;
+  const code=m[1];
+  const g=await sbOne("groups",{invite_code:code});
+  if(!g){alert("رابط الدعوة غير صالح");return;}
+  window._pendingInvite=g;
+  $("joingname").textContent=g.name;
+  $("joingsub").textContent=g.invite_enabled?"ادعوتك للانضمام لهذه المجموعة":"❌ الدعوات معطّلة حالياً في هذه المجموعة";
+  $("btnjoindo").style.display=g.invite_enabled?"block":"none";
+  $("joingm").classList.add("on");
+}
+$("btnjoindo").onclick=async()=>{
+  const g=window._pendingInvite;if(!g)return;
+  const existing=await sbOne("group_members",{group_id:g.id,code_hash:myHash});
+  if(existing){$("joingm").classList.remove("on");history.replaceState(null,"",location.pathname);openGroupChat(g.id,null);return;}
+  const defRole=await sbOne("group_roles",{group_id:g.id,is_default:true});
+  await sbIns("group_members",{group_id:g.id,code_hash:myHash,role_id:defRole?.id||null});
+  $("joingm").classList.remove("on");
+  history.replaceState(null,"",location.pathname);
+  await loadMyGroups();
+  openGroupChat(g.id,null);
+};
+
+// ---- إضافة عضو مباشرة من البروفايل ----
+async function addUserToGroup(gid,targetHash){
+  const g=await sbOne("groups",{id:gid});
+  if(!g)return{ok:false,msg:"المجموعة غير موجودة"};
+  const already=await sbOne("group_members",{group_id:gid,code_hash:targetHash});
+  if(already)return{ok:false,msg:"العضو موجود بالفعل"};
+  const myRole=await myGroupRole(gid);
+  const canFreeAdd=g.owner_code_hash===myHash||!!myRole?.can_free_add;
+  const defRole=await sbOne("group_roles",{group_id:gid,is_default:true});
+  if(canFreeAdd){
+    await sbIns("group_members",{group_id:gid,code_hash:targetHash,role_id:defRole?.id||null,invited_by:myHash});
+    return{ok:true,msg:"✅ تمت الإضافة"};
+  }
+  if(!g.direct_add_enabled)return{ok:false,msg:"❌ الإضافة المباشرة معطّلة في هذه المجموعة"};
+  const{ok}=await sbIns("group_join_requests",{group_id:gid,code_hash:targetHash,requested_by:myHash});
+  return{ok,msg:ok?"⏳ أُرسل طلب انضمام لموافقة المسؤولين":"❌ فشل الطلب"};
+}
+window.addUserToGroup=addUserToGroup;
+
+async function openDM(uid,el){document.querySelectorAll(".chi,.grpchi").forEach(e=>e.classList.remove("ac"));el?.classList.add("ac");activeCh={type:"dm",id:uid};const dk=DMK(myId,uid);delete unread[dk];replyTo=null;$("rplybar").classList.remove("on");if(!dmk2[dk])dmk2[dk]=await dkf(RP+dk,dk);saveRecent(uid);renderRecent();renderOnline();loadCh();closeSB();}
+
+
 async function dkf(p,s){return dk(p,s);}
 
-function loadCh(){if(activeRef){off(activeRef);activeRef=null;}loaded.clear();const area=$("msgs");if(activeCh.type==="none"){area.innerHTML='<div class="empty"><div class="eico">💬</div><p>لا توجد محادثات بعد<br><span onclick="openSB()">ابحث لإضافة صديق</span></p></div>';$("hdrn").textContent="سلماني شات";$("hdrs").textContent="ابدأ محادثة جديدة";return;}area.innerHTML='<div class="sysmsg">🔐 رسائل مشفرة • تختفي بعد 48 ساعة</div>';const u=users[activeCh.id];$("hdrn").textContent=u?.name||"...";$("hdrs").textContent="رسالة خاصة • AES-256-GCM";$("msgi").placeholder=`رسالة لـ ${u?.name||"..."}`;$("hdri").style.cursor="pointer";$("hdri").onclick=()=>openProfile({id:activeCh.id,name:u?.name,publicId:u?.publicId,avatarUrl:u?.avatarUrl,online:u?.online});const dkey=DMK(myId,activeCh.id);const dbRef=ref(db,`dms/${dkey}/messages`);activeRef=dbRef;const cut=Date.now()-48*60*60*1000;onValue(dbRef,async snap=>{const d=snap.val();if(!d)return;for(const[id,msg]of Object.entries(d)){if(loaded.has(id)){updReacts(id,msg.reactions||{});updRead(id,msg.readBy||{});updBbl(id,msg);continue;}if(msg.ts<cut)continue;loaded.add(id);let text=msg.text||"";if(msg.type!=="image"&&msg.ciphertext){if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);text=await dec(dmk2[dkey],msg.ciphertext);}appendBbl({...msg,id,text},msg.senderId===myId,`dms/${dkey}/messages`);if(msg.senderId!==myId)markRead(id,`dms/${dkey}/messages`);}});}
+function loadCh(){if(activeCh.type==="group"){loadGroupCh();return;}if(activeRef){off(activeRef);activeRef=null;}loaded.clear();const area=$("msgs");if(activeCh.type==="none"){area.innerHTML='<div class="empty"><div class="eico">💬</div><p>لا توجد محادثات بعد<br><span onclick="openSB()">ابحث لإضافة صديق</span></p></div>';$("hdrn").textContent="سلماني شات";$("hdrs").textContent="ابدأ محادثة جديدة";$("hdri").style.cursor="default";$("hdri").onclick=null;return;}area.innerHTML='<div class="sysmsg">🔐 رسائل مشفرة • تختفي بعد 48 ساعة</div>';const u=users[activeCh.id];$("hdrn").textContent=u?.name||"...";$("hdrs").textContent="رسالة خاصة • AES-256-GCM";$("msgi").placeholder=`رسالة لـ ${u?.name||"..."}`;$("hdri").style.cursor="pointer";$("hdri").onclick=()=>openProfile({id:activeCh.id,name:u?.name,publicId:u?.publicId,avatarUrl:u?.avatarUrl,online:u?.online});const dkey=DMK(myId,activeCh.id);const dbRef=ref(db,`dms/${dkey}/messages`);activeRef=dbRef;const cut=Date.now()-48*60*60*1000;onValue(dbRef,async snap=>{const d=snap.val();if(!d)return;for(const[id,msg]of Object.entries(d)){if(loaded.has(id)){updReacts(id,msg.reactions||{});updRead(id,msg.readBy||{});updBbl(id,msg);continue;}if(msg.ts<cut)continue;loaded.add(id);let text=msg.text||"";if(msg.type!=="image"&&msg.ciphertext){if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);text=await dec(dmk2[dkey],msg.ciphertext);}appendBbl({...msg,id,text},msg.senderId===myId,`dms/${dkey}/messages`);if(msg.senderId!==myId)markRead(id,`dms/${dkey}/messages`);}});}
 
 async function markRead(id,path){await update(ref(db,`${path}/${id}/readBy`),{[myId]:true});}
 
-async function sendMsg(){const inp=$("msgi"),text=inp.value.trim();if(!text)return;inp.value="";inp.style.height="auto";if(activeCh.type==="none")return;const dkey=DMK(myId,activeCh.id);if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);const ct=await enc(dmk2[dkey],text);const msg={senderId:myId,senderName:myName,publicId:myPid,avatarUrl:myAv||null,ts:Date.now(),ciphertext:ct,reactions:{}};if(replyTo)msg.replyTo={id:replyTo.id,senderName:replyTo.senderName,text:replyTo.text};replyTo=null;$("rplybar").classList.remove("on");push(ref(db,`dms/${dkey}/messages`),msg);}
+async function sendMsg(){const inp=$("msgi"),text=inp.value.trim();if(!text)return;inp.value="";inp.style.height="auto";if(activeCh.type==="none")return;if(activeCh.type==="group"){await sendGroupMsg(text);return;}const dkey=DMK(myId,activeCh.id);if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);const ct=await enc(dmk2[dkey],text);const msg={senderId:myId,senderName:myName,publicId:myPid,avatarUrl:myAv||null,ts:Date.now(),ciphertext:ct,reactions:{}};if(replyTo)msg.replyTo={id:replyTo.id,senderName:replyTo.senderName,text:replyTo.text};replyTo=null;$("rplybar").classList.remove("on");push(ref(db,`dms/${dkey}/messages`),msg);}
 window.sendMsg=sendMsg;
 
 async function updBbl(id,msg){const tick=document.querySelector(`[data-tid="${id}"]`);if(!tick)return;const row=tick.closest(".mrow");if(!row)return;const bbl=row.querySelector(".bbl");if(!bbl)return;if(msg.deleted){if(!isDev){bbl.innerHTML='<span style="opacity:.5;font-style:italic;font-size:12px">🗑️ تم حذف هذه الرسالة</span>';bbl.style.background="var(--sf2)";bbl.style.border="1px solid var(--bd2)";}else{bbl.style.opacity="0.6";bbl.style.borderStyle="dashed";}}else if(msg.edited&&msg.ciphertext){const dkey=DMK(myId,activeCh.id);if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);const newText=await dec(dmk2[dkey],msg.ciphertext);const txEl=bbl.querySelector(".txtcnt");if(txEl)txEl.textContent=newText;if(!bbl.querySelector(".edittag")){const tag=document.createElement("div");tag.className="edittag";tag.style.cssText="font-size:9px;color:var(--tx3);font-family:monospace;margin-top:2px";tag.textContent="(معدّلة)";bbl.appendChild(tag);}}}
