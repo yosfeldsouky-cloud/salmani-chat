@@ -43,11 +43,11 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 #app.on{display:flex}
 .layout{display:flex;flex:1;overflow:hidden}
 #sb{width:280px;background:var(--sf);border-left:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;transition:transform .3s}
+#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:49;pointer-events:none}
+#ov.on{display:block;pointer-events:auto}
 @media(max-width:640px){
   #sb{position:fixed;top:0;right:0;bottom:0;z-index:50;width:84%;max-width:300px;transform:translateX(110%);box-shadow:-8px 0 40px rgba(0,0,0,.7)}
   #sb.op{transform:translateX(0)}
-  #ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:49}
-  #ov.on{display:block}
 }
 .sbhdr{padding:16px;border-bottom:1px solid var(--bd)}
 .lgrow{display:flex;align-items:center;gap:10px;margin-bottom:12px}
