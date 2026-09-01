@@ -646,6 +646,7 @@ async function sbGet(t,f={}){const q=Object.entries(f).map(([k,v])=>`${k}=eq.${e
 async function sbOne(t,f={}){const d=await sbGet(t,f);return Array.isArray(d)?d[0]||null:null;}
 async function sbIns(t,o){const r=await fetch(`${SU}/rest/v1/${t}`,{method:"POST",headers:{...SH,"Prefer":"return=minimal"},body:JSON.stringify(o)});return{ok:r.ok,err:r.ok?null:await r.text()};}
 async function sbInsR(t,o){const r=await fetch(`${SU}/rest/v1/${t}`,{method:"POST",headers:{...SH,"Prefer":"return=representation"},body:JSON.stringify(o)});const d=await r.json();return{ok:r.ok,row:r.ok?(Array.isArray(d)?d[0]:d):null,err:r.ok?null:d};}
+function newUUID(){return crypto.randomUUID();}
 async function sbUpd(t,f,o){const q=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join("&");await fetch(`${SU}/rest/v1/${t}?${q}`,{method:"PATCH",headers:{...SH,"Prefer":"return=minimal"},body:JSON.stringify(o)});}
 async function sbDel(t,f){const q=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join("&");await fetch(`${SU}/rest/v1/${t}?${q}`,{method:"DELETE",headers:SH});}
 async function sbUp(bkt,path,file){const r=await fetch(`${SU}/storage/v1/object/${bkt}/${path}`,{method:"PUT",headers:{"apikey":SK,"Authorization":`Bearer ${SK}`,"Content-Type":file.type,"x-upsert":"true"},body:file});return{ok:r.ok,url:`${SU}/storage/v1/object/public/${bkt}/${path}?t=${Date.now()}`};}
@@ -1091,17 +1092,20 @@ $("btncgrpdo").onclick=async()=>{
   let avUrl=null;
   if(window._cgrpAv){const cm=await compress(window._cgrpAv,400,.85);const{ok,url}=await sbUp("avatars",`grp_${Date.now()}.jpg`,cm);if(ok)avUrl=url;}
   const invite=genInvite();
-  const{ok,row,err}=await sbInsR("groups",{name,avatar_url:avUrl,owner_code_hash:myHash,invite_code:invite,invite_enabled:true,direct_add_enabled:true});
-  if(!ok){$("cgrpst").className="st er";$("cgrpst").textContent="❌ فشل الإنشاء";$("btncgrpdo").disabled=false;return;}
+  const groupId=newUUID();
+  const{ok,err}=await sbIns("groups",{id:groupId,name,avatar_url:avUrl,owner_code_hash:myHash,invite_code:invite,invite_enabled:true,direct_add_enabled:true});
+  if(!ok){$("cgrpst").className="st er";$("cgrpst").textContent="❌ فشل الإنشاء";$("btncgrpdo").disabled=false;console.error("Group creation failed:",err);return;}
   // رتبة افتراضية للأعضاء
-  const{row:defRole}=await sbInsR("group_roles",{group_id:row.id,name:"عضو",color:"#94a3b8",position:0,is_default:true});
+  const defRoleId=newUUID();
+  await sbIns("group_roles",{id:defRoleId,group_id:groupId,name:"عضو",color:"#94a3b8",position:0,is_default:true});
   // رتبة المالك (كل الصلاحيات)
-  const{row:ownerRole}=await sbInsR("group_roles",{group_id:row.id,name:"مالك",color:"#f472b6",position:100,can_manage_members:true,can_manage_roles:true,can_manage_group:true,can_delete_messages:true,can_free_add:true});
-  await sbIns("group_members",{group_id:row.id,code_hash:myHash,role_id:ownerRole?.id||null});
+  const ownerRoleId=newUUID();
+  await sbIns("group_roles",{id:ownerRoleId,group_id:groupId,name:"مالك",color:"#f472b6",position:100,can_manage_members:true,can_manage_roles:true,can_manage_group:true,can_delete_messages:true,can_free_add:true,can_manage_elections:true});
+  await sbIns("group_members",{group_id:groupId,code_hash:myHash,role_id:ownerRoleId});
   $("btncgrpdo").disabled=false;
   $("cgrpm").classList.remove("on");
   await loadMyGroups();
-  openGroupChat(row.id,null);
+  openGroupChat(groupId,null);
 };
 
 // ---- فتح محادثة المجموعة ----
@@ -1110,8 +1114,10 @@ let activeChannelId=null,groupChannelsCache={};
 async function ensureDefaultChannel(gid){
   let chans=await sbGet("group_channels",{group_id:gid});
   if(chans&&chans.length)return chans;
-  const{row}=await sbInsR("group_channels",{group_id:gid,name:"عام",position:0,is_default:true});
-  return row?[row]:[];
+  const newChan={id:newUUID(),group_id:gid,name:"عام",position:0,is_default:true};
+  const{ok}=await sbIns("group_channels",newChan);
+  if(!ok)return[];
+  return[newChan];
 }
 
 async function openGroupChat(gid,el){
@@ -1198,7 +1204,10 @@ function loadGroupCh(){
 }
 
 async function sendGroupMsg(text){
-  if(!activeChannelId)return;
+  if(!activeChannelId){
+    const em=document.createElement("div");em.className="sysmsg";em.textContent="❌ لا توجد غرفة نشطة. جرّب إعادة فتح المجموعة";$("msgs").appendChild(em);
+    return;
+  }
   const key=await ensureGroupKey(activeCh.id,activeChannelId);
   const ct=await enc(key,text);
   const msg={senderId:myId,senderName:myName,publicId:myPid,avatarUrl:myAv||null,ts:Date.now(),ciphertext:ct,reactions:{}};
@@ -1242,7 +1251,9 @@ window.createChannel=async()=>{
   const name=$("newChanName").value.trim();
   if(!name){$("chanCreateSt").className="st er";$("chanCreateSt").textContent="❌ أدخل اسم الغرفة";return;}
   const chans=await sbGet("group_channels",{group_id:activeGroup.id});
-  const{row}=await sbInsR("group_channels",{group_id:activeGroup.id,name,position:(chans||[]).length});
+  const newChan={id:newUUID(),group_id:activeGroup.id,name,position:(chans||[]).length};
+  const{ok}=await sbIns("group_channels",newChan);
+  if(!ok){$("chanCreateSt").className="st er";$("chanCreateSt").textContent="❌ فشل الإنشاء";return;}
   $("newChanName").value="";
   $("chanCreateSt").className="st ok";$("chanCreateSt").textContent="✅ تم إنشاء الغرفة";
   setTimeout(()=>$("chanCreateSt").textContent="",1500);
@@ -1251,12 +1262,10 @@ window.createChannel=async()=>{
   if(activeCh.type==="group"&&activeCh.id===activeGroup.id){
     const updatedChans=await sbGet("group_channels",{group_id:activeGroup.id});
     groupChannelsCache[activeGroup.id]=updatedChans;
-    if(row){
-      activeChannelId=row.id;
-      $("grpm").classList.remove("on");
-      renderChannelBar(activeGroup.id,updatedChans);
-      loadGroupCh();
-    }
+    activeChannelId=newChan.id;
+    $("grpm").classList.remove("on");
+    renderChannelBar(activeGroup.id,updatedChans);
+    loadGroupCh();
   }
 };
 
@@ -1558,17 +1567,19 @@ window.submitNewVote=async(type)=>{
   if(type==="election"){
     const posId=$("voteFormPos").value;
     const pos=await sbOne("group_positions",{id:posId});
-    const{row}=await sbInsR("group_votes",{group_id:activeGroup.id,type:"election",position_id:posId,question:`انتخابات منصب: ${pos?.name}`,status:"nomination",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId});
-    if(!row){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ فشل الإنشاء";return;}
+    const voteId=newUUID();
+    const{ok}=await sbIns("group_votes",{id:voteId,group_id:activeGroup.id,type:"election",position_id:posId,question:`انتخابات منصب: ${pos?.name}`,status:"nomination",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId});
+    if(!ok){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ فشل الإنشاء";return;}
   }else{
     const question=$("voteFormQuestion").value.trim();
     if(!question){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ أدخل سؤال الاستفتاء";return;}
     const optionInputs=[...document.querySelectorAll("#voteFormOptions input")].map(i=>i.value.trim()).filter(Boolean);
     if(optionInputs.length<2){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ أدخل خيارين على الأقل";return;}
-    const{row}=await sbInsR("group_votes",{group_id:activeGroup.id,type:"referendum",question,status:"voting",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId});
-    if(!row){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ فشل الإنشاء";return;}
+    const voteId=newUUID();
+    const{ok}=await sbIns("group_votes",{id:voteId,group_id:activeGroup.id,type:"referendum",question,status:"voting",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId});
+    if(!ok){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ فشل الإنشاء";return;}
     for(let i=0;i<optionInputs.length;i++){
-      await sbIns("group_vote_options",{vote_id:row.id,label:optionInputs[i],position:i});
+      await sbIns("group_vote_options",{vote_id:voteId,label:optionInputs[i],position:i});
     }
   }
   $("newVoteFormWrap").innerHTML="";
