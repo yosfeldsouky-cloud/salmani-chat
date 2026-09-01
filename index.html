@@ -267,6 +267,36 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 .chanrowico{width:30px;height:30px;border-radius:10px;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .chansel{flex:1}
 .chansel select{width:100%}
+
+/* ===== النظام البيروقراطي (مناصب/انتخابات/استفتاءات) ===== */
+.posrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.posrow:last-child{border:none}
+.posico{width:32px;height:32px;border-radius:10px;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.posinf{flex:1;min-width:0}
+.posnm{font-size:13px;font-weight:800}
+.posholder{font-size:10.5px;color:var(--tx3);font-family:monospace;margin-top:1px}
+.posholder.vacant{color:var(--ac3)}
+.votecard{background:var(--sf2);border:1px solid var(--bd2);border-radius:14px;padding:14px;margin-bottom:10px}
+.votehdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.voteq{font-size:14px;font-weight:800;flex:1}
+.votebadge{font-size:9.5px;font-weight:800;padding:3px 9px;border-radius:20px;font-family:monospace;flex-shrink:0}
+.votebadge.nom{background:#f59e0b22;color:#f59e0b}
+.votebadge.vot{background:#38bdf822;color:#38bdf8}
+.votebadge.cls{background:var(--bd2);color:var(--tx3)}
+.votesub{font-size:10.5px;color:var(--tx3);font-family:monospace;margin-bottom:10px}
+.candrow{display:flex;align-items:center;gap:9px;padding:7px 0}
+.candbar{flex:1;height:22px;background:var(--sf);border-radius:8px;overflow:hidden;position:relative}
+.candbarfill{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:8px;transition:width .4s}
+.candpct{position:absolute;inset:0;display:flex;align-items:center;padding:0 8px;font-size:10px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.candvotebtn{background:var(--ac);color:#fff;border:none;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0;font-family:'Lato',sans-serif}
+.candvotebtn:disabled{opacity:.4;cursor:default}
+.voteactions{display:flex;gap:8px;margin-top:10px}
+.voteactions button{flex:1;padding:8px;border-radius:10px;font-size:11.5px;font-weight:800;cursor:pointer;border:none;font-family:'Lato',sans-serif}
+.selfnombtn{background:var(--sf);border:1px solid var(--bd2)!important;color:var(--ac)}
+.closevotebtn{background:var(--sf);border:1px solid var(--bd2)!important;color:var(--ac3)}
+.newvoteform{background:var(--sf2);border:1px dashed var(--bd2);border-radius:14px;padding:14px;margin-bottom:12px}
+.optrow2{display:flex;gap:6px;margin-bottom:6px}
+.optrow2 input{flex:1}
 </style>
 </head>
 <body>
@@ -404,6 +434,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
     <div class="gtab" data-tab="channels">الغرف</div>
     <div class="gtab" data-tab="members">الأعضاء</div>
     <div class="gtab" data-tab="roles">الرتب</div>
+    <div class="gtab" data-tab="gov">الحوكمة</div>
     <div class="gtab" data-tab="requests" id="tabreq" style="display:none">الطلبات</div>
   </div>
   <div id="gtab-info">
@@ -443,6 +474,31 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
     <div id="roleslist"></div>
     <button class="addgrpbtn" style="margin:8px 0 0" onclick="openRoleEditor(null)">➕ رتبة جديدة</button>
   </div>
+  <div id="gtab-gov" style="display:none">
+    <div class="gtabbar" id="govsubtabs" style="margin-bottom:12px">
+      <div class="gtab ac" data-govtab="positions">المناصب</div>
+      <div class="gtab" data-govtab="votes">التصويتات</div>
+    </div>
+    <div id="gov-positions">
+      <div id="positionslist"></div>
+      <div id="addPosSec" style="display:none;margin-top:10px">
+        <input class="inp" id="newPosName" placeholder="اسم المنصب (مثال: رئيس)..." maxlength="30">
+        <select class="privsel" id="newPosRole" style="width:100%;margin-top:6px;padding:10px;text-align:center"></select>
+        <button class="addgrpbtn" style="margin-top:6px" onclick="createPosition()">➕ إنشاء منصب</button>
+        <div class="st" id="posCreateSt"></div>
+      </div>
+    </div>
+    <div id="gov-votes" style="display:none">
+      <div id="startVoteSec" style="display:none">
+        <button class="addgrpbtn" onclick="openNewVoteForm('election')">🗳️ بدء انتخاب لمنصب</button>
+        <button class="addgrpbtn" onclick="openNewVoteForm('referendum')">📊 بدء استفتاء</button>
+      </div>
+      <div id="newVoteFormWrap"></div>
+      <div id="votesactivelist"></div>
+      <div class="seclbl" style="padding-right:0;margin-top:14px">— تصويتات سابقة</div>
+      <div id="votesclosedlist"></div>
+    </div>
+  </div>
   <div id="gtab-requests" style="display:none">
     <div id="requestslist"></div>
   </div>
@@ -459,6 +515,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
     <div class="permrow"><button class="toggle" id="permManageGroup"></button><div class="permlbl">تعديل بيانات المجموعة</div></div>
     <div class="permrow"><button class="toggle" id="permDeleteMsgs"></button><div class="permlbl">حذف رسائل الآخرين</div></div>
     <div class="permrow"><button class="toggle" id="permFreeAdd"></button><div class="permlbl">إضافة أعضاء بدون موافقة</div></div>
+    <div class="permrow"><button class="toggle" id="permElections"></button><div class="permlbl">بدء انتخابات واستفتاءات</div></div>
   </div>
   <button class="btn" id="btnrolesave">حفظ 💾</button>
   <button class="btn btn-ol" id="btnroledel" style="display:none;color:var(--ac3)">حذف الرتبة 🗑️</button>
@@ -1185,14 +1242,340 @@ window.createChannel=async()=>{
   const name=$("newChanName").value.trim();
   if(!name){$("chanCreateSt").className="st er";$("chanCreateSt").textContent="❌ أدخل اسم الغرفة";return;}
   const chans=await sbGet("group_channels",{group_id:activeGroup.id});
-  await sbIns("group_channels",{group_id:activeGroup.id,name,position:(chans||[]).length});
+  const{row}=await sbInsR("group_channels",{group_id:activeGroup.id,name,position:(chans||[]).length});
   $("newChanName").value="";
   $("chanCreateSt").className="st ok";$("chanCreateSt").textContent="✅ تم إنشاء الغرفة";
   setTimeout(()=>$("chanCreateSt").textContent="",1500);
   renderChannelsTab(activeGroup.id,true);
+  // لو المجموعة دي هي المفتوحة حاليًا، حدّث شريط الغرف فورًا وادخل الغرفة الجديدة
+  if(activeCh.type==="group"&&activeCh.id===activeGroup.id){
+    const updatedChans=await sbGet("group_channels",{group_id:activeGroup.id});
+    groupChannelsCache[activeGroup.id]=updatedChans;
+    if(row){
+      activeChannelId=row.id;
+      $("grpm").classList.remove("on");
+      renderChannelBar(activeGroup.id,updatedChans);
+      loadGroupCh();
+    }
+  }
 };
 
-// ---- تفاصيل/إعدادات المجموعة ----
+// ============================================
+// النظام البيروقراطي: مناصب، انتخابات، استفتاءات
+// ============================================
+let activeGovTab="positions";
+
+async function myCanManageElections(gid){
+  const g=await sbOne("groups",{id:gid});
+  if(g?.owner_code_hash===myHash)return true;
+  const role=await myGroupRole(gid);
+  return !!role?.can_manage_elections;
+}
+
+// ---- تاب الحوكمة الرئيسي ----
+async function renderGovTab(gid){
+  document.querySelectorAll("#govsubtabs .gtab").forEach(t=>{
+    t.onclick=()=>switchGovSubtab(t.dataset.govtab);
+    t.classList.toggle("ac",t.dataset.govtab===activeGovTab);
+  });
+  switchGovSubtab(activeGovTab);
+}
+
+function switchGovSubtab(tab){
+  activeGovTab=tab;
+  document.querySelectorAll("#govsubtabs .gtab").forEach(t=>t.classList.toggle("ac",t.dataset.govtab===tab));
+  $("gov-positions").style.display=tab==="positions"?"block":"none";
+  $("gov-votes").style.display=tab==="votes"?"block":"none";
+  if(tab==="positions")renderPositionsList(activeGroup.id);
+  else renderVotesList(activeGroup.id);
+}
+
+// ---- المناصب ----
+async function renderPositionsList(gid){
+  const canManageGroup=activeGroup.owner_code_hash===myHash||!!(await myGroupRole(gid))?.can_manage_group;
+  $("addPosSec").style.display=canManageGroup?"block":"none";
+  if(canManageGroup){
+    const roles=await sbGet("group_roles",{group_id:gid});
+    $("newPosRole").innerHTML=`<option value="">بدون ربط برتبة</option>`+(roles||[]).map(r=>`<option value="${r.id}">${r.name}</option>`).join("");
+  }
+  const positions=await sbGet("group_positions",{group_id:gid});
+  const list=$("positionslist");
+  list.innerHTML="";
+  if(!positions||!positions.length){list.innerHTML='<div style="padding:10px 4px;font-size:12px;color:var(--tx3);text-align:center">لا توجد مناصب بعد</div>';return;}
+  for(const p of positions){
+    const holder=p.holder_code_hash?await sbOne("users",{code_hash:p.holder_code_hash}):null;
+    const row=document.createElement("div");
+    row.className="posrow";
+    const ico=document.createElement("div");ico.className="posico";ico.textContent="🏛️";
+    const inf=document.createElement("div");inf.className="posinf";
+    inf.innerHTML=`<div class="posnm">${p.name}</div><div class="posholder ${holder?"":"vacant"}">${holder?"👤 "+holder.username:"⚪ شاغر"}</div>`;
+    row.appendChild(ico);row.appendChild(inf);
+    if(canManageGroup){
+      const del=document.createElement("button");
+      del.className="memkick";del.textContent="🗑️";
+      del.onclick=async()=>{if(!confirm(`حذف منصب "${p.name}"؟`))return;await sbDel("group_positions",{id:p.id});renderPositionsList(gid);};
+      row.appendChild(del);
+    }
+    list.appendChild(row);
+  }
+}
+
+window.createPosition=async()=>{
+  const name=$("newPosName").value.trim();
+  if(!name){$("posCreateSt").className="st er";$("posCreateSt").textContent="❌ أدخل اسم المنصب";return;}
+  const roleId=$("newPosRole").value||null;
+  await sbIns("group_positions",{group_id:activeGroup.id,name,linked_role_id:roleId});
+  $("newPosName").value="";
+  $("posCreateSt").className="st ok";$("posCreateSt").textContent="✅ تم إنشاء المنصب";
+  setTimeout(()=>$("posCreateSt").textContent="",1500);
+  renderPositionsList(activeGroup.id);
+};
+
+// ---- التصويتات: عرض القائمة ----
+async function renderVotesList(gid){
+  const canStart=await myCanManageElections(gid);
+  $("startVoteSec").style.display=canStart?"block":"none";
+  const votes=(await sbGet("group_votes",{group_id:gid}))||[];
+  // إقفال تلقائي لو انتهى الوقت
+  const now=Date.now();
+  for(const v of votes){
+    if(v.status!=="closed"&&v.ends_at&&new Date(v.ends_at).getTime()<now){
+      await closeVoteInternal(v);
+      v.status="closed";
+    }
+  }
+  const active=votes.filter(v=>v.status!=="closed").sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  const closed=votes.filter(v=>v.status==="closed").sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+
+  const activeList=$("votesactivelist");
+  activeList.innerHTML="";
+  if(!active.length)activeList.innerHTML='<div style="padding:6px 4px;font-size:12px;color:var(--tx3);text-align:center">لا توجد تصويتات جارية</div>';
+  for(const v of active)activeList.appendChild(await renderVoteCard(v,canStart));
+
+  const closedList=$("votesclosedlist");
+  closedList.innerHTML="";
+  if(!closed.length)closedList.innerHTML='<div style="padding:6px 4px;font-size:11px;color:var(--tx3);text-align:center">لا يوجد سجل بعد</div>';
+  for(const v of closed.slice(0,10))closedList.appendChild(await renderVoteCard(v,canStart));
+}
+
+async function closeVoteInternal(v){
+  await sbUpd("group_votes",{id:v.id},{status:"closed",closed_at:new Date().toISOString()});
+  if(v.type==="election"&&v.position_id){
+    const winner=await computeWinner(v);
+    if(winner){
+      await sbUpd("group_positions",{id:v.position_id},{holder_code_hash:winner});
+      const pos=await sbOne("group_positions",{id:v.position_id});
+      if(pos?.linked_role_id){
+        await sbUpd("group_members",{group_id:v.group_id,code_hash:winner},{role_id:pos.linked_role_id});
+      }
+    }
+  }
+}
+
+async function computeWinner(v){
+  const ballots=(await sbGet("group_vote_ballots",{vote_id:v.id}))||[];
+  if(!ballots.length)return null;
+  const counts={};
+  ballots.forEach(b=>{const key=v.type==="election"?b.candidate_code_hash:b.option_id;if(key)counts[key]=(counts[key]||0)+1;});
+  let top=null,topCount=-1;
+  Object.entries(counts).forEach(([k,c])=>{if(c>topCount){top=k;topCount=c;}});
+  return top;
+}
+
+// ---- بطاقة تصويت واحدة (تُستخدم للجاري والمغلق) ----
+async function renderVoteCard(v,canManage){
+  const card=document.createElement("div");
+  card.className="votecard";
+  const statusLabel=v.status==="nomination"?"🗳️ ترشح":v.status==="voting"?"📊 تصويت":"✅ مغلق";
+  const statusClass=v.status==="nomination"?"nom":v.status==="voting"?"vot":"cls";
+  const endsTxt=v.ends_at?new Date(v.ends_at).toLocaleString("ar-EG",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}):"يُقفل يدويًا";
+
+  // فحص الأهلية: هل أنا من ضمن مين يقدر يصوّت/يترشح على هذا التصويت؟
+  let eligible=true,eligRoleName=null;
+  if(v.eligible_role_id){
+    const eligRole=await sbOne("group_roles",{id:v.eligible_role_id});
+    eligRoleName=eligRole?.name||"محدودة";
+    const myMem=await sbOne("group_members",{group_id:v.group_id,code_hash:myHash});
+    eligible=myMem?.role_id===v.eligible_role_id;
+  }
+
+  card.innerHTML=`<div class="votehdr"><div class="voteq">${v.type==="election"?"🏛️ ":"📊 "}${v.question}</div><span class="votebadge ${statusClass}">${statusLabel}</span></div><div class="votesub">${v.status!=="closed"?"ينتهي: "+endsTxt:"انتهى"}${eligRoleName?" • 🔒 مقصور على رتبة: "+eligRoleName:""}</div>`;
+
+  const myBallot=await sbOne("group_vote_ballots",{vote_id:v.id,voter_code_hash:myHash});
+
+  if(v.type==="election"){
+    const candidates=(await sbGet("group_vote_candidates",{vote_id:v.id}))||[];
+    const ballots=(await sbGet("group_vote_ballots",{vote_id:v.id}))||[];
+    const totalVotes=ballots.length;
+    for(const c of candidates){
+      const u=await sbOne("users",{code_hash:c.code_hash});
+      const cnt=ballots.filter(b=>b.candidate_code_hash===c.code_hash).length;
+      const pct=totalVotes?Math.round(cnt/totalVotes*100):0;
+      const row=document.createElement("div");row.className="candrow";
+      const nameSpan=document.createElement("div");nameSpan.style.cssText="font-size:11.5px;font-weight:700;width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0";nameSpan.textContent=u?.username||"...";
+      row.appendChild(nameSpan);
+      if(v.status==="voting"||v.status==="closed"){
+        const bar=document.createElement("div");bar.className="candbar";
+        bar.innerHTML=`<div class="candbarfill" style="width:${pct}%"></div><div class="candpct">${cnt} صوت (${pct}%)</div>`;
+        row.appendChild(bar);
+        if(v.status==="voting"){
+          const vbtn=document.createElement("button");vbtn.className="candvotebtn";
+          vbtn.textContent=myBallot?.candidate_code_hash===c.code_hash?"✓":(eligible?"صوّت":"🔒");
+          vbtn.disabled=!!myBallot||!eligible;
+          vbtn.onclick=async()=>{await castBallot(v.id,{candidate_code_hash:c.code_hash});renderVotesList(activeGroup.id);};
+          row.appendChild(vbtn);
+        }
+      }
+      card.appendChild(row);
+    }
+    if(v.status==="nomination"){
+      const iAmCandidate=candidates.some(c=>c.code_hash===myHash);
+      const actions=document.createElement("div");actions.className="voteactions";
+      if(!iAmCandidate&&eligible){
+        const nomBtn=document.createElement("button");nomBtn.className="selfnombtn";nomBtn.textContent="✋ رشّح نفسك";
+        nomBtn.onclick=async()=>{await submitNomination(v.id);renderVotesList(activeGroup.id);};
+        actions.appendChild(nomBtn);
+      }else if(!iAmCandidate&&!eligible){
+        const lockNote=document.createElement("div");lockNote.style.cssText="font-size:11px;color:var(--tx3);padding:6px 0";lockNote.textContent="🔒 الترشح مقصور على رتبة: "+eligRoleName;
+        actions.appendChild(lockNote);
+      }
+      if(canManage){
+        const startBtn=document.createElement("button");startBtn.className="closevotebtn";startBtn.textContent="▶️ بدء التصويت";
+        startBtn.onclick=async()=>{await sbUpd("group_votes",{id:v.id},{status:"voting"});renderVotesList(activeGroup.id);};
+        actions.appendChild(startBtn);
+      }
+      card.appendChild(actions);
+    }
+  }else{
+    // استفتاء
+    const options=(await sbGet("group_vote_options",{vote_id:v.id}))||[];
+    const ballots=(await sbGet("group_vote_ballots",{vote_id:v.id}))||[];
+    const totalVotes=ballots.length;
+    options.sort((a,b)=>a.position-b.position).forEach(o=>{
+      const cnt=ballots.filter(b=>b.option_id===o.id).length;
+      const pct=totalVotes?Math.round(cnt/totalVotes*100):0;
+      const row=document.createElement("div");row.className="candrow";
+      const nameSpan=document.createElement("div");nameSpan.style.cssText="font-size:11.5px;font-weight:700;width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0";nameSpan.textContent=o.label;
+      row.appendChild(nameSpan);
+      const bar=document.createElement("div");bar.className="candbar";
+      bar.innerHTML=`<div class="candbarfill" style="width:${pct}%"></div><div class="candpct">${cnt} صوت (${pct}%)</div>`;
+      row.appendChild(bar);
+      if(v.status==="voting"){
+        const vbtn=document.createElement("button");vbtn.className="candvotebtn";
+        vbtn.textContent=myBallot?.option_id===o.id?"✓":(eligible?"صوّت":"🔒");
+        vbtn.disabled=!!myBallot||!eligible;
+        vbtn.onclick=async()=>{await castBallot(v.id,{option_id:o.id});renderVotesList(activeGroup.id);};
+        row.appendChild(vbtn);
+      }
+      card.appendChild(row);
+    });
+  }
+
+  if(canManage&&v.status!=="closed"){
+    const closeBtn=document.createElement("button");
+    closeBtn.className="closevotebtn";closeBtn.style.cssText="width:100%;margin-top:8px;padding:7px";closeBtn.textContent="⏹️ إقفال الآن";
+    closeBtn.onclick=async()=>{if(!confirm("إقفال هذا التصويت الآن؟"))return;await closeVoteInternal(v);renderVotesList(activeGroup.id);};
+    card.appendChild(closeBtn);
+  }
+  return card;
+}
+
+async function castBallot(voteId,payload){
+  const v=await sbOne("group_votes",{id:voteId});
+  if(!v||v.status!=="voting")return;
+  if(v.eligible_role_id){
+    const myMem=await sbOne("group_members",{group_id:v.group_id,code_hash:myHash});
+    if(myMem?.role_id!==v.eligible_role_id){alert("🔒 التصويت مقصور على رتبة معينة، أنت غير مؤهل للتصويت هنا");return;}
+  }
+  const{ok}=await sbIns("group_vote_ballots",{vote_id:voteId,voter_code_hash:myHash,...payload});
+  if(!ok)alert("تعذر تسجيل صوتك (ربما صوّتت مسبقًا)");
+}
+
+async function submitNomination(voteId){
+  const v=await sbOne("group_votes",{id:voteId});
+  if(!v||v.status!=="nomination")return;
+  if(v.eligible_role_id){
+    const myMem=await sbOne("group_members",{group_id:v.group_id,code_hash:myHash});
+    if(myMem?.role_id!==v.eligible_role_id){alert("🔒 الترشح مقصور على رتبة معينة، أنت غير مؤهل للترشح هنا");return;}
+  }
+  const{ok}=await sbIns("group_vote_candidates",{vote_id:voteId,code_hash:myHash});
+  if(!ok)alert("تعذر الترشح (ربما رشّحت نفسك مسبقًا)");
+}
+
+// ---- نموذج بدء تصويت جديد ----
+window.openNewVoteForm=async(type)=>{
+  const wrap=$("newVoteFormWrap");
+  const roles=(await sbGet("group_roles",{group_id:activeGroup.id}))||[];
+  const eligOptions=`<option value="">🌍 كل الأعضاء</option>`+roles.map(r=>`<option value="${r.id}">🔒 فقط رتبة: ${r.name}</option>`).join("");
+  if(type==="election"){
+    const positions=(await sbGet("group_positions",{group_id:activeGroup.id}))||[];
+    if(!positions.length){wrap.innerHTML='<div class="newvoteform" style="text-align:center;color:var(--tx3);font-size:12px">أنشئ منصبًا أولاً من تاب "المناصب"</div>';return;}
+    wrap.innerHTML=`
+      <div class="newvoteform">
+        <select class="privsel" id="voteFormPos" style="width:100%;padding:10px;margin-bottom:8px">${positions.map(p=>`<option value="${p.id}">${p.name}</option>`).join("")}</select>
+        <select class="privsel" id="voteFormElig" style="width:100%;padding:10px;margin-bottom:8px">${eligOptions}</select>
+        <div class="votesub" style="margin:0 0 8px">👆 يحدد مين يقدر يترشح ويصوّت في هذا الانتخاب</div>
+        <input class="inp" id="voteFormDuration" type="number" placeholder="مدة التصويت بالساعات (اتركه فارغًا للإقفال اليدوي)">
+        <div class="voteactions" style="margin-top:8px">
+          <button class="selfnombtn" onclick="submitNewVote('election')">🗳️ بدء الترشح</button>
+          <button class="closevotebtn" onclick="$('newVoteFormWrap').innerHTML=''">إلغاء</button>
+        </div>
+        <div class="st" id="voteFormSt"></div>
+      </div>`;
+  }else{
+    wrap.innerHTML=`
+      <div class="newvoteform">
+        <input class="inp" id="voteFormQuestion" placeholder="سؤال الاستفتاء..." maxlength="100">
+        <div id="voteFormOptions">
+          <div class="optrow2"><input class="inp" placeholder="خيار 1"><input class="inp" placeholder="خيار 2"></div>
+        </div>
+        <button class="addgrpbtn" style="margin:6px 0" onclick="addVoteOptionRow()">➕ خيار إضافي</button>
+        <select class="privsel" id="voteFormElig" style="width:100%;padding:10px;margin:8px 0">${eligOptions}</select>
+        <div class="votesub" style="margin:0 0 8px">👆 يحدد مين يقدر يصوّت (اختر رتبة لتحويلها لـ"مجلس" مصوّت)</div>
+        <input class="inp" id="voteFormDuration" type="number" placeholder="مدة التصويت بالساعات (اتركه فارغًا للإقفال اليدوي)">
+        <div class="voteactions" style="margin-top:8px">
+          <button class="selfnombtn" onclick="submitNewVote('referendum')">📊 بدء الاستفتاء</button>
+          <button class="closevotebtn" onclick="$('newVoteFormWrap').innerHTML=''">إلغاء</button>
+        </div>
+        <div class="st" id="voteFormSt"></div>
+      </div>`;
+  }
+};
+
+window.addVoteOptionRow=()=>{
+  const wrap=$("voteFormOptions");
+  const row=document.createElement("div");row.className="optrow2";
+  row.innerHTML=`<input class="inp" placeholder="خيار إضافي">`;
+  wrap.appendChild(row);
+};
+
+window.submitNewVote=async(type)=>{
+  const hoursStr=$("voteFormDuration")?.value.trim();
+  const hours=hoursStr?parseFloat(hoursStr):null;
+  const endsAt=hours&&hours>0?new Date(Date.now()+hours*3600000).toISOString():null;
+  const eligRoleId=$("voteFormElig")?.value||null;
+
+  if(type==="election"){
+    const posId=$("voteFormPos").value;
+    const pos=await sbOne("group_positions",{id:posId});
+    const{row}=await sbInsR("group_votes",{group_id:activeGroup.id,type:"election",position_id:posId,question:`انتخابات منصب: ${pos?.name}`,status:"nomination",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId});
+    if(!row){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ فشل الإنشاء";return;}
+  }else{
+    const question=$("voteFormQuestion").value.trim();
+    if(!question){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ أدخل سؤال الاستفتاء";return;}
+    const optionInputs=[...document.querySelectorAll("#voteFormOptions input")].map(i=>i.value.trim()).filter(Boolean);
+    if(optionInputs.length<2){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ أدخل خيارين على الأقل";return;}
+    const{row}=await sbInsR("group_votes",{group_id:activeGroup.id,type:"referendum",question,status:"voting",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId});
+    if(!row){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ فشل الإنشاء";return;}
+    for(let i=0;i<optionInputs.length;i++){
+      await sbIns("group_vote_options",{vote_id:row.id,label:optionInputs[i],position:i});
+    }
+  }
+  $("newVoteFormWrap").innerHTML="";
+  renderVotesList(activeGroup.id);
+};
+
+
 async function openGroupInfo(gid,startTab){
   const g=await sbOne("groups",{id:gid});
   if(!g)return;
@@ -1245,7 +1628,7 @@ async function openGroupInfo(gid,startTab){
   }
 
   // Tabs
-  document.querySelectorAll(".gtab").forEach(t=>{
+  document.querySelectorAll("#grptabs > .gtab").forEach(t=>{
     t.onclick=()=>switchGroupTab(t.dataset.tab);
     t.classList.toggle("ac",t.dataset.tab===(startTab||"info"));
   });
@@ -1320,8 +1703,9 @@ window.grpMemberSearch=q=>{
 
 function switchGroupTab(tab){
   activeGroupTab=tab;
-  document.querySelectorAll(".gtab").forEach(t=>t.classList.toggle("ac",t.dataset.tab===tab));
-  ["info","channels","members","roles","requests"].forEach(t=>{$("gtab-"+t).style.display=t===tab?"block":"none";});
+  document.querySelectorAll("#grptabs > .gtab").forEach(t=>t.classList.toggle("ac",t.dataset.tab===tab));
+  ["info","channels","members","roles","gov","requests"].forEach(t=>{$("gtab-"+t).style.display=t===tab?"block":"none";});
+  if(tab==="gov")renderGovTab(activeGroup.id);
 }
 
 async function renderGroupMembers(gid,canManage){
@@ -1417,7 +1801,7 @@ function openRoleEditor(role){
   $("roleedittitle").textContent=role?"تعديل الرتبة":"رتبة جديدة";
   $("roleName").value=role?.name||"";
   $("rolest").textContent="";
-  const perms={permManageMembers:role?.can_manage_members,permManageRoles:role?.can_manage_roles,permManageGroup:role?.can_manage_group,permDeleteMsgs:role?.can_delete_messages,permFreeAdd:role?.can_free_add};
+  const perms={permManageMembers:role?.can_manage_members,permManageRoles:role?.can_manage_roles,permManageGroup:role?.can_manage_group,permDeleteMsgs:role?.can_delete_messages,permFreeAdd:role?.can_free_add,permElections:role?.can_manage_elections};
   Object.entries(perms).forEach(([id,v])=>{$(id).className="toggle"+(v?" on":"");$(id).onclick=()=>$(id).classList.toggle("on");});
   const colorsWrap=$("rolecolors");
   colorsWrap.innerHTML="";
@@ -1446,6 +1830,7 @@ function openRoleEditor(role){
       can_manage_group:$("permManageGroup").classList.contains("on"),
       can_delete_messages:$("permDeleteMsgs").classList.contains("on"),
       can_free_add:$("permFreeAdd").classList.contains("on"),
+      can_manage_elections:$("permElections").classList.contains("on"),
     };
     if(editingRoleId){
       await sbUpd("group_roles",{id:editingRoleId},obj);
