@@ -313,6 +313,23 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 .mutebadge{font-size:9.5px;color:var(--ac3);font-family:monospace;font-weight:800}
 .memactrow{display:flex;gap:5px;align-items:center}
 .msgactpin{background:none;border:none;color:var(--tx3);font-size:13px;cursor:pointer;padding:2px 4px}
+
+/* ===== البرلمان والأحزاب ===== */
+.partyrow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--bd)}
+.partyrow:last-child{border:none}
+.partyico{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.partyinf{flex:1;min-width:0}
+.partynm{font-size:13.5px;font-weight:800}
+.partymeta{font-size:10.5px;color:var(--tx3);font-family:monospace;margin-top:1px}
+.partyjoinbtn{background:var(--sf2);border:1.5px solid var(--bd2)!important;color:var(--ac);padding:6px 13px;border-radius:10px;font-size:11.5px;font-weight:800;cursor:pointer;font-family:'Lato',sans-serif;flex-shrink:0}
+.partyjoinbtn.mine{color:var(--on);border-color:var(--on)!important}
+.parliamentwrap{padding:16px 8px 6px;text-align:center}
+.semicircle{position:relative;width:100%;max-width:320px;height:160px;margin:0 auto 12px;overflow:hidden}
+.seatdot{position:absolute;width:9px;height:9px;border-radius:50%;transform:translate(-50%,-50%)}
+.partylegend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px}
+.legchip{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;font-family:monospace}
+.legdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.badgepicker2{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
 </style>
 </head>
 <body>
@@ -498,6 +515,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
     <div class="gtabbar" id="govsubtabs" style="margin-bottom:12px">
       <div class="gtab ac" data-govtab="positions">المناصب</div>
       <div class="gtab" data-govtab="votes">التصويتات</div>
+      <div class="gtab" data-govtab="parliament">البرلمان</div>
     </div>
     <div id="gov-positions">
       <div id="positionslist"></div>
@@ -517,6 +535,21 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
       <div id="votesactivelist"></div>
       <div class="seclbl" style="padding-right:0;margin-top:14px">— تصويتات سابقة</div>
       <div id="votesclosedlist"></div>
+    </div>
+    <div id="gov-parliament" style="display:none">
+      <div class="parliamentwrap">
+        <div class="semicircle" id="semicircleWrap"></div>
+        <div class="partylegend" id="partyLegend"></div>
+      </div>
+      <div id="partieslist"></div>
+      <div id="addPartySec" style="display:none;margin-top:10px">
+        <input class="inp" id="newPartyName" placeholder="اسم الحزب..." maxlength="30">
+        <div class="badgepicker2" id="partyBadges"></div>
+        <div style="display:flex;gap:8px;justify-content:center;margin:8px 0" id="partyColors"></div>
+        <select class="privsel" id="newPartyRole" style="width:100%;margin-top:4px;padding:10px;text-align:center"></select>
+        <button class="addgrpbtn" style="margin-top:6px" onclick="createParty()">➕ تأسيس حزب</button>
+        <div class="st" id="partyCreateSt"></div>
+      </div>
     </div>
   </div>
   <div id="gtab-requests" style="display:none">
@@ -1468,8 +1501,10 @@ function switchGovSubtab(tab){
   document.querySelectorAll("#govsubtabs .gtab").forEach(t=>t.classList.toggle("ac",t.dataset.govtab===tab));
   $("gov-positions").style.display=tab==="positions"?"block":"none";
   $("gov-votes").style.display=tab==="votes"?"block":"none";
+  $("gov-parliament").style.display=tab==="parliament"?"block":"none";
   if(tab==="positions")renderPositionsList(activeGroup.id);
-  else renderVotesList(activeGroup.id);
+  else if(tab==="votes")renderVotesList(activeGroup.id);
+  else renderParliamentTab(activeGroup.id);
 }
 
 // ---- المناصب ----
@@ -1685,7 +1720,7 @@ async function submitNomination(voteId){
 }
 
 // ---- نموذج بدء تصويت جديد ----
-window.openNewVoteForm=async(type)=>{
+window.openNewVoteForm=async(type,parliamentary)=>{
   const wrap=$("newVoteFormWrap");
   const roles=(await sbGet("group_roles",{group_id:activeGroup.id}))||[];
   const eligOptions=`<option value="">🌍 كل الأعضاء</option>`+roles.map(r=>`<option value="${r.id}">🔒 فقط رتبة: ${r.name}</option>`).join("");
@@ -1705,18 +1740,20 @@ window.openNewVoteForm=async(type)=>{
         <div class="st" id="voteFormSt"></div>
       </div>`;
   }else{
+    const parties=(await sbGet("group_parties",{group_id:activeGroup.id}))||[];
+    if(parliamentary&&parties.length<2){wrap.innerHTML='<div class="newvoteform" style="text-align:center;color:var(--tx3);font-size:12px">تحتاج حزبين على الأقل لبدء تصويت برلماني</div>';return;}
     wrap.innerHTML=`
       <div class="newvoteform">
-        <input class="inp" id="voteFormQuestion" placeholder="سؤال الاستفتاء..." maxlength="100">
+        ${parliamentary?'<div class="votesub" style="margin-bottom:8px">🏛️ تصويت برلماني: قادة الأحزاب فقط يصوّتون، وزن كل صوت = عدد مقاعد حزبه</div>':""}
+        <input class="inp" id="voteFormQuestion" placeholder="${parliamentary?"عنوان المرسوم":"سؤال الاستفتاء"}..." maxlength="100">
         <div id="voteFormOptions">
-          <div class="optrow2"><input class="inp" placeholder="خيار 1"><input class="inp" placeholder="خيار 2"></div>
+          <div class="optrow2"><input class="inp" placeholder="خيار 1" value="${parliamentary?"موافقة":""}"><input class="inp" placeholder="خيار 2" value="${parliamentary?"رفض":""}"></div>
         </div>
         <button class="addgrpbtn" style="margin:6px 0" onclick="addVoteOptionRow()">➕ خيار إضافي</button>
-        <select class="privsel" id="voteFormElig" style="width:100%;padding:10px;margin:8px 0">${eligOptions}</select>
-        <div class="votesub" style="margin:0 0 8px">👆 يحدد مين يقدر يصوّت (اختر رتبة لتحويلها لـ"مجلس" مصوّت)</div>
+        ${parliamentary?"":`<select class="privsel" id="voteFormElig" style="width:100%;padding:10px;margin:8px 0">${eligOptions}</select><div class="votesub" style="margin:0 0 8px">👆 يحدد مين يقدر يصوّت (اختر رتبة لتحويلها لـ"مجلس" مصوّت)</div>`}
         <input class="inp" id="voteFormDuration" type="number" placeholder="مدة التصويت بالساعات (اتركه فارغًا للإقفال اليدوي)">
         <div class="voteactions" style="margin-top:8px">
-          <button class="selfnombtn" onclick="submitNewVote('referendum')">📊 بدء الاستفتاء</button>
+          <button class="selfnombtn" onclick="submitNewVote('referendum',${!!parliamentary})">📊 بدء ${parliamentary?"التصويت البرلماني":"الاستفتاء"}</button>
           <button class="closevotebtn" onclick="$('newVoteFormWrap').innerHTML=''">إلغاء</button>
         </div>
         <div class="st" id="voteFormSt"></div>
@@ -1731,11 +1768,11 @@ window.addVoteOptionRow=()=>{
   wrap.appendChild(row);
 };
 
-window.submitNewVote=async(type)=>{
+window.submitNewVote=async(type,isParliamentary)=>{
   const hoursStr=$("voteFormDuration")?.value.trim();
   const hours=hoursStr?parseFloat(hoursStr):null;
   const endsAt=hours&&hours>0?new Date(Date.now()+hours*3600000).toISOString():null;
-  const eligRoleId=$("voteFormElig")?.value||null;
+  const eligRoleId=isParliamentary?null:($("voteFormElig")?.value||null);
 
   if(type==="election"){
     const posId=$("voteFormPos").value;
@@ -1749,15 +1786,284 @@ window.submitNewVote=async(type)=>{
     const optionInputs=[...document.querySelectorAll("#voteFormOptions input")].map(i=>i.value.trim()).filter(Boolean);
     if(optionInputs.length<2){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ أدخل خيارين على الأقل";return;}
     const voteId=newUUID();
-    const{ok}=await sbIns("group_votes",{id:voteId,group_id:activeGroup.id,type:"referendum",question,status:"voting",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId});
+    const{ok}=await sbIns("group_votes",{id:voteId,group_id:activeGroup.id,type:"referendum",question,status:"voting",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId,is_parliamentary:!!isParliamentary});
     if(!ok){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ فشل الإنشاء";return;}
     for(let i=0;i<optionInputs.length;i++){
       await sbIns("group_vote_options",{vote_id:voteId,label:optionInputs[i],position:i});
     }
   }
   $("newVoteFormWrap").innerHTML="";
-  renderVotesList(activeGroup.id);
+  if(isParliamentary)renderParliamentTab(activeGroup.id);
+  else renderVotesList(activeGroup.id);
 };
+
+// ============================================
+// الأحزاب والبرلمان
+// ============================================
+const PARTY_BADGES=["🦅","🐺","🔥","⚔️","🛡️","🌹","⭐","🔱","☭","🐻","🦁","🕊️"];
+const PARTY_COLORS=["#ef4444","#3b82f6","#22c55e","#eab308","#a855f7","#f97316","#06b6d4","#ec4899","#64748b","#84cc16"];
+
+async function myCanManageParties(gid){
+  const g=await sbOne("groups",{id:gid});
+  if(g?.owner_code_hash===myHash)return true;
+  const role=await myGroupRole(gid);
+  return!!role?.can_manage_group;
+}
+
+async function renderParliamentTab(gid){
+  bindPartyPickers();
+  const canManage=await myCanManageParties(gid);
+  $("addPartySec").style.display=canManage?"block":"none";
+  if(canManage){
+    const roles=(await sbGet("group_roles",{group_id:gid}))||[];
+    $("newPartyRole").innerHTML=`<option value="">بدون ربط برتبة</option>`+roles.map(r=>`<option value="${r.id}">${r.name}</option>`).join("");
+  }
+
+  const parties=(await sbGet("group_parties",{group_id:gid}))||[];
+  const partyMembers=(await sbGet("group_party_members",{group_id:gid}))||[];
+  const myMembership=partyMembers.find(pm=>pm.code_hash===myHash);
+
+  // حساب المقاعد لكل حزب
+  const seatsMap={};
+  parties.forEach(p=>{seatsMap[p.id]=partyMembers.filter(pm=>pm.party_id===p.id).length;});
+  const totalSeats=Object.values(seatsMap).reduce((a,b)=>a+b,0);
+
+  renderSemicircle(parties,seatsMap,totalSeats);
+  renderPartyLegend(parties,seatsMap);
+
+  // قائمة الأحزاب مع أزرار الانضمام
+  const list=$("partieslist");
+  list.innerHTML="";
+  if(!parties.length){
+    list.innerHTML='<div style="padding:10px 4px;font-size:12px;color:var(--tx3);text-align:center">لا توجد أحزاب بعد</div>';
+  }
+  for(const p of parties){
+    const row=document.createElement("div");row.className="partyrow";
+    const ico=document.createElement("div");ico.className="partyico";ico.style.cssText=`background:${p.color}22;color:${p.color}`;ico.textContent=p.badge||"🏛️";
+    const inf=document.createElement("div");inf.className="partyinf";
+    const leaderU=await sbOne("users",{code_hash:p.leader_code_hash});
+    inf.innerHTML=`<div class="partynm">${p.name}</div><div class="partymeta">${seatsMap[p.id]||0} مقعد • قائد: ${leaderU?.username||"..."}</div>`;
+    row.appendChild(ico);row.appendChild(inf);
+
+    const isMine=myMembership?.party_id===p.id;
+    const btn=document.createElement("button");
+    btn.className="partyjoinbtn"+(isMine?" mine":"");
+    btn.textContent=isMine?"✓ عضو":"انضمام";
+    btn.onclick=async()=>{
+      if(isMine){
+        if(p.leader_code_hash===myHash){
+          const otherMembers=partyMembers.filter(pm=>pm.party_id===p.id&&pm.code_hash!==myHash);
+          if(otherMembers.length){alert("👑 أنت قائد هذا الحزب، فوّض القيادة لعضو آخر أولاً قبل المغادرة");return;}
+          if(!confirm(`أنت آخر عضو، هذا سيحلّ حزب ${p.name} نهائيًا. متابعة؟`))return;
+          await sbDel("group_parties",{id:p.id});
+          renderParliamentTab(gid);
+          return;
+        }
+        if(!confirm(`مغادرة حزب ${p.name}؟`))return;
+        await sbDel("group_party_members",{group_id:gid,code_hash:myHash});
+      }else{
+        // مغادرة الحزب الحالي تلقائيًا لو موجود (عضو في حزب واحد بس)
+        if(myMembership)await sbDel("group_party_members",{group_id:gid,code_hash:myHash});
+        await sbIns("group_party_members",{party_id:p.id,group_id:gid,code_hash:myHash});
+        if(p.linked_role_id)await sbUpd("group_members",{group_id:gid,code_hash:myHash},{role_id:p.linked_role_id});
+      }
+      renderParliamentTab(gid);
+    };
+    row.appendChild(btn);
+
+    if(p.leader_code_hash===myHash){
+      const delegBtn=document.createElement("button");
+      delegBtn.className="memkick";delegBtn.textContent="👑";delegBtn.title="تفويض القيادة";
+      delegBtn.onclick=async()=>{
+        const members=partyMembers.filter(pm=>pm.party_id===p.id&&pm.code_hash!==myHash);
+        if(!members.length){alert("لا يوجد أعضاء آخرون في الحزب لتفويضهم");return;}
+        const names=await Promise.all(members.map(async m=>{const u=await sbOne("users",{code_hash:m.code_hash});return u?.username||m.code_hash.slice(0,8);}));
+        const choice=prompt(`فوّض القيادة لمن؟ اكتب الاسم بالضبط:\n${names.join("\n")}`);
+        if(!choice)return;
+        const idx=names.findIndex(n=>n===choice.trim());
+        if(idx===-1){alert("لم يتم العثور على هذا الاسم");return;}
+        await sbUpd("group_parties",{id:p.id},{leader_code_hash:members[idx].code_hash});
+        renderParliamentTab(gid);
+      };
+      row.appendChild(delegBtn);
+    }
+
+    if(canManage){
+      const del=document.createElement("button");
+      del.className="memkick";del.textContent="🗑️";
+      del.onclick=async()=>{if(!confirm(`حل حزب ${p.name}؟`))return;await sbDel("group_parties",{id:p.id});renderParliamentTab(gid);};
+      row.appendChild(del);
+    }
+    list.appendChild(row);
+  }
+
+  // زر بدء تصويت برلماني (لو عندي صلاحية إدارة الانتخابات)
+  const canVote=await myCanManageElections(gid);
+  const existingBtn=document.getElementById("btnStartParliamentVote");
+  if(existingBtn)existingBtn.remove();
+  if(canVote&&parties.length>=2){
+    const pvBtn=document.createElement("button");
+    pvBtn.className="addgrpbtn";pvBtn.id="btnStartParliamentVote";pvBtn.style.marginTop="10px";
+    pvBtn.textContent="🏛️ بدء تصويت برلماني (مرسوم جديد)";
+    pvBtn.onclick=()=>openNewVoteForm("referendum",true);
+    list.parentElement.insertBefore(pvBtn,list.nextSibling);
+  }
+
+  // عرض التصويتات البرلمانية الجارية/المغلقة
+  await renderParliamentaryVotes(gid,parties,seatsMap);
+}
+
+function renderSemicircle(parties,seatsMap,totalSeats){
+  const wrap=$("semicircleWrap");
+  wrap.innerHTML="";
+  if(!totalSeats){
+    wrap.innerHTML='<div style="padding:30px 0;color:var(--tx3);font-size:12px">لا يوجد أعضاء في أي حزب بعد</div>';
+    return;
+  }
+  // بناء مصفوفة نقاط: كل نقطة تمثل مقعد بلون حزبها
+  const dots=[];
+  parties.forEach(p=>{for(let i=0;i<(seatsMap[p.id]||0);i++)dots.push(p.color);});
+  const n=dots.length;
+  const rows=4;
+  const W=320,H=160;
+  let idx=0;
+  for(let r=0;r<rows;r++){
+    const radius=40+r*28;
+    const perRow=Math.ceil(n/rows);
+    for(let i=0;i<perRow&&idx<n;i++,idx++){
+      const angle=Math.PI-(Math.PI*(i+0.5)/perRow);
+      const x=W/2+radius*Math.cos(angle);
+      const y=H-10-radius*Math.sin(angle);
+      const dot=document.createElement("div");
+      dot.className="seatdot";
+      dot.style.left=x+"px";dot.style.top=y+"px";
+      dot.style.background=dots[idx];
+      wrap.appendChild(dot);
+    }
+  }
+}
+
+function renderPartyLegend(parties,seatsMap){
+  const wrap=$("partyLegend");
+  wrap.innerHTML="";
+  parties.forEach(p=>{
+    const chip=document.createElement("div");chip.className="legchip";
+    chip.innerHTML=`<span class="legdot" style="background:${p.color}"></span>${p.badge||""} ${p.name} (${seatsMap[p.id]||0})`;
+    wrap.appendChild(chip);
+  });
+}
+
+window.createParty=async()=>{
+  const name=$("newPartyName").value.trim();
+  if(!name){$("partyCreateSt").className="st er";$("partyCreateSt").textContent="❌ أدخل اسم الحزب";return;}
+  const roleId=$("newPartyRole").value||null;
+  const partyId=newUUID();
+  const{ok}=await sbIns("group_parties",{id:partyId,group_id:activeGroup.id,name,badge:window._selPartyBadge||null,color:window._selPartyColor||PARTY_COLORS[0],linked_role_id:roleId,founder_code_hash:myHash,leader_code_hash:myHash});
+  if(!ok){$("partyCreateSt").className="st er";$("partyCreateSt").textContent="❌ فشل التأسيس";return;}
+  // المؤسس ينضم تلقائيًا لحزبه
+  const existing=await sbOne("group_party_members",{group_id:activeGroup.id,code_hash:myHash});
+  if(existing)await sbDel("group_party_members",{group_id:activeGroup.id,code_hash:myHash});
+  await sbIns("group_party_members",{party_id:partyId,group_id:activeGroup.id,code_hash:myHash});
+  if(roleId)await sbUpd("group_members",{group_id:activeGroup.id,code_hash:myHash},{role_id:roleId});
+  $("newPartyName").value="";
+  $("partyCreateSt").className="st ok";$("partyCreateSt").textContent="✅ تم تأسيس الحزب";
+  setTimeout(()=>$("partyCreateSt").textContent="",1500);
+  renderParliamentTab(activeGroup.id);
+};
+
+// اختيار شعار ولون الحزب (يُبنى عند فتح تاب البرلمان لأول مرة)
+function bindPartyPickers(){
+  const badgeWrap=$("partyBadges");
+  if(badgeWrap&&!badgeWrap.dataset.built){
+    badgeWrap.dataset.built="1";
+    window._selPartyBadge=PARTY_BADGES[0];
+    PARTY_BADGES.forEach(b=>{
+      const opt=document.createElement("div");opt.className="badgeopt"+(b===window._selPartyBadge?" sel":"");opt.textContent=b;
+      opt.onclick=()=>{window._selPartyBadge=b;badgeWrap.querySelectorAll(".badgeopt").forEach(d=>d.classList.remove("sel"));opt.classList.add("sel");};
+      badgeWrap.appendChild(opt);
+    });
+  }
+  const colorWrap=$("partyColors");
+  if(colorWrap&&!colorWrap.dataset.built){
+    colorWrap.dataset.built="1";
+    window._selPartyColor=PARTY_COLORS[0];
+    PARTY_COLORS.forEach(c=>{
+      const dot=document.createElement("div");
+      dot.style.cssText=`width:24px;height:24px;border-radius:50%;background:${c};cursor:pointer;border:2.5px solid ${c===window._selPartyColor?"#fff":"transparent"}`;
+      dot.onclick=()=>{window._selPartyColor=c;colorWrap.querySelectorAll("div").forEach(d=>d.style.borderColor="transparent");dot.style.borderColor="#fff";};
+      colorWrap.appendChild(dot);
+    });
+  }
+}
+
+// ---- عرض والتصويت على المراسيم البرلمانية ----
+async function renderParliamentaryVotes(gid,parties,seatsMap){
+  let existingWrap=document.getElementById("parliamentVotesWrap");
+  if(!existingWrap){
+    existingWrap=document.createElement("div");
+    existingWrap.id="parliamentVotesWrap";
+    existingWrap.style.marginTop="14px";
+    $("partieslist").parentElement.appendChild(existingWrap);
+  }
+  existingWrap.innerHTML="";
+  const votes=((await sbGet("group_votes",{group_id:gid}))||[]).filter(v=>v.is_parliamentary);
+  if(!votes.length)return;
+  const lbl=document.createElement("div");lbl.className="seclbl";lbl.style.cssText="padding-right:0;margin-bottom:6px";lbl.textContent="— المراسيم البرلمانية";
+  existingWrap.appendChild(lbl);
+
+  const totalSeats=Object.values(seatsMap).reduce((a,b)=>a+b,0);
+  const now=Date.now();
+  for(const v of votes.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))){
+    if(v.status!=="closed"&&v.ends_at&&new Date(v.ends_at).getTime()<now){await closeVoteInternal(v);v.status="closed";}
+    const card=document.createElement("div");card.className="votecard";
+    const statusLabel=v.status==="voting"?"📊 تصويت":"✅ مغلق";
+    card.innerHTML=`<div class="votehdr"><div class="voteq">🏛️ ${v.question}</div><span class="votebadge ${v.status==="voting"?"vot":"cls"}">${statusLabel}</span></div>`;
+
+    const options=(await sbGet("group_vote_options",{vote_id:v.id}))||[];
+    const pBallots=(await sbGet("group_parliamentary_ballots",{vote_id:v.id}))||[];
+    const myParty=parties.find(p=>p.leader_code_hash===myHash);
+    const myPartyVoted=myParty?pBallots.find(b=>b.party_id===myParty.id):null;
+
+    for(const o of options.sort((a,b)=>a.position-b.position)){
+      const weightedVotes=pBallots.filter(b=>b.option_id===o.id).reduce((sum,b)=>sum+b.seats_at_vote,0);
+      const pct=totalSeats?Math.round(weightedVotes/totalSeats*100):0;
+      const row=document.createElement("div");row.className="candrow";
+      const nameSpan=document.createElement("div");nameSpan.style.cssText="font-size:11.5px;font-weight:700;width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0";nameSpan.textContent=o.label;
+      row.appendChild(nameSpan);
+      const bar=document.createElement("div");bar.className="candbar";
+      bar.innerHTML=`<div class="candbarfill" style="width:${pct}%"></div><div class="candpct">${weightedVotes} مقعد (${pct}%)</div>`;
+      row.appendChild(bar);
+      if(v.status==="voting"&&myParty){
+        const vbtn=document.createElement("button");vbtn.className="candvotebtn";
+        vbtn.textContent=myPartyVoted?.option_id===o.id?"✓":"صوّت";
+        vbtn.disabled=!!myPartyVoted;
+        vbtn.onclick=async()=>{await castPartyBallot(v,myParty,o.id,seatsMap[myParty.id]||0);renderParliamentTab(gid);};
+        row.appendChild(vbtn);
+      }
+      card.appendChild(row);
+    }
+    if(v.status==="voting"&&!myParty){
+      const note=document.createElement("div");note.style.cssText="font-size:11px;color:var(--tx3);padding:6px 0";note.textContent="🔒 التصويت البرلماني مقصور على قادة الأحزاب";
+      card.appendChild(note);
+    }
+    const canManage=await myCanManageParties(gid);
+    if(canManage&&v.status!=="closed"){
+      const closeBtn=document.createElement("button");
+      closeBtn.className="closevotebtn";closeBtn.style.cssText="width:100%;margin-top:8px;padding:7px";closeBtn.textContent="⏹️ إقفال الآن";
+      closeBtn.onclick=async()=>{if(!confirm("إقفال هذا التصويت البرلماني الآن؟"))return;await closeVoteInternal(v);renderParliamentTab(gid);};
+      card.appendChild(closeBtn);
+    }
+    existingWrap.appendChild(card);
+  }
+}
+
+async function castPartyBallot(vote,party,optionId,seats){
+  if(vote.status!=="voting")return;
+  if(party.leader_code_hash!==myHash){alert("🔒 فقط قائد الحزب يقدر يصوّت نيابة عنه");return;}
+  const{ok}=await sbIns("group_parliamentary_ballots",{vote_id:vote.id,party_id:party.id,option_id:optionId,voted_by:myHash,seats_at_vote:seats});
+  if(!ok)alert("تعذر تسجيل صوت الحزب (ربما صوّت مسبقًا)");
+}
+
 
 
 async function openGroupInfo(gid,startTab){
