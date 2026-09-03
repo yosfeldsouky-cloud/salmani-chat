@@ -550,6 +550,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
         <button class="addgrpbtn" style="margin-top:6px" onclick="createParty()">➕ تأسيس حزب</button>
         <div class="st" id="partyCreateSt"></div>
       </div>
+      <div id="parliamentVoteFormWrap" style="margin-top:10px"></div>
     </div>
   </div>
   <div id="gtab-requests" style="display:none">
@@ -1263,6 +1264,16 @@ async function myGroupRole(gid){
   return role;
 }
 
+// فحص صلاحية مركزي وموثوق - يُستخدم داخل كل دالة كتابة (وليس فقط للتحكم بالواجهة)
+// permField مثل 'can_manage_group', 'can_manage_roles', 'can_manage_members', 'can_manage_elections'
+async function checkGroupPerm(gid,permField){
+  const g=await sbOne("groups",{id:gid});
+  if(!g)return false;
+  if(g.owner_code_hash===myHash)return true; // المالك دائمًا لديه كل الصلاحيات
+  const role=await myGroupRole(gid);
+  return!!role?.[permField];
+}
+
 async function renderPinBar(channelId){
   const wrap=$("pinbarwrap");
   wrap.innerHTML="";
@@ -1454,6 +1465,7 @@ async function renderChannelsTab(gid,canManageGroup){
 }
 
 window.createChannel=async()=>{
+  if(!(await checkGroupPerm(activeGroup.id,"can_manage_group"))){alert("🔒 لا تملك صلاحية إدارة المجموعة");return;}
   const name=$("newChanName").value.trim();
   if(!name){$("chanCreateSt").className="st er";$("chanCreateSt").textContent="❌ أدخل اسم الغرفة";return;}
   const chans=await sbGet("group_channels",{group_id:activeGroup.id});
@@ -1530,7 +1542,7 @@ async function renderPositionsList(gid){
     if(canManageGroup){
       const del=document.createElement("button");
       del.className="memkick";del.textContent="🗑️";
-      del.onclick=async()=>{if(!confirm(`حذف منصب "${p.name}"؟`))return;await sbDel("group_positions",{id:p.id});renderPositionsList(gid);};
+      del.onclick=async()=>{if(!(await checkGroupPerm(gid,"can_manage_group"))){alert("🔒 لا تملك صلاحية إدارة المجموعة");return;}if(!confirm(`حذف منصب "${p.name}"؟`))return;await sbDel("group_positions",{id:p.id});renderPositionsList(gid);};
       row.appendChild(del);
     }
     list.appendChild(row);
@@ -1538,6 +1550,7 @@ async function renderPositionsList(gid){
 }
 
 window.createPosition=async()=>{
+  if(!(await checkGroupPerm(activeGroup.id,"can_manage_group"))){alert("🔒 لا تملك صلاحية إدارة المجموعة");return;}
   const name=$("newPosName").value.trim();
   if(!name){$("posCreateSt").className="st er";$("posCreateSt").textContent="❌ أدخل اسم المنصب";return;}
   const roleId=$("newPosRole").value||null;
@@ -1721,7 +1734,7 @@ async function submitNomination(voteId){
 
 // ---- نموذج بدء تصويت جديد ----
 window.openNewVoteForm=async(type,parliamentary)=>{
-  const wrap=$("newVoteFormWrap");
+  const wrap=parliamentary?$("parliamentVoteFormWrap"):$("newVoteFormWrap");
   const roles=(await sbGet("group_roles",{group_id:activeGroup.id}))||[];
   const eligOptions=`<option value="">🌍 كل الأعضاء</option>`+roles.map(r=>`<option value="${r.id}">🔒 فقط رتبة: ${r.name}</option>`).join("");
   if(type==="election"){
@@ -1754,7 +1767,7 @@ window.openNewVoteForm=async(type,parliamentary)=>{
         <input class="inp" id="voteFormDuration" type="number" placeholder="مدة التصويت بالساعات (اتركه فارغًا للإقفال اليدوي)">
         <div class="voteactions" style="margin-top:8px">
           <button class="selfnombtn" onclick="submitNewVote('referendum',${!!parliamentary})">📊 بدء ${parliamentary?"التصويت البرلماني":"الاستفتاء"}</button>
-          <button class="closevotebtn" onclick="$('newVoteFormWrap').innerHTML=''">إلغاء</button>
+          <button class="closevotebtn" onclick="$('${parliamentary?"parliamentVoteFormWrap":"newVoteFormWrap"}').innerHTML=''">إلغاء</button>
         </div>
         <div class="st" id="voteFormSt"></div>
       </div>`;
@@ -1769,6 +1782,7 @@ window.addVoteOptionRow=()=>{
 };
 
 window.submitNewVote=async(type,isParliamentary)=>{
+  if(!(await checkGroupPerm(activeGroup.id,"can_manage_elections"))){alert("🔒 لا تملك صلاحية بدء انتخابات أو استفتاءات");return;}
   const hoursStr=$("voteFormDuration")?.value.trim();
   const hours=hoursStr?parseFloat(hoursStr):null;
   const endsAt=hours&&hours>0?new Date(Date.now()+hours*3600000).toISOString():null;
@@ -1792,9 +1806,13 @@ window.submitNewVote=async(type,isParliamentary)=>{
       await sbIns("group_vote_options",{vote_id:voteId,label:optionInputs[i],position:i});
     }
   }
-  $("newVoteFormWrap").innerHTML="";
-  if(isParliamentary)renderParliamentTab(activeGroup.id);
-  else renderVotesList(activeGroup.id);
+  if(isParliamentary){
+    $("parliamentVoteFormWrap").innerHTML="";
+    renderParliamentTab(activeGroup.id);
+  }else{
+    $("newVoteFormWrap").innerHTML="";
+    renderVotesList(activeGroup.id);
+  }
 };
 
 // ============================================
@@ -1851,19 +1869,15 @@ async function renderParliamentTab(gid){
     btn.textContent=isMine?"✓ عضو":"انضمام";
     btn.onclick=async()=>{
       if(isMine){
-        if(p.leader_code_hash===myHash){
-          const otherMembers=partyMembers.filter(pm=>pm.party_id===p.id&&pm.code_hash!==myHash);
-          if(otherMembers.length){alert("👑 أنت قائد هذا الحزب، فوّض القيادة لعضو آخر أولاً قبل المغادرة");return;}
-          if(!confirm(`أنت آخر عضو، هذا سيحلّ حزب ${p.name} نهائيًا. متابعة؟`))return;
-          await sbDel("group_parties",{id:p.id});
-          renderParliamentTab(gid);
-          return;
-        }
+        // مغادرة الحزب الحالي (نفس منطق "الانضمام لحزب منافس" بيمر من هنا أيضاً لأنه نفس الفعل: مغادرة القديم)
         if(!confirm(`مغادرة حزب ${p.name}؟`))return;
-        await sbDel("group_party_members",{group_id:gid,code_hash:myHash});
+        await leavePartyAndCleanup(gid,p,partyMembers);
       }else{
-        // مغادرة الحزب الحالي تلقائيًا لو موجود (عضو في حزب واحد بس)
-        if(myMembership)await sbDel("group_party_members",{group_id:gid,code_hash:myHash});
+        // مغادرة الحزب الحالي تلقائيًا لو موجود (عضو في حزب واحد بس) - مع تنظيف الحزب القديم لو انحل
+        if(myMembership){
+          const oldParty=parties.find(x=>x.id===myMembership.party_id);
+          if(oldParty)await leavePartyAndCleanup(gid,oldParty,partyMembers,true);
+        }
         await sbIns("group_party_members",{party_id:p.id,group_id:gid,code_hash:myHash});
         if(p.linked_role_id)await sbUpd("group_members",{group_id:gid,code_hash:myHash},{role_id:p.linked_role_id});
       }
@@ -1891,7 +1905,7 @@ async function renderParliamentTab(gid){
     if(canManage){
       const del=document.createElement("button");
       del.className="memkick";del.textContent="🗑️";
-      del.onclick=async()=>{if(!confirm(`حل حزب ${p.name}؟`))return;await sbDel("group_parties",{id:p.id});renderParliamentTab(gid);};
+      del.onclick=async()=>{if(!(await checkGroupPerm(gid,"can_manage_group"))){alert("🔒 لا تملك صلاحية إدارة المجموعة");return;}if(!confirm(`حل حزب ${p.name}؟`))return;await sbDel("group_parties",{id:p.id});renderParliamentTab(gid);};
       row.appendChild(del);
     }
     list.appendChild(row);
@@ -1906,7 +1920,7 @@ async function renderParliamentTab(gid){
     pvBtn.className="addgrpbtn";pvBtn.id="btnStartParliamentVote";pvBtn.style.marginTop="10px";
     pvBtn.textContent="🏛️ بدء تصويت برلماني (مرسوم جديد)";
     pvBtn.onclick=()=>openNewVoteForm("referendum",true);
-    list.parentElement.insertBefore(pvBtn,list.nextSibling);
+    $("partieslist").insertAdjacentElement("afterend",pvBtn);
   }
 
   // عرض التصويتات البرلمانية الجارية/المغلقة
@@ -1953,7 +1967,24 @@ function renderPartyLegend(parties,seatsMap){
   });
 }
 
+// مغادرة حزب مع التنظيف التلقائي: لو القائد غادر، القيادة تنتقل تلقائيًا لأقدم عضو آخر،
+// ولو مفيش أعضاء تانيين، الحزب ينحل تلقائيًا بالكامل
+async function leavePartyAndCleanup(gid,party,cachedPartyMembers,skipConfirm){
+  await sbDel("group_party_members",{group_id:gid,code_hash:myHash});
+  if(party.leader_code_hash!==myHash)return; // مش القائد، مفيش حاجة تانية مطلوبة
+  const remaining=(cachedPartyMembers||[]).filter(pm=>pm.party_id===party.id&&pm.code_hash!==myHash);
+  if(remaining.length){
+    // انتقال تلقائي للقيادة لأقدم عضو متبقي
+    const nextLeader=remaining.sort((a,b)=>new Date(a.joined_at)-new Date(b.joined_at))[0];
+    await sbUpd("group_parties",{id:party.id},{leader_code_hash:nextLeader.code_hash});
+  }else{
+    // لا يوجد أعضاء آخرون: حل الحزب تلقائيًا
+    await sbDel("group_parties",{id:party.id});
+  }
+}
+
 window.createParty=async()=>{
+  if(!(await checkGroupPerm(activeGroup.id,"can_manage_group"))){alert("🔒 لا تملك صلاحية إدارة المجموعة");return;}
   const name=$("newPartyName").value.trim();
   if(!name){$("partyCreateSt").className="st er";$("partyCreateSt").textContent="❌ أدخل اسم الحزب";return;}
   const roleId=$("newPartyRole").value||null;
@@ -2213,6 +2244,11 @@ async function renderGroupMembers(gid,canManage){
   const mems=await sbGet("group_members",{group_id:gid});
   const roles=await sbGet("group_roles",{group_id:gid});
   const sortedRoles=(roles||[]).sort((a,b)=>b.position-a.position);
+  const isOwnerMe=activeGroup.owner_code_hash===myHash;
+  const myRole=await myGroupRole(gid);
+  const myPosition=isOwnerMe?999999:(myRole?.position??-1);
+  // الرتب المسموح لي منحها لغيري: فقط الأقل من رتبتي (المالك يرى الكل)
+  const grantableRoles=isOwnerMe?sortedRoles:sortedRoles.filter(r=>r.position<myPosition);
   const list=$("memberslist");
   list.innerHTML="";
   for(const m of (mems||[])){
@@ -2225,17 +2261,56 @@ async function renderGroupMembers(gid,canManage){
     const inf=document.createElement("div");
     inf.className="meminf";
     const displayName=m.nickname?`${m.nickname} <span style="color:var(--tx3);font-weight:400">(${u?.username||"..."})</span>`:(u?.username||"...");
-    inf.innerHTML=`<div class="memnm">${role?.badge?role.badge+" ":""}${displayName}${isOwner?" 👑":""}${m.muted?' <span class="mutebadge">🔇 مكتوم</span>':""}</div>`;
+    inf.innerHTML=`<div class="memnm">${role?.badge?role.badge+" ":""}${displayName}${isOwner?" 👑":""}${m.muted?' <span class="mutebadge">🔇 مكتوم</span>':""}${m.nickname_locked?' <span style="font-size:10px">🔒</span>':""}</div>`;
     row.appendChild(av);row.appendChild(inf);
 
-    if(canManage&&!isOwner){
+    // تعديل الكنية: أي عضو يقدر يعدّل كنية أي عضو تاني، إلا لو صاحبها قفلها (والقفل ما ينفعش إلا لصاحبها هو بس)
+    const canEditThisNickname=m.code_hash===myHash||!m.nickname_locked;
+    if(canEditThisNickname){
+      const nickBtn=document.createElement("button");
+      nickBtn.className="memkick";nickBtn.textContent="✏️";nickBtn.title="تعديل الكنية";
+      nickBtn.onclick=async()=>{
+        const freshMem=await sbOne("group_members",{group_id:gid,code_hash:m.code_hash});
+        if(m.code_hash!==myHash&&freshMem?.nickname_locked){alert("🔒 هذا العضو قفل كنيته، لا يمكن تعديلها");renderGroupMembers(gid,canManage);return;}
+        const newNick=prompt(`كنية ${u?.username||"..."} في هذه المجموعة:`,m.nickname||"");
+        if(newNick===null)return;
+        await sbUpd("group_members",{group_id:gid,code_hash:m.code_hash},{nickname:newNick.trim().slice(0,24)||null});
+        renderGroupMembers(gid,canManage);
+      };
+      row.appendChild(nickBtn);
+    }
+    if(m.code_hash===myHash){
+      const lockBtn=document.createElement("button");
+      lockBtn.className="memkick";lockBtn.textContent=m.nickname_locked?"🔓":"🔒";lockBtn.title=m.nickname_locked?"السماح للآخرين بتعديل كنيتي":"منع الآخرين من تعديل كنيتي";
+      lockBtn.onclick=async()=>{await sbUpd("group_members",{group_id:gid,code_hash:myHash},{nickname_locked:!m.nickname_locked});renderGroupMembers(gid,canManage);};
+      row.appendChild(lockBtn);
+    }
+
+    // العضو المستهدف نفسه له رتبة أعلى أو مساوية لرتبتي؟ لا يمكنني التحكم به إلا لو أنا المالك
+    const targetPosition=role?.position??-1;
+    const canControlThisMember=canManage&&!isOwner&&(isOwnerMe||targetPosition<myPosition);
+
+    if(canControlThisMember){
       const actWrap=document.createElement("div");actWrap.className="memactrow";
-      // قائمة اختيار الرتبة
+      // قائمة اختيار الرتبة - تعرض فقط الرتب التي يحق لي منحها
       const sel=document.createElement("select");
       sel.className="privsel";
       sel.style.fontSize="10.5px";
-      sel.innerHTML=`<option value="">بلا رتبة</option>`+sortedRoles.map(r=>`<option value="${r.id}" ${r.id===m.role_id?"selected":""}>${r.badge?r.badge+" ":""}${r.name}</option>`).join("");
+      sel.innerHTML=`<option value="">بلا رتبة</option>`+grantableRoles.map(r=>`<option value="${r.id}" ${r.id===m.role_id?"selected":""}>${r.badge?r.badge+" ":""}${r.name}</option>`).join("");
       sel.onchange=async()=>{
+        // إعادة فحص وقت التنفيذ الفعلي: هل الرتبة المختارة فعلاً أقل من رتبتي؟
+        if(!(await checkGroupPerm(gid,"can_manage_members"))){alert("🔒 لا تملك صلاحية إدارة الأعضاء");renderGroupMembers(gid,canManage);return;}
+        const stillOwner=activeGroup.owner_code_hash===myHash;
+        if(sel.value&&!stillOwner){
+          const targetRole=sortedRoles.find(r=>r.id===sel.value);
+          const currentMyRole=await myGroupRole(gid);
+          const currentMyPos=currentMyRole?.position??-1;
+          if(targetRole&&targetRole.position>=currentMyPos){
+            alert("🔒 لا يمكنك منح رتبة مساوية أو أعلى من رتبتك");
+            renderGroupMembers(gid,canManage);
+            return;
+          }
+        }
         await sbUpd("group_members",{group_id:gid,code_hash:m.code_hash},{role_id:sel.value||null});
       };
       actWrap.appendChild(sel);
@@ -2243,7 +2318,10 @@ async function renderGroupMembers(gid,canManage){
       const muteBtn=document.createElement("button");
       muteBtn.className="memkick";muteBtn.textContent=m.muted?"🔊":"🔇";
       muteBtn.title=m.muted?"رفع الكتم":"كتم";
-      muteBtn.onclick=async()=>{await sbUpd("group_members",{group_id:gid,code_hash:m.code_hash},{muted:!m.muted});renderGroupMembers(gid,canManage);};
+      muteBtn.onclick=async()=>{
+        if(!(await checkGroupPerm(gid,"can_manage_members"))){alert("🔒 لا تملك صلاحية إدارة الأعضاء");return;}
+        await sbUpd("group_members",{group_id:gid,code_hash:m.code_hash},{muted:!m.muted});renderGroupMembers(gid,canManage);
+      };
       actWrap.appendChild(muteBtn);
       row.appendChild(actWrap);
     }else{
@@ -2254,10 +2332,14 @@ async function renderGroupMembers(gid,canManage){
       row.appendChild(rlbl);
     }
 
-    if(canManage&&m.code_hash!==myHash&&!isOwner){
+    if(canControlThisMember&&m.code_hash!==myHash){
       const kick=document.createElement("button");
       kick.className="memkick";kick.textContent="🗑️";
-      kick.onclick=async()=>{if(!confirm(`طرد ${u?.username}؟`))return;await sbDel("group_members",{group_id:gid,code_hash:m.code_hash});renderGroupMembers(gid,canManage);};
+      kick.onclick=async()=>{
+        if(!(await checkGroupPerm(gid,"can_manage_members"))){alert("🔒 لا تملك صلاحية إدارة الأعضاء");return;}
+        if(!confirm(`طرد ${u?.username}؟`))return;
+        await sbDel("group_members",{group_id:gid,code_hash:m.code_hash});renderGroupMembers(gid,canManage);
+      };
       row.appendChild(kick);
     }
     list.appendChild(row);
@@ -2308,8 +2390,21 @@ async function renderGroupRequests(gid){
 // ---- محرر الرتب ----
 const ROLE_BADGES=["👑","🛡️","⚔️","🎖️","⭐","🔱","🏛️","📯","🦅","🐺","🔥","💎","🎯","☠️","🕊️"];
 
-function openRoleEditor(role){
+async function openRoleEditor(role){
+  const canManageRoles=await checkGroupPerm(activeGroup.id,"can_manage_roles");
+  if(!canManageRoles){alert("🔒 لا تملك صلاحية إدارة الرتب");return;}
+
+  // نظام التدريج الهرمي: لا يمكن لأحد تعديل أو حذف رتبة أعلى من رتبته أو مساوية لها (إلا المالك)
+  const isOwner=activeGroup.owner_code_hash===myHash;
+  const myRole=await myGroupRole(activeGroup.id);
+  const myPosition=isOwner?999999:(myRole?.position??-1);
+  if(role&&!isOwner&&role.position>=myPosition){
+    alert("🔒 لا يمكنك تعديل رتبة مساوية أو أعلى من رتبتك الحالية");
+    return;
+  }
+
   editingRoleId=role?.id||null;
+  window._roleEditorMaxPosition=myPosition; // يُستخدم عند الحفظ للتحقق من عدم تجاوز رتبتي
   $("roleedittitle").textContent=role?"تعديل الرتبة":"رتبة جديدة";
   $("roleName").value=role?.name||"";
   $("roleDesc").value=role?.description||"";
@@ -2343,16 +2438,30 @@ function openRoleEditor(role){
   });
   $("btnroledel").style.display=role&&!role.is_default?"block":"none";
   $("btnroledel").onclick=async()=>{
+    // إعادة فحص الصلاحية والتدريج الهرمي وقت التنفيذ الفعلي (لا نعتمد على حالة الواجهة فقط)
+    if(!(await checkGroupPerm(activeGroup.id,"can_manage_roles"))){alert("🔒 لا تملك صلاحية إدارة الرتب");return;}
+    const freshRole=await sbOne("group_roles",{id:role.id});
+    const stillOwner=activeGroup.owner_code_hash===myHash;
+    const currentMyRole=await myGroupRole(activeGroup.id);
+    const currentMyPos=stillOwner?999999:(currentMyRole?.position??-1);
+    if(freshRole&&!stillOwner&&freshRole.position>=currentMyPos){alert("🔒 لا يمكنك حذف رتبة مساوية أو أعلى من رتبتك");return;}
     if(!confirm("حذف هذه الرتبة؟"))return;
     await sbDel("group_roles",{id:role.id});
     $("rolem").classList.remove("on");
     renderGroupRoles(activeGroup.id,true);
   };
   $("btnrolesave").onclick=async()=>{
+    // إعادة فحص الصلاحية وقت الحفظ الفعلي
+    if(!(await checkGroupPerm(activeGroup.id,"can_manage_roles"))){alert("🔒 لا تملك صلاحية إدارة الرتب");return;}
     const name=$("roleName").value.trim();
     if(!name){$("rolest").className="st er";$("rolest").textContent="❌ أدخل اسم الرتبة";return;}
-    const obj={
-      name,color:window._selRoleColor,badge:window._selRoleBadge||null,description:$("roleDesc").value.trim()||null,
+
+    const stillOwner=activeGroup.owner_code_hash===myHash;
+    const currentMyRole=await myGroupRole(activeGroup.id);
+    const currentMyPos=stillOwner?999999:(currentMyRole?.position??-1);
+
+    // منع منح صلاحيات أعلى مما يملكه المستخدم نفسه (لا يمكن لأحد منح صلاحية لا يملكها هو أصلاً)
+    const requestedPerms={
       can_manage_members:$("permManageMembers").classList.contains("on"),
       can_manage_roles:$("permManageRoles").classList.contains("on"),
       can_manage_group:$("permManageGroup").classList.contains("on"),
@@ -2360,13 +2469,29 @@ function openRoleEditor(role){
       can_free_add:$("permFreeAdd").classList.contains("on"),
       can_manage_elections:$("permElections").classList.contains("on"),
     };
+    if(!stillOwner){
+      for(const[perm,val]of Object.entries(requestedPerms)){
+        if(val&&!currentMyRole?.[perm]){
+          alert("🔒 لا يمكنك منح صلاحية لا تملكها أنت نفسك: "+perm);
+          return;
+        }
+      }
+    }
+
+    const obj={name,color:window._selRoleColor,badge:window._selRoleBadge||null,description:$("roleDesc").value.trim()||null,...requestedPerms};
+
     if(editingRoleId){
+      const freshRole=await sbOne("group_roles",{id:editingRoleId});
+      if(freshRole&&!stillOwner&&freshRole.position>=currentMyPos){alert("🔒 لا يمكنك تعديل رتبة مساوية أو أعلى من رتبتك");return;}
       await sbUpd("group_roles",{id:editingRoleId},obj);
     }else{
       const roles=await sbGet("group_roles",{group_id:activeGroup.id});
       obj.id=newUUID();
       obj.group_id=activeGroup.id;
-      obj.position=(roles||[]).length;
+      // الرتبة الجديدة لا يمكن أن تُنشأ بموضع أعلى من أو يساوي موضع منشئها (إلا المالك)
+      let newPos=(roles||[]).length;
+      if(!stillOwner&&newPos>=currentMyPos)newPos=Math.max(0,currentMyPos-1);
+      obj.position=newPos;
       await sbIns("group_roles",obj);
     }
     $("rolem").classList.remove("on");
