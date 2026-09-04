@@ -195,7 +195,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 .prfmeta{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
 .prfchip{font-size:10.5px;color:var(--tx2);background:var(--sf2);border:1px solid var(--bd2);border-radius:20px;padding:4px 11px;font-family:monospace;font-weight:700;display:none;align-items:center;gap:4px}
 .prfstatus{font-size:13px;font-weight:700;color:var(--tx);background:var(--sf2);border:1px solid var(--ac);border-radius:20px;padding:5px 14px;display:none;align-items:center;gap:6px;margin:8px auto 0;width:fit-content}
-.prffingerprint{position:absolute;bottom:10px;left:10px;width:34px;height:34px;opacity:.5;z-index:2}
+.prfbody2{position:relative}
+.prffingerprint{position:absolute;bottom:10px;left:10px;width:44px;height:44px;opacity:.85;z-index:2}
 .prffplabel{display:none}
 .editstatusrow{display:flex;gap:6px;align-items:center}
 .editstatusrow select{width:70px;flex-shrink:0}
@@ -572,7 +573,12 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
       <div id="partieslist"></div>
       <div id="addPartySec" style="display:none;margin-top:10px">
         <input class="inp" id="newPartyName" placeholder="اسم الحزب..." maxlength="30">
-        <div class="badgepicker2" id="partyBadges"></div>
+        <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin:10px 0">
+          <div id="partyBadgePreview" style="width:52px;height:52px;border-radius:14px;background:var(--sf2);border:1.5px dashed var(--bd2);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0">🏛️</div>
+          <label class="prfbtns" style="cursor:pointer;font-size:12px;padding:8px 14px" for="partyBadgeFile">🖼️ اختر صورة الشعار</label>
+          <input type="file" id="partyBadgeFile" accept="image/*" style="display:none">
+        </div>
+        <div class="st" id="partyBadgeSt"></div>
         <div style="display:flex;gap:8px;justify-content:center;margin:8px 0" id="partyColors"></div>
         <select class="privsel" id="newPartyRole" style="width:100%;margin-top:4px;padding:10px;text-align:center"></select>
         <button class="addgrpbtn" style="margin-top:6px" onclick="createParty()">➕ تأسيس حزب</button>
@@ -2172,7 +2178,9 @@ async function renderParliamentTab(gid){
   }
   for(const p of parties){
     const row=document.createElement("div");row.className="partyrow";
-    const ico=document.createElement("div");ico.className="partyico";ico.style.cssText=`background:${p.color}22;color:${p.color}`;ico.textContent=p.badge||"🏛️";
+    const ico=document.createElement("div");ico.className="partyico";ico.style.cssText=`background:${p.color}22;color:${p.color};overflow:hidden`;
+    if(p.badge&&/^https?:\/\//.test(p.badge)){const bimg=document.createElement("img");bimg.src=p.badge;bimg.style.cssText="width:100%;height:100%;object-fit:cover";ico.appendChild(bimg);}
+    else ico.textContent=p.badge||"🏛️";
     const inf=document.createElement("div");inf.className="partyinf";
     const leaderU=await sbOne("users",{code_hash:p.leader_code_hash});
     inf.innerHTML=`<div class="partynm">${p.name}</div><div class="partymeta">${seatsMap[p.id]||0} مقعد • قائد: ${leaderU?.username||"..."}</div>`;
@@ -2277,7 +2285,8 @@ function renderPartyLegend(parties,seatsMap){
   wrap.innerHTML="";
   parties.forEach(p=>{
     const chip=document.createElement("div");chip.className="legchip";
-    chip.innerHTML=`<span class="legdot" style="background:${p.color}"></span>${p.badge||""} ${p.name} (${seatsMap[p.id]||0})`;
+    const badgeHtml=p.badge&&/^https?:\/\//.test(p.badge)?`<img src="${p.badge}" style="width:14px;height:14px;border-radius:4px;object-fit:cover;vertical-align:middle">`:(p.badge||"");
+    chip.innerHTML=`<span class="legdot" style="background:${p.color}"></span>${badgeHtml} ${p.name} (${seatsMap[p.id]||0})`;
     wrap.appendChild(chip);
   });
 }
@@ -2312,6 +2321,8 @@ window.createParty=async()=>{
   await sbIns("group_party_members",{party_id:partyId,group_id:activeGroup.id,code_hash:myHash});
   if(roleId)await sbUpd("group_members",{group_id:activeGroup.id,code_hash:myHash},{role_id:roleId});
   $("newPartyName").value="";
+  window._selPartyBadge=null;
+  $("partyBadgePreview").innerHTML="🏛️";
   $("partyCreateSt").className="st ok";$("partyCreateSt").textContent="✅ تم تأسيس الحزب";
   setTimeout(()=>$("partyCreateSt").textContent="",1500);
   renderParliamentTab(activeGroup.id);
@@ -2319,15 +2330,24 @@ window.createParty=async()=>{
 
 // اختيار شعار ولون الحزب (يُبنى عند فتح تاب البرلمان لأول مرة)
 function bindPartyPickers(){
-  const badgeWrap=$("partyBadges");
-  if(badgeWrap&&!badgeWrap.dataset.built){
-    badgeWrap.dataset.built="1";
-    window._selPartyBadge=PARTY_BADGES[0];
-    PARTY_BADGES.forEach(b=>{
-      const opt=document.createElement("div");opt.className="badgeopt"+(b===window._selPartyBadge?" sel":"");opt.textContent=b;
-      opt.onclick=()=>{window._selPartyBadge=b;badgeWrap.querySelectorAll(".badgeopt").forEach(d=>d.classList.remove("sel"));opt.classList.add("sel");};
-      badgeWrap.appendChild(opt);
-    });
+  const badgeFile=$("partyBadgeFile");
+  if(badgeFile&&!badgeFile.dataset.built){
+    badgeFile.dataset.built="1";
+    window._selPartyBadge=null; // null = يستخدم الأيقونة الافتراضية 🏛️
+    badgeFile.onchange=async e=>{
+      const f=e.target.files[0];if(!f)return;
+      $("partyBadgeSt").className="st";$("partyBadgeSt").textContent="⬆️ جارٍ رفع الصورة...";
+      const cm=await compress(f,300,.85);
+      const{ok,url}=await sbUp("avatars",`party_${newUUID()}.jpg`,cm);
+      if(ok){
+        window._selPartyBadge=url;
+        $("partyBadgePreview").innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+        $("partyBadgeSt").className="st ok";$("partyBadgeSt").textContent="✅ تم اختيار الصورة";
+      }else{
+        $("partyBadgeSt").className="st er";$("partyBadgeSt").textContent="❌ فشل رفع الصورة";
+      }
+      setTimeout(()=>$("partyBadgeSt").textContent="",2000);
+    };
   }
   const colorWrap=$("partyColors");
   if(colorWrap&&!colorWrap.dataset.built){
@@ -2896,7 +2916,24 @@ const prev=area.lastElementChild;const showAv=prev?.dataset?.sender!==msg.sender
 
 function updReacts(id,reactions){const row=document.querySelector(`.mrow[data-mid="${id}"]`);if(!row)return;const bar=row.querySelector(".rbar");if(!bar)return;bar.innerHTML="";Object.entries(reactions).forEach(([emoji,uids])=>{if(!uids)return;const cnt=Object.keys(uids).length;if(!cnt)return;const mine=!!uids[myId];const chip=document.createElement("div");chip.className=`rchip ${mine?"mn":""}`;chip.innerHTML=`${emoji}<span>${cnt}</span>`;chip.onclick=()=>togReact(id,bar.dataset.path,emoji);bar.appendChild(chip);});}
 function updRead(id,readBy){const tick=document.querySelector(`[data-tid="${id}"]`);if(!tick)return;const others=Object.keys(readBy||{}).filter(i=>i!==myId);tick.textContent=others.length?"✓✓":"✓";if(others.length)tick.classList.add("seen");else tick.classList.remove("seen");}
-async function togReact(id,path,emoji){const rr=ref(db,`${path}/${id}/reactions/${emoji}/${myId}`);onValue(rr,snap=>{if(snap.val())remove(rr);else set(rr,true);},{onlyOnce:true});closeAllPkr();}
+async function togReact(id,path,emoji){
+  const reactionsRef=ref(db,`${path}/${id}/reactions`);
+  onValue(reactionsRef,async snap=>{
+    const all=snap.val()||{};
+    const alreadyThis=!!all[emoji]?.[myId];
+    // امسح تفاعل المستخدم من أي إيموجي ثاني على نفس الرسالة (تفاعل واحد فقط لكل مستخدم)
+    const removals=[];
+    for(const em of Object.keys(all)){
+      if(em!==emoji&&all[em]?.[myId]){
+        removals.push(remove(ref(db,`${path}/${id}/reactions/${em}/${myId}`)));
+      }
+    }
+    await Promise.all(removals);
+    const myRef=ref(db,`${path}/${id}/reactions/${emoji}/${myId}`);
+    if(alreadyThis)await remove(myRef);else await set(myRef,true);
+  },{onlyOnce:true});
+  closeAllPkr();
+}
 function showPkr(id,path,row,btn){closeAllPkr();const pkr=document.createElement("div");pkr.className="epkr";EMOJIS.forEach(em=>{const o=document.createElement("span");o.className="eopt";o.textContent=em;o.onclick=()=>togReact(id,path,em);pkr.appendChild(o);});row.style.position="relative";row.appendChild(pkr);setTimeout(()=>document.addEventListener("click",closeAllPkr,{once:true}),100);}
 function closeAllPkr(){document.querySelectorAll(".epkr").forEach(p=>p.remove());}
 function setReply(msg){replyTo={id:msg.id,senderName:msg.senderName,text:msg.text};$("rplynm").textContent=msg.senderName;$("rplytx").textContent=(msg.text||"").slice(0,60);$("rplybar").classList.add("on");$("msgi").focus();}
