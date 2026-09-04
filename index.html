@@ -195,8 +195,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 .prfmeta{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
 .prfchip{font-size:10.5px;color:var(--tx2);background:var(--sf2);border:1px solid var(--bd2);border-radius:20px;padding:4px 11px;font-family:monospace;font-weight:700;display:none;align-items:center;gap:4px}
 .prfstatus{font-size:13px;font-weight:700;color:var(--tx);background:var(--sf2);border:1px solid var(--ac);border-radius:20px;padding:5px 14px;display:none;align-items:center;gap:6px;margin:8px auto 0;width:fit-content}
-.prffingerprint{width:88px;height:88px;margin:10px auto 4px;opacity:.85}
-.prffplabel{text-align:center;font-size:9.5px;color:var(--tx3);font-family:monospace;margin-bottom:10px}
+.prffingerprint{position:absolute;bottom:10px;left:10px;width:34px;height:34px;opacity:.5;z-index:2}
+.prffplabel{display:none}
 .editstatusrow{display:flex;gap:6px;align-items:center}
 .editstatusrow select{width:70px;flex-shrink:0}
 .auditrow{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--bd);font-size:12px}
@@ -205,6 +205,17 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 .auditinf{flex:1;line-height:1.6}
 .audittime{font-size:9.5px;color:var(--tx3);font-family:monospace}
 .chanactive{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ef4444;margin-right:3px;animation:prfpulse 1.4s ease-in-out infinite}
+
+/* بطاقة تصويت مصغّرة داخل المحادثة (تتحدث حيًا مع كل صوت) */
+.msgvotecard{max-width:280px;background:var(--sf2);border:1px solid var(--bd2);border-radius:16px;padding:12px;margin:4px 0}
+.msgvoteq{font-size:12.5px;font-weight:800;margin-bottom:8px}
+.msgvoteopt{margin-bottom:6px}
+.msgvoteoptlbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--tx2);margin-bottom:3px}
+.msgvotebar{height:18px;background:var(--sf);border-radius:7px;overflow:hidden}
+.msgvotebarfill{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .3s}
+.msgvotebtn{width:100%;margin-top:6px;padding:7px;border-radius:9px;background:var(--ac);color:#fff;border:none;font-size:11px;font-weight:800;cursor:pointer;font-family:'Lato',sans-serif}
+.msgvotebtn:disabled{opacity:.4}
+.msgvotestatus{font-size:9.5px;color:var(--tx3);font-family:monospace;margin-top:6px;text-align:center}
 .prfactions2{display:flex;gap:10px;margin-top:16px}
 .prfactions2 button{flex:1;padding:11px;border-radius:13px;font-size:13.5px;cursor:pointer;font-weight:900;font-family:'Lato',sans-serif;border:none}
 .prfbtnp{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff}
@@ -833,7 +844,7 @@ $("stgname").onclick=async()=>{
 $("stgcode").onclick=()=>{const c=window._myCode||"";if(c){cpTxt(c);$("stgst").textContent="✅ تم نسخ الكود!";setTimeout(()=>$("stgst").textContent="",2000);}};
 $("stgdev").onclick=()=>openDev();
 $("stgpriv").onclick=()=>openPrivacy();
-$("stglg").onclick=()=>{if(confirm("هل تريد تسجيل الخروج؟")){localStorage.removeItem("slm_code");localStorage.removeItem("slm_dms");location.reload();}};
+$("stglg").onclick=()=>{if(confirm("هل تريد تسجيل الخروج؟")){localStorage.removeItem("slm_code");location.reload();}};
 
 // Avatar
 $("avwrap").onclick=()=>$("avf").click();
@@ -939,11 +950,17 @@ async function openSettings(){$("stnm").textContent=myName;$("stpid").textConten
 
 function saveRecent(uid){let dms=JSON.parse(localStorage.getItem("slm_dms")||"[]");dms=dms.filter(i=>i!==uid);dms.unshift(uid);localStorage.setItem("slm_dms",JSON.stringify(dms.slice(0,20)));renderRecent();}
 function renderRecent(){const list=$("recentdms"),dms=JSON.parse(localStorage.getItem("slm_dms")||"[]");list.innerHTML="";if(!dms.length){list.innerHTML='<div style="padding:12px 16px;font-size:12px;color:var(--tx3);text-align:center;line-height:1.8">لا توجد محادثات<br><span style="color:var(--ac);font-weight:700;cursor:pointer" onclick="document.getElementById(\'srchi\').focus()">ابحث لإضافة صديق</span></div>';return;}dms.forEach(async uid=>{let u=users[uid];if(!u||u.name==="..."||!u.name){
-  // لو المستخدم مش متصل حالياً (مش موجود في Firebase presence)، اجلب بياناته الدائمة من Supabase
+  // لو المستخدم مش متصل حالياً (مش موجود في Firebase presence)، اجلب بياناته الدائمة (اسم/صورة) من Supabase فقط
+  // ملاحظة مهمة: لا نلمس حالة online هنا أبداً، لأن مصدرها الوحيد الموثوق هو Firebase presence (users[uid].online)
+  // ولتجنب مشكلة الكتابة فوق تحديث Firebase الحقيقي بسبب تأخر رد Supabase (race condition)
   try{
     const all=await sbGet("users");
     const su=(all||[]).find(x=>x.code_hash.slice(0,12)===uid);
-    if(su){u={id:uid,name:su.username||"...",avatarUrl:su.avatar_url||null,online:users[uid]?.online||false,publicId:su.public_id||""};users[uid]=u;}
+    if(su){
+      const liveOnline=users[uid]?.online||false; // نعيد قراءة الحالة الحية وقت الكتابة الفعلية، لا وقت بدء الطلب
+      u={id:uid,name:su.username||"...",avatarUrl:su.avatar_url||null,online:liveOnline,publicId:su.public_id||""};
+      users[uid]={...users[uid],...u,online:liveOnline};
+    }
   }catch(e){}
 }
 u=u||{id:uid,name:"...",online:false};
@@ -1273,7 +1290,7 @@ $("btncgrpdo").onclick=async()=>{
 };
 
 // ---- فتح محادثة المجموعة ----
-let activeChannelId=null,groupChannelsCache={},activeActivityRef=null;
+let activeChannelId=null,groupChannelsCache={},activeActivityRef=null,voteCardPollInterval=null;
 
 async function ensureDefaultChannel(gid){
   let chans=await sbGet("group_channels",{group_id:gid});
@@ -1387,6 +1404,18 @@ async function checkGroupPerm(gid,permField){
 // تسجيل حدث إداري في سجل النشاط (طرد، تغيير رتبة، كتم، حذف رسالة...)
 async function logAuditEvent(gid,actionType,targetHash,details){
   await sbIns("group_audit_log",{group_id:gid,actor_code_hash:myHash,action_type:actionType,target_code_hash:targetHash||null,details:details||null});
+  // إرسال رسالة نظام مرئية فورًا في الغرفة الافتراضية (زي ماسنجر/إنستقرام)
+  try{
+    const meta=AUDIT_LABELS[actionType];
+    if(!meta)return;
+    const chans=groupChannelsCache[gid]||await sbGet("group_channels",{group_id:gid});
+    const defaultChan=(chans||[]).find(c=>c.is_default)||(chans||[])[0];
+    if(!defaultChan)return;
+    let targetName="";
+    if(targetHash){const tu=await sbOne("users",{code_hash:targetHash});targetName=tu?.username||"";}
+    const sysText=`${meta.icon} ${myName} ${meta.label}${targetName?" "+targetName:""}${details?" ("+details+")":""}`;
+    push(ref(db,`groups/${gid}/channels/${defaultChan.id}/messages`),{type:"system",text:sysText,ts:Date.now(),senderId:"system"});
+  }catch(e){console.log("Audit system message failed:",e);}
 }
 
 const AUDIT_LABELS={
@@ -1459,6 +1488,7 @@ let channelActivity={}; // {channelId: lastMessageTimestamp}
 
 async function loadGroupCh(){
   if(activeRef){off(activeRef);activeRef=null;}
+  if(voteCardPollInterval){clearInterval(voteCardPollInterval);voteCardPollInterval=null;}
   loaded.clear();
   const area=$("msgs");
   $("chanbar").classList.add("on");
@@ -1495,6 +1525,16 @@ async function loadGroupCh(){
       if(msg.senderId!==myId)markRead(id,`groups/${activeCh.id}/channels/${activeChannelId}/messages`);
     }
   });
+
+  // تحديث دوري خفيف لبطاقات التصويت الحية الظاهرة على الشاشة (كل من صوّت يظهر تحديثه للجميع خلال ثوانٍ)
+  voteCardPollInterval=setInterval(async()=>{
+    const cards=document.querySelectorAll("[data-vote-id]");
+    for(const el of cards){
+      const voteId=el.dataset.voteId;
+      const vote=await sbOne("group_votes",{id:voteId});
+      if(vote)renderVoteCardIntoMessage(vote,el);
+    }
+  },8000);
 }
 
 async function sendGroupMsg(text){
@@ -1936,25 +1976,44 @@ window.submitNewVote=async(type,isParliamentary)=>{
   const hours=hoursStr?parseFloat(hoursStr):null;
   const endsAt=hours&&hours>0?new Date(Date.now()+hours*3600000).toISOString():null;
   const eligRoleId=isParliamentary?null:($("voteFormElig")?.value||null);
+  let newVoteId=null,newVoteQuestion="";
 
   if(type==="election"){
     const posId=$("voteFormPos").value;
     const pos=await sbOne("group_positions",{id:posId});
     const voteId=newUUID();
-    const{ok}=await sbIns("group_votes",{id:voteId,group_id:activeGroup.id,type:"election",position_id:posId,question:`انتخابات منصب: ${pos?.name}`,status:"nomination",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId});
+    newVoteQuestion=`انتخابات منصب: ${pos?.name}`;
+    const{ok}=await sbIns("group_votes",{id:voteId,group_id:activeGroup.id,type:"election",position_id:posId,question:newVoteQuestion,status:"nomination",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId});
     if(!ok){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ فشل الإنشاء";return;}
+    newVoteId=voteId;
   }else{
     const question=$("voteFormQuestion").value.trim();
     if(!question){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ أدخل سؤال الاستفتاء";return;}
     const optionInputs=[...document.querySelectorAll("#voteFormOptions input")].map(i=>i.value.trim()).filter(Boolean);
     if(optionInputs.length<2){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ أدخل خيارين على الأقل";return;}
     const voteId=newUUID();
+    newVoteQuestion=question;
     const{ok}=await sbIns("group_votes",{id:voteId,group_id:activeGroup.id,type:"referendum",question,status:"voting",ends_at:endsAt,created_by:myHash,eligible_role_id:eligRoleId,is_parliamentary:!!isParliamentary});
     if(!ok){$("voteFormSt").className="st er";$("voteFormSt").textContent="❌ فشل الإنشاء";return;}
     for(let i=0;i<optionInputs.length;i++){
       await sbIns("group_vote_options",{vote_id:voteId,label:optionInputs[i],position:i});
     }
+    newVoteId=voteId;
   }
+
+  // نشر بطاقة تصويت حية في الغرفة الافتراضية، تتحدث مباشرة مع كل صوت
+  if(newVoteId){
+    try{
+      const chans=groupChannelsCache[activeGroup.id]||await sbGet("group_channels",{group_id:activeGroup.id});
+      const defaultChan=(chans||[]).find(c=>c.is_default)||(chans||[])[0];
+      if(defaultChan){
+        const msgRef=push(ref(db,`groups/${activeGroup.id}/channels/${defaultChan.id}/messages`));
+        await set(msgRef,{type:"vote_card",voteId:newVoteId,text:newVoteQuestion,ts:Date.now(),senderId:"system"});
+        await sbUpd("group_votes",{id:newVoteId},{live_message_channel_id:defaultChan.id,live_message_id:msgRef.key});
+      }
+    }catch(e){console.log("Vote card post failed:",e);}
+  }
+
   if(isParliamentary){
     $("parliamentVoteFormWrap").innerHTML="";
     renderParliamentTab(activeGroup.id);
@@ -1964,8 +2023,115 @@ window.submitNewVote=async(type,isParliamentary)=>{
   }
 };
 
-// ============================================
-// الأحزاب والبرلمان
+// تحديث بطاقة التصويت الحية بعد كل صوت (لا تُنشئ رسالة جديدة، فقط تحدّث نفس الرسالة)
+async function refreshLiveVoteCard(vote){
+  if(!vote.live_message_channel_id||!vote.live_message_id)return;
+  const container=document.querySelector(`[data-mid="${vote.live_message_id}"]`);
+  if(!container)return; // الرسالة مش ظاهرة حاليًا في الشاشة، هتتحدث تلقائيًا وقت فتحها من جديد
+  await renderVoteCardIntoMessage(vote,container);
+}
+
+// يبني/يحدّث محتوى بطاقة التصويت المصغّرة داخل رسالة النظام
+async function renderVoteCardIntoMessage(vote,container){
+  let card=container.querySelector(".msgvotecard");
+  if(!card){card=document.createElement("div");card.className="msgvotecard";container.appendChild(card);}
+  card.innerHTML="";
+
+  const qEl=document.createElement("div");qEl.className="msgvoteq";
+  qEl.textContent=(vote.type==="election"?"🏛️ ":vote.is_parliamentary?"🏛️ ":"📊 ")+vote.question;
+  card.appendChild(qEl);
+
+  const myBallot=await sbOne("group_vote_ballots",{vote_id:vote.id,voter_code_hash:myHash});
+  let eligible=true,eligRoleName=null;
+  if(vote.eligible_role_id){
+    const eligRole=await sbOne("group_roles",{id:vote.eligible_role_id});
+    eligRoleName=eligRole?.name||"محدودة";
+    const myMem=await sbOne("group_members",{group_id:vote.group_id,code_hash:myHash});
+    eligible=myMem?.role_id===vote.eligible_role_id;
+  }
+
+  if(vote.type==="election"){
+    const candidates=(await sbGet("group_vote_candidates",{vote_id:vote.id}))||[];
+    const ballots=(await sbGet("group_vote_ballots",{vote_id:vote.id}))||[];
+    const total=ballots.length;
+    for(const c of candidates){
+      const u=await sbOne("users",{code_hash:c.code_hash});
+      const cnt=ballots.filter(b=>b.candidate_code_hash===c.code_hash).length;
+      const pct=total?Math.round(cnt/total*100):0;
+      const optDiv=document.createElement("div");optDiv.className="msgvoteopt";
+      optDiv.innerHTML=`<div class="msgvoteoptlbl"><span>${u?.username||"..."}</span><span>${cnt} (${pct}%)</span></div><div class="msgvotebar"><div class="msgvotebarfill" style="width:${pct}%"></div></div>`;
+      card.appendChild(optDiv);
+    }
+    if(vote.status==="nomination"){
+      const iAmCandidate=candidates.some(c=>c.code_hash===myHash);
+      if(!iAmCandidate&&eligible){
+        const btn=document.createElement("button");btn.className="msgvotebtn";btn.textContent="✋ رشّح نفسك";
+        btn.onclick=async()=>{await submitNomination(vote.id);const fresh=await sbOne("group_votes",{id:vote.id});renderVoteCardIntoMessage(fresh,container);};
+        card.appendChild(btn);
+      }
+    }else if(vote.status==="voting"&&eligible){
+      const sel=document.createElement("select");sel.className="privsel";sel.style.cssText="width:100%;margin-top:4px;padding:7px";
+      sel.innerHTML=`<option value="">اختر مرشحًا للتصويت...</option>`+candidates.map(c=>`<option value="${c.code_hash}">${c.code_hash}</option>`).join("");
+      // استبدال القيم بأسماء حقيقية
+      for(const opt of sel.querySelectorAll("option[value]")){if(!opt.value)continue;const cu=await sbOne("users",{code_hash:opt.value});opt.textContent=cu?.username||opt.value.slice(0,8);}
+      const btn=document.createElement("button");btn.className="msgvotebtn";btn.textContent=myBallot?"✓ صوّت":"صوّت";btn.disabled=!!myBallot;
+      btn.onclick=async()=>{if(!sel.value)return;await castBallot(vote.id,{candidate_code_hash:sel.value});const fresh=await sbOne("group_votes",{id:vote.id});renderVoteCardIntoMessage(fresh,container);};
+      if(!myBallot){card.appendChild(sel);}
+      card.appendChild(btn);
+    }
+  }else{
+    const options=(await sbGet("group_vote_options",{vote_id:vote.id}))||[];
+    let ballots,totalWeight;
+    if(vote.is_parliamentary){
+      ballots=(await sbGet("group_parliamentary_ballots",{vote_id:vote.id}))||[];
+      const parties=(await sbGet("group_parties",{group_id:vote.group_id}))||[];
+      const partyMembers=(await sbGet("group_party_members",{group_id:vote.group_id}))||[];
+      totalWeight=partyMembers.length;
+      const myParty=parties.find(p=>p.leader_code_hash===myHash);
+      for(const o of options.sort((a,b)=>a.position-b.position)){
+        const w=ballots.filter(b=>b.option_id===o.id).reduce((s,b)=>s+b.seats_at_vote,0);
+        const pct=totalWeight?Math.round(w/totalWeight*100):0;
+        const optDiv=document.createElement("div");optDiv.className="msgvoteopt";
+        optDiv.innerHTML=`<div class="msgvoteoptlbl"><span>${o.label}</span><span>${w} مقعد (${pct}%)</span></div><div class="msgvotebar"><div class="msgvotebarfill" style="width:${pct}%"></div></div>`;
+        card.appendChild(optDiv);
+      }
+      if(vote.status==="voting"&&myParty){
+        const myPartyVoted=ballots.find(b=>b.party_id===myParty.id);
+        const sel=document.createElement("select");sel.className="privsel";sel.style.cssText="width:100%;margin-top:4px;padding:7px";
+        sel.innerHTML=options.map(o=>`<option value="${o.id}">${o.label}</option>`).join("");
+        const btn=document.createElement("button");btn.className="msgvotebtn";btn.textContent=myPartyVoted?"✓ صوّت حزبك":"صوّت (نيابة عن حزبك)";btn.disabled=!!myPartyVoted;
+        const partyMemberCount=partyMembers.filter(pm=>pm.party_id===myParty.id).length;
+        btn.onclick=async()=>{await castPartyBallot(vote,myParty,sel.value,partyMemberCount);const fresh=await sbOne("group_votes",{id:vote.id});renderVoteCardIntoMessage(fresh,container);};
+        if(!myPartyVoted)card.appendChild(sel);
+        card.appendChild(btn);
+      }
+    }else{
+      ballots=(await sbGet("group_vote_ballots",{vote_id:vote.id}))||[];
+      totalWeight=ballots.length;
+      for(const o of options.sort((a,b)=>a.position-b.position)){
+        const cnt=ballots.filter(b=>b.option_id===o.id).length;
+        const pct=totalWeight?Math.round(cnt/totalWeight*100):0;
+        const optDiv=document.createElement("div");optDiv.className="msgvoteopt";
+        optDiv.innerHTML=`<div class="msgvoteoptlbl"><span>${o.label}</span><span>${cnt} (${pct}%)</span></div><div class="msgvotebar"><div class="msgvotebarfill" style="width:${pct}%"></div></div>`;
+        card.appendChild(optDiv);
+      }
+      if(vote.status==="voting"&&eligible){
+        const sel=document.createElement("select");sel.className="privsel";sel.style.cssText="width:100%;margin-top:4px;padding:7px";
+        sel.innerHTML=options.map(o=>`<option value="${o.id}">${o.label}</option>`).join("");
+        const btn=document.createElement("button");btn.className="msgvotebtn";btn.textContent=myBallot?"✓ صوّت":"صوّت";btn.disabled=!!myBallot;
+        btn.onclick=async()=>{await castBallot(vote.id,{option_id:sel.value});const fresh=await sbOne("group_votes",{id:vote.id});renderVoteCardIntoMessage(fresh,container);};
+        if(!myBallot)card.appendChild(sel);
+        card.appendChild(btn);
+      }
+    }
+  }
+
+  const statusEl=document.createElement("div");statusEl.className="msgvotestatus";
+  statusEl.textContent=vote.status==="closed"?"✅ مغلق":vote.status==="nomination"?"🗳️ فترة ترشح":"📊 التصويت جارٍ"+(eligRoleName&&!eligible?" • 🔒 مقصور على: "+eligRoleName:"");
+  card.appendChild(statusEl);
+}
+
+
 // ============================================
 const PARTY_BADGES=["🦅","🐺","🔥","⚔️","🛡️","🌹","⭐","🔱","☭","🐻","🦁","🕊️"];
 const PARTY_COLORS=["#ef4444","#3b82f6","#22c55e","#eab308","#a855f7","#f97316","#06b6d4","#ec4899","#64748b","#84cc16"];
@@ -2714,7 +2880,7 @@ async function openDM(uid,el){document.querySelectorAll(".chi,.grpchi").forEach(
 
 async function dkf(p,s){return dk(p,s);}
 
-function loadCh(){if(activeCh.type==="group"){$("inpa").style.display="block";loadGroupCh();return;}if(activeActivityRef){off(activeActivityRef);activeActivityRef=null;}$("chanbar").classList.remove("on");$("msgi").disabled=false;$("pinbarwrap").innerHTML="";if(activeRef){off(activeRef);activeRef=null;}loaded.clear();const area=$("msgs");if(activeCh.type==="none"){$("inpa").style.display="none";area.innerHTML='<div class="empty"><div class="eico">💬</div><p>لا توجد محادثات بعد<br><span onclick="openSB()">ابحث لإضافة صديق</span></p></div>';$("hdrn").textContent="سلماني شات";$("hdrs").textContent="ابدأ محادثة جديدة";$("hdri").style.cursor="default";$("hdri").onclick=null;return;}$("inpa").style.display="block";area.innerHTML='<div class="sysmsg">🔐 رسائل مشفرة • تختفي بعد 48 ساعة</div>';const u=users[activeCh.id];$("hdrn").textContent=u?.name||"...";$("hdrs").textContent="رسالة خاصة • AES-256-GCM";$("msgi").placeholder=`رسالة لـ ${u?.name||"..."}`;$("hdri").style.cursor="pointer";$("hdri").onclick=()=>openProfile({id:activeCh.id,name:u?.name,publicId:u?.publicId,avatarUrl:u?.avatarUrl,online:u?.online});const dkey=DMK(myId,activeCh.id);const dbRef=ref(db,`dms/${dkey}/messages`);activeRef=dbRef;const cut=Date.now()-48*60*60*1000;onValue(dbRef,async snap=>{const d=snap.val();if(!d)return;for(const[id,msg]of Object.entries(d)){if(loaded.has(id)){updReacts(id,msg.reactions||{});updRead(id,msg.readBy||{});updBbl(id,msg);continue;}if(msg.ts<cut)continue;loaded.add(id);let text=msg.text||"";if(msg.type!=="image"&&msg.ciphertext){if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);text=await dec(dmk2[dkey],msg.ciphertext);}appendBbl({...msg,id,text},msg.senderId===myId,`dms/${dkey}/messages`);if(msg.senderId!==myId)markRead(id,`dms/${dkey}/messages`);}});}
+function loadCh(){if(activeCh.type==="group"){$("inpa").style.display="block";loadGroupCh();return;}if(voteCardPollInterval){clearInterval(voteCardPollInterval);voteCardPollInterval=null;}if(activeActivityRef){off(activeActivityRef);activeActivityRef=null;}$("chanbar").classList.remove("on");$("msgi").disabled=false;$("pinbarwrap").innerHTML="";if(activeRef){off(activeRef);activeRef=null;}loaded.clear();const area=$("msgs");if(activeCh.type==="none"){$("inpa").style.display="none";area.innerHTML='<div class="empty"><div class="eico">💬</div><p>لا توجد محادثات بعد<br><span onclick="openSB()">ابحث لإضافة صديق</span></p></div>';$("hdrn").textContent="سلماني شات";$("hdrs").textContent="ابدأ محادثة جديدة";$("hdri").style.cursor="default";$("hdri").onclick=null;return;}$("inpa").style.display="block";area.innerHTML='<div class="sysmsg">🔐 رسائل مشفرة • تختفي بعد 48 ساعة</div>';const u=users[activeCh.id];$("hdrn").textContent=u?.name||"...";$("hdrs").textContent="رسالة خاصة • AES-256-GCM";$("msgi").placeholder=`رسالة لـ ${u?.name||"..."}`;$("hdri").style.cursor="pointer";$("hdri").onclick=()=>openProfile({id:activeCh.id,name:u?.name,publicId:u?.publicId,avatarUrl:u?.avatarUrl,online:u?.online});const dkey=DMK(myId,activeCh.id);const dbRef=ref(db,`dms/${dkey}/messages`);activeRef=dbRef;const cut=Date.now()-48*60*60*1000;onValue(dbRef,async snap=>{const d=snap.val();if(!d)return;for(const[id,msg]of Object.entries(d)){if(loaded.has(id)){updReacts(id,msg.reactions||{});updRead(id,msg.readBy||{});updBbl(id,msg);continue;}if(msg.ts<cut)continue;loaded.add(id);let text=msg.text||"";if(msg.type!=="image"&&msg.ciphertext){if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);text=await dec(dmk2[dkey],msg.ciphertext);}appendBbl({...msg,id,text},msg.senderId===myId,`dms/${dkey}/messages`);if(msg.senderId!==myId)markRead(id,`dms/${dkey}/messages`);}});}
 
 async function markRead(id,path){await update(ref(db,`${path}/${id}/readBy`),{[myId]:true});}
 
@@ -2723,7 +2889,10 @@ window.sendMsg=sendMsg;
 
 async function updBbl(id,msg){const row=document.querySelector(`.mrow[data-mid="${id}"]`);if(!row)return;const bbl=row.querySelector(".bbl");if(!bbl)return;if(msg.deleted){if(!isDev){bbl.innerHTML='<span style="opacity:.5;font-style:italic;font-size:12px">🗑️ تم حذف هذه الرسالة</span>';bbl.style.background="var(--sf2)";bbl.style.border="1px solid var(--bd2)";}else{bbl.style.opacity="0.6";bbl.style.borderStyle="dashed";}}else if(msg.edited&&msg.ciphertext){const dkey=DMK(myId,activeCh.id);if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);const newText=await dec(dmk2[dkey],msg.ciphertext);const txEl=bbl.querySelector(".txtcnt");if(txEl)txEl.textContent=newText;if(!bbl.querySelector(".edittag")){const tag=document.createElement("div");tag.className="edittag";tag.style.cssText="font-size:9px;color:var(--tx3);font-family:monospace;margin-top:2px";tag.textContent="(معدّلة)";bbl.appendChild(tag);}}}
 
-function appendBbl(msg,isMe,path){const area=$("msgs");const empty=area.querySelector(".empty");if(empty)empty.remove();const prev=area.lastElementChild;const showAv=prev?.dataset?.sender!==msg.senderId;const row=document.createElement("div");row.className=`mrow ${isMe?"me":""}`;row.dataset.sender=msg.senderId;row.dataset.mid=msg.id;const avw=document.createElement("div");if(showAv){avw.style.cursor="pointer";avw.onclick=()=>openProfile({id:msg.senderId,name:msg.senderName,publicId:msg.publicId,avatarUrl:msg.avatarUrl,online:!!users[msg.senderId]?.online});avw.appendChild(mkAv(msg.senderName||"?",msg.senderId,30,msg.avatarUrl));}else{avw.className="mav gh";}const body=document.createElement("div");body.className="mbody";if(showAv&&!isMe){const n=document.createElement("div");n.className="msdr";n.textContent=`${msg.roleBadge?msg.roleBadge+" ":""}${msg.senderName} ${msg.publicId||""}`;body.appendChild(n);}const bbl=document.createElement("div");bbl.className=`bbl ${isMe?"mn":"th"}${msg.deleted?" del":""}`;if(msg.replyTo){const rp=document.createElement("div");rp.className="rply";rp.innerHTML=`<div class="rplynm">${msg.replyTo.senderName}</div><div>${(msg.replyTo.text||"").slice(0,60)}</div>`;bbl.appendChild(rp);}if(msg.deleted&&!isDev){bbl.innerHTML+='<span style="opacity:.5;font-style:italic;font-size:12px">🗑️ تم حذف هذه الرسالة</span>';}else if(msg.type==="image"&&msg.imageUrl){const img=document.createElement("img");img.className="cimg";img.src=msg.imageUrl;img.onclick=()=>window.open(msg.imageUrl,"_blank");bbl.appendChild(img);}else{const tx=document.createElement("div");tx.className="txtcnt";tx.textContent=msg.text;bbl.appendChild(tx);}if(msg.deleted&&isDev){const tag=document.createElement("div");tag.style.cssText="font-size:9px;color:var(--ac3);font-family:monospace;margin-top:3px";tag.textContent="🗑️ محذوفة (مرئية للمطور)";bbl.appendChild(tag);}if(msg.edited&&!msg.deleted){const tag=document.createElement("div");tag.className="edittag";tag.style.cssText="font-size:9px;color:var(--tx3);font-family:monospace;margin-top:2px";tag.textContent="(معدّلة)";bbl.appendChild(tag);}const ft2=document.createElement("div");ft2.className="mft";const tm=document.createElement("div");tm.className="mtime";tm.innerHTML=`🔒 ${ft(msg.ts)}`;const isGroupMsg=path.startsWith("groups/");if(isMe){const tick=document.createElement("span");tick.className="tick";tick.dataset.tid=msg.id;tick.textContent="✓";ft2.appendChild(tm);ft2.appendChild(tick);if(!msg.deleted){const eb=document.createElement("button");eb.className="mbtn2";eb.textContent="✏️";eb.onclick=e=>{e.stopPropagation();editMsg(msg.id,path,msg.text);};const db2=document.createElement("button");db2.className="mbtn2";db2.textContent="🗑️";db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(eb);ft2.appendChild(db2);}if(isGroupMsg&&!msg.deleted){const pb=document.createElement("button");pb.className="msgactpin";pb.textContent="📌";pb.title="تثبيت";pb.onclick=e=>{e.stopPropagation();pinGroupMessage(msg.id,msg.text);};ft2.appendChild(pb);}const rb=document.createElement("span");rb.className="rbtn";rb.textContent="☺";rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);}else{const rb=document.createElement("span");rb.className="rbtn";rb.textContent="☺";rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);if(isGroupMsg&&!msg.deleted){const pb=document.createElement("button");pb.className="msgactpin";pb.textContent="📌";pb.title="تثبيت";pb.onclick=e=>{e.stopPropagation();pinGroupMessage(msg.id,msg.text);};ft2.appendChild(pb);}if(isDev&&!msg.deleted){const db2=document.createElement("button");db2.className="mbtn2";db2.textContent="🗑️";db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(db2);}ft2.appendChild(tm);}body.appendChild(bbl);body.appendChild(ft2);const rbar=document.createElement("div");rbar.className="rbar";rbar.dataset.path=path;body.appendChild(rbar);let ptm;bbl.addEventListener("touchstart",()=>{ptm=setTimeout(()=>setReply(msg),500);});bbl.addEventListener("touchend",()=>clearTimeout(ptm));bbl.ondblclick=()=>setReply(msg);if(isMe){row.appendChild(body);row.appendChild(avw);}else{row.appendChild(avw);row.appendChild(body);}area.appendChild(row);area.scrollTop=area.scrollHeight;if(msg.reactions)updReacts(msg.id,msg.reactions);if(msg.readBy)updRead(msg.id,msg.readBy);}
+function appendBbl(msg,isMe,path){const area=$("msgs");const empty=area.querySelector(".empty");if(empty)empty.remove();
+if(msg.type==="system"){const sm=document.createElement("div");sm.className="sysmsg";sm.dataset.mid=msg.id;sm.textContent=msg.text;area.appendChild(sm);area.scrollTop=area.scrollHeight;return;}
+if(msg.type==="vote_card"){const wrap=document.createElement("div");wrap.className="sysmsg";wrap.style.cssText="display:flex;justify-content:center";wrap.dataset.mid=msg.id;wrap.dataset.voteId=msg.voteId;const card=document.createElement("div");card.className="msgvotecard";wrap.appendChild(card);area.appendChild(wrap);area.scrollTop=area.scrollHeight;sbOne("group_votes",{id:msg.voteId}).then(vote=>{if(vote)renderVoteCardIntoMessage(vote,wrap);});return;}
+const prev=area.lastElementChild;const showAv=prev?.dataset?.sender!==msg.senderId;const row=document.createElement("div");row.className=`mrow ${isMe?"me":""}`;row.dataset.sender=msg.senderId;row.dataset.mid=msg.id;const avw=document.createElement("div");if(showAv){avw.style.cursor="pointer";avw.onclick=()=>openProfile({id:msg.senderId,name:msg.senderName,publicId:msg.publicId,avatarUrl:msg.avatarUrl,online:!!users[msg.senderId]?.online});avw.appendChild(mkAv(msg.senderName||"?",msg.senderId,30,msg.avatarUrl));}else{avw.className="mav gh";}const body=document.createElement("div");body.className="mbody";if(showAv&&!isMe){const n=document.createElement("div");n.className="msdr";n.textContent=`${msg.roleBadge?msg.roleBadge+" ":""}${msg.senderName} ${msg.publicId||""}`;body.appendChild(n);}const bbl=document.createElement("div");bbl.className=`bbl ${isMe?"mn":"th"}${msg.deleted?" del":""}`;if(msg.replyTo){const rp=document.createElement("div");rp.className="rply";rp.innerHTML=`<div class="rplynm">${msg.replyTo.senderName}</div><div>${(msg.replyTo.text||"").slice(0,60)}</div>`;bbl.appendChild(rp);}if(msg.deleted&&!isDev){bbl.innerHTML+='<span style="opacity:.5;font-style:italic;font-size:12px">🗑️ تم حذف هذه الرسالة</span>';}else if(msg.type==="image"&&msg.imageUrl){const img=document.createElement("img");img.className="cimg";img.src=msg.imageUrl;img.onclick=()=>window.open(msg.imageUrl,"_blank");bbl.appendChild(img);}else{const tx=document.createElement("div");tx.className="txtcnt";tx.textContent=msg.text;bbl.appendChild(tx);}if(msg.deleted&&isDev){const tag=document.createElement("div");tag.style.cssText="font-size:9px;color:var(--ac3);font-family:monospace;margin-top:3px";tag.textContent="🗑️ محذوفة (مرئية للمطور)";bbl.appendChild(tag);}if(msg.edited&&!msg.deleted){const tag=document.createElement("div");tag.className="edittag";tag.style.cssText="font-size:9px;color:var(--tx3);font-family:monospace;margin-top:2px";tag.textContent="(معدّلة)";bbl.appendChild(tag);}const ft2=document.createElement("div");ft2.className="mft";const tm=document.createElement("div");tm.className="mtime";tm.innerHTML=`🔒 ${ft(msg.ts)}`;const isGroupMsg=path.startsWith("groups/");if(isMe){const tick=document.createElement("span");tick.className="tick";tick.dataset.tid=msg.id;tick.textContent="✓";ft2.appendChild(tm);ft2.appendChild(tick);if(!msg.deleted){const eb=document.createElement("button");eb.className="mbtn2";eb.textContent="✏️";eb.onclick=e=>{e.stopPropagation();editMsg(msg.id,path,msg.text);};const db2=document.createElement("button");db2.className="mbtn2";db2.textContent="🗑️";db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(eb);ft2.appendChild(db2);}if(isGroupMsg&&!msg.deleted){const pb=document.createElement("button");pb.className="msgactpin";pb.textContent="📌";pb.title="تثبيت";pb.onclick=e=>{e.stopPropagation();pinGroupMessage(msg.id,msg.text);};ft2.appendChild(pb);}const rb=document.createElement("span");rb.className="rbtn";rb.textContent="☺";rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);}else{const rb=document.createElement("span");rb.className="rbtn";rb.textContent="☺";rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);if(isGroupMsg&&!msg.deleted){const pb=document.createElement("button");pb.className="msgactpin";pb.textContent="📌";pb.title="تثبيت";pb.onclick=e=>{e.stopPropagation();pinGroupMessage(msg.id,msg.text);};ft2.appendChild(pb);}if(isDev&&!msg.deleted){const db2=document.createElement("button");db2.className="mbtn2";db2.textContent="🗑️";db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(db2);}ft2.appendChild(tm);}body.appendChild(bbl);body.appendChild(ft2);const rbar=document.createElement("div");rbar.className="rbar";rbar.dataset.path=path;body.appendChild(rbar);let ptm;bbl.addEventListener("touchstart",()=>{ptm=setTimeout(()=>setReply(msg),500);});bbl.addEventListener("touchend",()=>clearTimeout(ptm));bbl.ondblclick=()=>setReply(msg);if(isMe){row.appendChild(body);row.appendChild(avw);}else{row.appendChild(avw);row.appendChild(body);}area.appendChild(row);area.scrollTop=area.scrollHeight;if(msg.reactions)updReacts(msg.id,msg.reactions);if(msg.readBy)updRead(msg.id,msg.readBy);}
 
 function updReacts(id,reactions){const row=document.querySelector(`.mrow[data-mid="${id}"]`);if(!row)return;const bar=row.querySelector(".rbar");if(!bar)return;bar.innerHTML="";Object.entries(reactions).forEach(([emoji,uids])=>{if(!uids)return;const cnt=Object.keys(uids).length;if(!cnt)return;const mine=!!uids[myId];const chip=document.createElement("div");chip.className=`rchip ${mine?"mn":""}`;chip.innerHTML=`${emoji}<span>${cnt}</span>`;chip.onclick=()=>togReact(id,bar.dataset.path,emoji);bar.appendChild(chip);});}
 function updRead(id,readBy){const tick=document.querySelector(`[data-tid="${id}"]`);if(!tick)return;const others=Object.keys(readBy||{}).filter(i=>i!==myId);tick.textContent=others.length?"✓✓":"✓";if(others.length)tick.classList.add("seen");else tick.classList.remove("seen");}
