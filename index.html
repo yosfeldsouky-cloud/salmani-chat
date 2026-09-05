@@ -197,7 +197,6 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 .prfstatus{font-size:13px;font-weight:700;color:var(--tx);background:var(--sf2);border:1px solid var(--ac);border-radius:20px;padding:5px 14px;display:none;align-items:center;gap:6px;margin:8px auto 0;width:fit-content}
 .prfbody2{position:relative}
 .prffingerprint{position:absolute;bottom:10px;left:10px;width:44px;height:44px;opacity:.85;z-index:2}
-.prffplabel{display:none}
 .editstatusrow{display:flex;gap:6px;align-items:center}
 .editstatusrow select{width:70px;flex-shrink:0}
 .auditrow{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--bd);font-size:12px}
@@ -360,26 +359,26 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 
 <div class="scr" id="swel">
   <div class="card">
-    <div class="logo">🔐</div>
+    <div class="logo"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9.807V6a1 1 0 00-1-1c-2 0-4.49-1.19-6.24-2.72a1.17 1.17 0 00-1.52 0C9.5 3.8 7 5 5 5a1 1 0 00-1 1v7c0 3.88 2.107 6.254 5 7.796"/><path d="M19 17v-2a2 2 0 00-4 0v2"/><rect x="13" y="17" width="8" height="5" rx="1"/></svg></div>
     <div class="ttl">سلماني شات</div>
     <div class="sub">محادثات مشفرة • هوية دائمة • رسائل تختفي بعد 48 ساعة</div>
-    <div class="pills"><div class="pill">🔑 AES-256</div><div class="pill">👻 48 ساعة</div><div class="pill">🆔 كود دائم</div></div>
-    <button class="btn" id="btnreg">تسجيل جديد ✨</button>
-    <button class="btn btn-ol" id="btnlog">لدي كود — دخول 🔑</button>
+    <div class="pills"><div class="pill">AES-256</div><div class="pill">48 ساعة</div><div class="pill">🆔 كود دائم</div></div>
+    <button class="btn" id="btnreg">تسجيل جديد</button>
+    <button class="btn btn-ol" id="btnlog">لدي كود — دخول</button>
     <div class="st" id="welst"></div>
   </div>
 </div>
 
 <div class="scr hide" id="sreg">
   <div class="card">
-    <div class="logo">✨</div>
+    <div class="logo"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/></svg></div>
     <div class="ttl">حساب جديد</div>
     <div class="sub">اختر اسمك — سيكون ثابتاً إلى الأبد</div>
-    <div class="avwrap" id="avwrap"><div class="avph" id="avph">📷</div><div class="avbtn">✏️</div><input type="file" id="avf" accept="image/*"></div>
+    <div class="avwrap" id="avwrap"><div class="avph" id="avph"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg></div><div class="avbtn"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></div><input type="file" id="avf" accept="image/*"></div>
     <input class="inp" id="regn" placeholder="اسمك (يظهر للجميع)..." maxlength="20">
     <input class="inp" id="regh" placeholder="@يوزرك (اختياري - بدون @)..." maxlength="20" style="direction:ltr;text-align:left">
     <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-family:monospace">يمكن تغييره لاحقاً مرة كل 30 يوم</div>
-    <button class="btn" id="btndo">إنشاء حساب وكود دائم 🔐</button>
+    <button class="btn" id="btndo">إنشاء حساب وكود دائم</button>
     <button class="btn btn-ol" id="btnrb">رجوع</button>
     <div class="st" id="regst"></div>
   </div>
@@ -387,46 +386,47 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 
 <div class="scr hide" id="scod">
   <div class="card">
-    <div class="logo">🔑</div>
+    <div class="logo"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg></div>
     <div class="ttl">كودك الدائم</div>
     <div class="sub">احفظه الآن — لن يظهر مرة ثانية!</div>
-    <div class="cbox"><div class="cval" id="cval"></div><div class="csub">كودك الدائم • لا تشاركه أبداً</div><div class="cwarn">⚠️ لن يظهر مرة ثانية!</div></div>
-    <button class="btn" id="btncpy">نسخ الكود 📋</button>
-    <button class="btn btn-ol" id="btnent">دخول التطبيق ✅</button>
+    <div class="cbox"><div class="cval" id="cval"></div><div class="csub">كودك الدائم • لا تشاركه أبداً</div><div class="cwarn"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> لن يظهر مرة ثانية!</div></div>
+    <button class="btn" id="btncpy">نسخ الكود</button>
+    <button class="btn btn-ol" id="btnent">دخول التطبيق</button>
   </div>
 </div>
 
 <div class="scr hide" id="slog">
   <div class="card">
-    <div class="logo">🔑</div>
+    <div class="logo"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg></div>
     <div class="ttl">دخول بالكود</div>
     <div class="sub">أدخل كودك الدائم</div>
     <input class="inp" id="logc" placeholder="مثال: 2-13-47-83-167*" maxlength="40" style="text-align:center;letter-spacing:2px;font-family:monospace">
-    <button class="btn" id="btndol">دخول 🔐</button>
+    <button class="btn" id="btndol">دخول</button>
     <button class="btn btn-ol" id="btnlb">رجوع</button>
     <div class="st" id="logst"></div>
   </div>
 </div>
 
+
 <div class="scr hide" id="sstg">
   <div class="card" style="max-width:420px">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
-      <button style="background:none;border:none;color:var(--tx2);font-size:22px;cursor:pointer" id="btnstgb">←</button>
-      <div class="ttl" style="margin:0">الإعدادات ⚙️</div>
+      <button style="background:none;border:none;color:var(--tx2);font-size:22px;cursor:pointer" id="btnstgb"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/></svg></button>
+      <div class="ttl" style="margin:0">الإعدادات</div>
     </div>
     <div style="text-align:center;margin-bottom:22px">
-      <div class="avwrap" id="stavwrap"><div class="avph" id="stavph">📷</div><div class="avbtn">✏️</div><input type="file" id="stavf" accept="image/*"></div>
+      <div class="avwrap" id="stavwrap"><div class="avph" id="stavph"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg></div><div class="avbtn"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></div><input type="file" id="stavf" accept="image/*"></div>
       <div style="font-size:16px;font-weight:900;margin-top:8px" id="stnm"></div>
       <div style="font-size:11px;color:var(--ac);font-family:monospace;font-weight:700" id="stpid"></div>
     </div>
     <div>
-      <div class="stgrow" id="stgav"><span class="stgico">🖼️</span><div class="stgi"><div class="stgn">تغيير صورة البروفايل</div><div class="stgs">JPG أو PNG</div></div><span class="stgar">›</span></div>
+      <div class="stgrow" id="stgav"><span class="stgico"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><div class="stgi"><div class="stgn">تغيير صورة البروفايل</div><div class="stgs">JPG أو PNG</div></div><span class="stgar">›</span></div>
       <div class="stgrow" id="stghandle"><span class="stgico">@</span><div class="stgi"><div class="stgn">تغيير اليوزر</div><div class="stgs" id="currenthandle">جارٍ التحميل...</div></div><span class="stgar">›</span></div>
-      <div class="stgrow" id="stgname"><span class="stgico">✏️</span><div class="stgi"><div class="stgn">تغيير الاسم</div><div class="stgs" id="currentname">جارٍ التحميل...</div></div><span class="stgar">›</span></div>
-      <div class="stgrow" id="stgcode"><span class="stgico">🔑</span><div class="stgi"><div class="stgn">عرض كودي</div><div class="stgs">انسخ كودك الدائم</div></div><span class="stgar">›</span></div>
-      <div class="stgrow" id="stgpriv"><span class="stgico">🕶️</span><div class="stgi"><div class="stgn">الخصوصية</div><div class="stgs">تحكم بمن يرى معلوماتك</div></div><span class="stgar">›</span></div>
-      <div class="stgrow" id="stgdev" style="display:none"><span class="stgico">👑</span><div class="stgi"><div class="stgn">لوحة المطور</div><div class="stgs">إدارة المستخدمين</div></div><span class="stgar">›</span></div>
-      <div class="stgrow" id="stglg"><span class="stgico">🚪</span><div class="stgi"><div class="stgn" style="color:var(--ac3)">تسجيل الخروج</div><div class="stgs">ستحتاج كودك للدخول</div></div><span class="stgar">›</span></div>
+      <div class="stgrow" id="stgname"><span class="stgico"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></span><div class="stgi"><div class="stgn">تغيير الاسم</div><div class="stgs" id="currentname">جارٍ التحميل...</div></div><span class="stgar">›</span></div>
+      <div class="stgrow" id="stgcode"><span class="stgico"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg></span><div class="stgi"><div class="stgn">عرض كودي</div><div class="stgs">انسخ كودك الدائم</div></div><span class="stgar">›</span></div>
+      <div class="stgrow" id="stgpriv"><span class="stgico"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.686 15A14.5 14.5 0 0 1 12 22a14.5 14.5 0 0 1 0-20 10 10 0 1 0 9.542 13"/><path d="M2 12h8.5"/><path d="M20 6V4a2 2 0 1 0-4 0v2"/><rect width="8" height="5" x="14" y="6" rx="1"/></svg></span><div class="stgi"><div class="stgn">الخصوصية</div><div class="stgs">تحكم بمن يرى معلوماتك</div></div><span class="stgar">›</span></div>
+      <div class="stgrow" id="stgdev" style="display:none"><span class="stgico"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg></span><div class="stgi"><div class="stgn">لوحة المطور</div><div class="stgs">إدارة المستخدمين</div></div><span class="stgar">›</span></div>
+      <div class="stgrow" id="stglg"><span class="stgico"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg></span><div class="stgi"><div class="stgn" style="color:var(--ac3)">تسجيل الخروج</div><div class="stgs">ستحتاج كودك للدخول</div></div><span class="stgar">›</span></div>
     </div>
     <div class="st" id="stgst" style="margin-top:10px"></div>
   </div>
@@ -434,47 +434,61 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
 
 <div class="modal" id="privm"><div class="mcard" style="max-width:380px">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-    <div class="ttl" style="margin:0;font-size:18px">🕶️ الخصوصية</div>
+    <div class="ttl" style="margin:0;font-size:18px">الخصوصية</div>
   </div>
   <div class="sub" style="text-align:right;margin-bottom:10px">تحكم في مين يقدر يشوف كل معلومة في بروفايلك</div>
   <div>
     <div class="privrow">
       <select class="privsel" id="privBio"><option value="everyone">الجميع</option><option value="nobody">لا أحد</option></select>
-      <div class="privlbl">📝 النبذة (Bio)</div>
+      <div class="privlbl">النبذة (Bio)</div>
     </div>
     <div class="privrow">
       <select class="privsel" id="privJoined"><option value="everyone">الجميع</option><option value="nobody">لا أحد</option></select>
-      <div class="privlbl">📅 تاريخ الانضمام</div>
+      <div class="privlbl">تاريخ الانضمام</div>
     </div>
     <div class="privrow">
       <select class="privsel" id="privLastSeen"><option value="everyone">الجميع</option><option value="nobody">لا أحد</option></select>
-      <div class="privlbl">🟢 حالة الاتصال</div>
+      <div class="privlbl">حالة الاتصال</div>
     </div>
     <div class="privrow">
       <select class="privsel" id="privStatus"><option value="everyone">الجميع</option><option value="nobody">لا أحد</option></select>
-      <div class="privlbl">🎭 الحالة</div>
+      <div class="privlbl">الحالة</div>
     </div>
   </div>
   <div class="st" id="privst" style="margin-top:8px"></div>
-  <button class="clsbtn" onclick="document.getElementById('privm').classList.remove('on')">إغلاق ✕</button>
+  <button class="clsbtn" onclick="document.getElementById('privm').classList.remove('on')">إغلاق</button>
+</div></div>
+
+<!-- تعديل الحالة -->
+<div class="modal" id="statm"><div class="mcard" style="max-width:380px;text-align:center">
+  <div class="ttl" style="margin-bottom:14px">تعديل الحالة</div>
+  <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:12px">
+    <div id="statImgPreview" style="width:52px;height:52px;border-radius:50%;background:var(--sf2);border:1.5px dashed var(--bd2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+    <label class="prfbtns" style="cursor:pointer;font-size:12px;padding:8px 14px" for="statImgFile">اختر صورة الحالة</label>
+    <input type="file" id="statImgFile" accept="image/*" style="display:none">
+  </div>
+  <input class="inp" id="statTextInput" placeholder="نص الحالة (مثال: أستمع للموسيقى)..." maxlength="40">
+  <div class="st" id="statSt"></div>
+  <button class="btn" id="btnStatSave">حفظ</button>
+  <button class="btn btn-ol" onclick="document.getElementById('statm').classList.remove('on')">إلغاء</button>
 </div></div>
 
 <!-- إنشاء مجموعة -->
 <div class="modal" id="cgrpm"><div class="mcard" style="max-width:380px;text-align:center">
-  <div class="ttl" style="margin-bottom:14px">إنشاء مجموعة ✨</div>
-  <div class="grpico" id="cgrpico"><span id="cgrpicoph">🖼️</span><input type="file" id="cgrpicof" accept="image/*" style="display:none"></div>
+  <div class="ttl" style="margin-bottom:14px">إنشاء مجموعة</div>
+  <div class="grpico" id="cgrpico"><span id="cgrpicoph"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><input type="file" id="cgrpicof" accept="image/*" style="display:none"></div>
   <input class="inp" id="cgrpname" placeholder="اسم المجموعة..." maxlength="30">
-  <button class="btn" id="btncgrpdo">إنشاء 🚀</button>
+  <button class="btn" id="btncgrpdo">إنشاء</button>
   <button class="btn btn-ol" onclick="document.getElementById('cgrpm').classList.remove('on')">إلغاء</button>
   <div class="st" id="cgrpst"></div>
 </div></div>
 
 <!-- الانضمام برابط دعوة -->
 <div class="modal" id="joingm"><div class="mcard" style="max-width:380px;text-align:center">
-  <div class="logo">🔗</div>
+  <div class="logo"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
   <div class="ttl" id="joingname">مجموعة</div>
   <div class="sub" id="joingsub">ادعوتك للانضمام</div>
-  <button class="btn" id="btnjoindo">انضمام ✅</button>
+  <button class="btn" id="btnjoindo">انضمام</button>
   <button class="btn btn-ol" onclick="document.getElementById('joingm').classList.remove('on')">إلغاء</button>
   <div class="st" id="joingst"></div>
 </div></div>
@@ -487,7 +501,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
       <div class="grpn" id="grpmname"></div>
       <div class="grpsub" id="grpmsub"></div>
     </div>
-    <button style="background:none;border:none;color:var(--tx2);font-size:20px;cursor:pointer" onclick="document.getElementById('grpm').classList.remove('on')">✕</button>
+    <button style="background:none;border:none;color:var(--tx2);font-size:20px;cursor:pointer" onclick="document.getElementById('grpm').classList.remove('on')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
   </div>
   <div class="gtabbar" id="grptabs">
     <div class="gtab ac" data-tab="info">المجموعة</div>
@@ -500,31 +514,31 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
   </div>
   <div id="gtab-info">
     <div id="grpEditSec" style="display:none">
-      <div class="grpico" id="grpEditIco" style="margin-bottom:10px"><span id="grpEditIcoph">🖼️</span><input type="file" id="grpEditIcof" accept="image/*" style="display:none"></div>
+      <div class="grpico" id="grpEditIco" style="margin-bottom:10px"><span id="grpEditIcoph"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><input type="file" id="grpEditIcof" accept="image/*" style="display:none"></div>
       <input class="inp" id="grpEditName" placeholder="اسم المجموعة..." maxlength="30">
-      <button class="btn" id="btnGrpSaveInfo" style="margin-top:6px">💾 حفظ التعديلات</button>
+      <button class="btn" id="btnGrpSaveInfo" style="margin-top:6px">حفظ التعديلات</button>
       <div class="st" id="grpEditSt"></div>
       <div style="height:6px"></div>
     </div>
     <div class="invbox">
       <span class="invcode" id="grpinvcode">—</span>
-      <button class="invcpy" onclick="cpTxt($('grpinvcode').textContent);$('grpinvst').textContent='✅ تم النسخ'">📋</button>
+      <button class="invcpy" onclick="cpTxt($('grpinvcode').textContent);$('grpinvst').textContent='✅ تم النسخ'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 13.74a2 2 0 0 1-2 0L2.5 8.87a1 1 0 0 1 0-1.74L11 2.26a2 2 0 0 1 2 0l8.5 4.87a1 1 0 0 1 0 1.74z"/><path d="m20 14.285 1.5.845a1 1 0 0 1 0 1.74L13 21.74a2 2 0 0 1-2 0l-8.5-4.87a1 1 0 0 1 0-1.74l1.5-.845"/></svg></button>
     </div>
     <div class="st" id="grpinvst"></div>
-    <div class="privrow"><label class="toggle" id="tgInvite"></label><div class="privlbl">🔗 السماح بالانضمام عبر الرابط</div></div>
-    <div class="privrow"><label class="toggle" id="tgDirectAdd"></label><div class="privlbl">👤 السماح بالإضافة المباشرة بالبحث</div></div>
-    <div class="privrow"><label class="toggle" id="tgAuditPublic"></label><div class="privlbl">📜 السماح لكل الأعضاء برؤية سجل النشاط</div></div>
+    <div class="privrow"><label class="toggle" id="tgInvite"></label><div class="privlbl">السماح بالانضمام عبر الرابط</div></div>
+    <div class="privrow"><label class="toggle" id="tgDirectAdd"></label><div class="privlbl">السماح بالإضافة المباشرة بالبحث</div></div>
+    <div class="privrow"><label class="toggle" id="tgAuditPublic"></label><div class="privlbl">السماح لكل الأعضاء برؤية سجل النشاط</div></div>
     <div class="seclbl" style="padding-right:0;margin-top:14px">— اسمي في هذه المجموعة</div>
     <input class="inp" id="myNickInput" placeholder="كنية (اتركها فارغة لاستخدام اسمك العام)..." maxlength="24">
-    <button class="btn" id="btnSaveNick" style="margin-top:6px">💾 حفظ الكنية</button>
+    <button class="btn" id="btnSaveNick" style="margin-top:6px">حفظ الكنية</button>
     <div class="st" id="nickSt"></div>
-    <button class="clsbtn" style="color:var(--ac3);margin-top:14px" id="btnleavegrp">🚪 مغادرة المجموعة</button>
+    <button class="clsbtn" style="color:var(--ac3);margin-top:14px" id="btnleavegrp">مغادرة المجموعة</button>
   </div>
   <div id="gtab-channels" style="display:none">
     <div id="channelslist"></div>
     <div id="addChanSec" style="display:none;margin-top:10px">
       <input class="inp" id="newChanName" placeholder="اسم الغرفة الجديدة..." maxlength="24">
-      <button class="addgrpbtn" style="margin-top:6px" onclick="createChannel()">➕ إنشاء غرفة</button>
+      <button class="addgrpbtn" style="margin-top:6px" onclick="createChannel()">إنشاء غرفة</button>
       <div class="st" id="chanCreateSt"></div>
     </div>
   </div>
@@ -538,7 +552,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
   </div>
   <div id="gtab-roles" style="display:none">
     <div id="roleslist"></div>
-    <button class="addgrpbtn" style="margin:8px 0 0" onclick="openRoleEditor(null)">➕ رتبة جديدة</button>
+    <button class="addgrpbtn" style="margin:8px 0 0" onclick="openRoleEditor(null)">رتبة جديدة</button>
   </div>
   <div id="gtab-gov" style="display:none">
     <div class="gtabbar" id="govsubtabs" style="margin-bottom:12px">
@@ -551,14 +565,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
       <div id="addPosSec" style="display:none;margin-top:10px">
         <input class="inp" id="newPosName" placeholder="اسم المنصب (مثال: رئيس)..." maxlength="30">
         <select class="privsel" id="newPosRole" style="width:100%;margin-top:6px;padding:10px;text-align:center"></select>
-        <button class="addgrpbtn" style="margin-top:6px" onclick="createPosition()">➕ إنشاء منصب</button>
+        <button class="addgrpbtn" style="margin-top:6px" onclick="createPosition()">إنشاء منصب</button>
         <div class="st" id="posCreateSt"></div>
       </div>
     </div>
     <div id="gov-votes" style="display:none">
       <div id="startVoteSec" style="display:none">
-        <button class="addgrpbtn" onclick="openNewVoteForm('election')">🗳️ بدء انتخاب لمنصب</button>
-        <button class="addgrpbtn" onclick="openNewVoteForm('referendum')">📊 بدء استفتاء</button>
+        <button class="addgrpbtn" onclick="openNewVoteForm('election')">بدء انتخاب لمنصب</button>
+        <button class="addgrpbtn" onclick="openNewVoteForm('referendum')">بدء استفتاء</button>
       </div>
       <div id="newVoteFormWrap"></div>
       <div id="votesactivelist"></div>
@@ -574,14 +588,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
       <div id="addPartySec" style="display:none;margin-top:10px">
         <input class="inp" id="newPartyName" placeholder="اسم الحزب..." maxlength="30">
         <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin:10px 0">
-          <div id="partyBadgePreview" style="width:52px;height:52px;border-radius:14px;background:var(--sf2);border:1.5px dashed var(--bd2);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0">🏛️</div>
-          <label class="prfbtns" style="cursor:pointer;font-size:12px;padding:8px 14px" for="partyBadgeFile">🖼️ اختر صورة الشعار</label>
+          <div id="partyBadgePreview" style="width:52px;height:52px;border-radius:14px;background:var(--sf2);border:1.5px dashed var(--bd2);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18v-7"/><path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/></svg></div>
+          <label class="prfbtns" style="cursor:pointer;font-size:12px;padding:8px 14px" for="partyBadgeFile">اختر صورة الشعار</label>
           <input type="file" id="partyBadgeFile" accept="image/*" style="display:none">
         </div>
         <div class="st" id="partyBadgeSt"></div>
         <div style="display:flex;gap:8px;justify-content:center;margin:8px 0" id="partyColors"></div>
         <select class="privsel" id="newPartyRole" style="width:100%;margin-top:4px;padding:10px;text-align:center"></select>
-        <button class="addgrpbtn" style="margin-top:6px" onclick="createParty()">➕ تأسيس حزب</button>
+        <button class="addgrpbtn" style="margin-top:6px" onclick="createParty()">تأسيس حزب</button>
         <div class="st" id="partyCreateSt"></div>
       </div>
       <div id="parliamentVoteFormWrap" style="margin-top:10px"></div>
@@ -610,8 +624,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
     <div class="permrow"><button class="toggle" id="permFreeAdd"></button><div class="permlbl">إضافة أعضاء بدون موافقة</div></div>
     <div class="permrow"><button class="toggle" id="permElections"></button><div class="permlbl">بدء انتخابات واستفتاءات</div></div>
   </div>
-  <button class="btn" id="btnrolesave">حفظ 💾</button>
-  <button class="btn btn-ol" id="btnroledel" style="display:none;color:var(--ac3)">حذف الرتبة 🗑️</button>
+  <button class="btn" id="btnrolesave">حفظ</button>
+  <button class="btn btn-ol" id="btnroledel" style="display:none;color:var(--ac3)">حذف الرتبة</button>
   <button class="btn btn-ol" onclick="document.getElementById('rolem').classList.remove('on')">إلغاء</button>
   <div class="st" id="rolest"></div>
 </div></div>
@@ -623,13 +637,13 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
     <div id="sb">
       <div class="sbhdr">
         <div class="lgrow">
-          <span style="font-size:20px">🔐</span>
+          <span style="font-size:20px"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9.807V6a1 1 0 00-1-1c-2 0-4.49-1.19-6.24-2.72a1.17 1.17 0 00-1.52 0C9.5 3.8 7 5 5 5a1 1 0 00-1 1v7c0 3.88 2.107 6.254 5 7.796"/><path d="M19 17v-2a2 2 0 00-4 0v2"/><rect x="13" y="17" width="8" height="5" rx="1"/></svg></span>
           <div><div class="lgtxt">سلماني شات</div><div class="lgsub">E2E ENCRYPTED</div></div>
         </div>
         <div class="mypro" id="mypro">
           <div class="avw" id="myavw"><div class="av" id="myav" style="width:34px;height:34px;font-size:13px"></div><div class="ring"></div></div>
-          <div style="flex:1;min-width:0"><div class="pname" id="myn"></div><div class="ppid" id="mypid"></div><div class="devbdg" id="devbdg">👑 مطور</div></div>
-          <span style="color:var(--tx3)">⚙️</span>
+          <div style="flex:1;min-width:0"><div class="pname" id="myn"></div><div class="ppid" id="mypid"></div><div class="devbdg" id="devbdg"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-1px"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m16 9-5.5 5.5L8 12"/></svg> مطور</div></div>
+          <span style="color:var(--tx3)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg></span>
         </div>
       </div>
       <div class="sbbody">
@@ -643,7 +657,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
         </div>
         <div class="seclbl">— المجموعات</div>
         <div id="grouplist"></div>
-        <div class="addgrpbtn" onclick="openCreateGroup()">➕ إنشاء مجموعة</div>
+        <div class="addgrpbtn" onclick="openCreateGroup()"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px"><path d="M5 12h14"/><path d="M12 5v14"/></svg> إنشاء مجموعة</div>
         <div class="seclbl">— المحادثات</div>
         <div class="srchbox">
           <span class="srchico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg></span>
@@ -659,12 +673,12 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
       <div class="chdr">
         <button class="mbtn" onclick="openSB()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
         <div class="hdri" id="hdri" style="cursor:default"><div class="hdrn" id="hdrn">سلماني شات</div><div class="hdrs" id="hdrs">ابدأ محادثة جديدة</div></div>
-        <div class="encbdg">🔒 <span>مشفّر</span></div>
+        <div class="encbdg"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> <span>مشفّر</span></div>
       </div>
       <div class="chanbar" id="chanbar"></div>
       <div id="pinbarwrap"></div>
       <div class="msgs" id="msgs">
-        <div class="empty"><div class="eico">💬</div><p>لا توجد محادثات بعد<br><span onclick="openSB()">ابحث لإضافة صديق</span></p></div>
+        <div class="empty"><div class="eico"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg></div><p>لا توجد محادثات بعد<br><span onclick="openSB()">ابحث لإضافة صديق</span></p></div>
       </div>
       <div id="rplybar"><div class="rplybc"><div class="rplybm" id="rplynm"></div><div class="rplybt" id="rplytx"></div></div><button class="rplyx" onclick="clearReply()">✕</button></div>
       <div class="inpa" id="inpa">
@@ -674,14 +688,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
           <textarea class="msgi" id="msgi" rows="1" placeholder="اكتب رسالتك..."></textarea>
           <button class="sndbtn" onclick="sendMsg()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
         </div>
-        <div class="hint">🔒 تُشفَّر تلقائياً • Enter للإرسال</div>
+        <div class="hint"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-1px"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> تُشفَّر تلقائياً • Enter للإرسال</div>
       </div>
     </div>
   </div>
 </div>
 
 <div class="modal" id="devp"><div class="mcard">
-  <div class="devttl">👑 لوحة تحكم المطور</div>
+  <div class="devttl"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m16 9-5.5 5.5L8 12"/></svg> لوحة تحكم المطور</div>
   <div class="sgrd">
     <div class="sbox"><div class="snum" id="stot">-</div><div class="slbl">إجمالي المستخدمين</div></div>
     <div class="sbox"><div class="snum" id="sonl">-</div><div class="slbl">متصلون الآن</div></div>
@@ -690,7 +704,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
   </div>
   <div style="font-size:9px;color:var(--tx3);font-family:monospace;letter-spacing:2px;margin-bottom:10px">— المستخدمون</div>
   <div id="devul"></div>
-  <button class="clsbtn" onclick="document.getElementById('devp').classList.remove('on')">إغلاق ✕</button>
+  <button class="clsbtn" onclick="document.getElementById('devp').classList.remove('on')">إغلاق</button>
 </div></div>
 
 <div class="modal" id="prfm"><div class="mcard">
@@ -708,21 +722,20 @@ body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;height:1
       <div class="prfp" id="prfp"></div>
       <div class="prfst" id="prfst"></div>
       <div class="prfmeta" id="prfmeta">
-        <div class="prfchip" id="prfjoined">📅</div>
+        <div class="prfchip" id="prfjoined"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14v2.2l1.6 1"/><path d="M16 4h2a2 2 0 0 1 2 2v.832"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h2"/><circle cx="16" cy="16" r="6"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div>
       </div>
       <div class="prfbio2" id="prfbio"></div>
       <svg class="prffingerprint" id="prffingerprint" viewBox="0 0 100 100"></svg>
-      <div class="prffplabel" id="prffplabel" style="display:none">بصمة رقمية فريدة</div>
       <div id="myprfactions" style="display:none">
-        <button onclick="editBio()" style="width:100%;padding:10px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);border-radius:12px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700;margin-bottom:8px">✏️ تعديل النبذة</button>
-        <button onclick="editStatus()" style="width:100%;padding:10px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);border-radius:12px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700">🎭 تعديل الحالة</button>
+        <button onclick="editBio()" style="width:100%;padding:10px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);border-radius:12px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700;margin-bottom:8px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg> تعديل النبذة</button>
+        <button onclick="editStatus()" style="width:100%;padding:10px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);border-radius:12px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700">تعديل الحالة</button>
       </div>
       <div id="prfaddgrp" style="display:none;margin-bottom:10px">
         <select class="privsel" id="prfgrpsel" style="width:100%;text-align:center;padding:10px"></select>
-        <button onclick="addToGroupFromProfile()" style="width:100%;padding:10px;margin-top:6px;background:var(--sf2);border:1px solid var(--bd2);color:var(--ac);border-radius:12px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700">➕ إضافة لمجموعة</button>
+        <button onclick="addToGroupFromProfile()" style="width:100%;padding:10px;margin-top:6px;background:var(--sf2);border:1px solid var(--bd2);color:var(--ac);border-radius:12px;font-size:13px;cursor:pointer;font-family:'Lato',sans-serif;font-weight:700"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px"><path d="M5 12h14"/><path d="M12 5v14"/></svg> إضافة لمجموعة</button>
       </div>
       <div class="prfactions2">
-        <button class="prfbtnp prfdm" id="prfdm">💬 راسله خاصاً</button>
+        <button class="prfbtnp prfdm" id="prfdm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg> راسله خاصاً</button>
         <button class="prfbtns prfcl" onclick="document.getElementById('prfm').classList.remove('on')">إغلاق</button>
       </div>
     </div>
@@ -757,6 +770,75 @@ async function dec(k,b){try{const d=Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 
 function genCode(){const p=[];for(let i=2;i<=200;i++){let ok=true;for(let j=2;j<=Math.sqrt(i);j++)if(i%j===0){ok=false;break;}if(ok)p.push(i);}const r=()=>p[Math.floor(Math.random()*p.length)];return`${r()}-${r()}-${r()}-${r()}-${r()}*`;}
 async function compress(file,maxW=1000,q=0.82){return new Promise(res=>{const img=new Image();const u=URL.createObjectURL(file);img.onload=()=>{URL.revokeObjectURL(u);const sc=Math.min(1,maxW/Math.max(img.width,img.height));const w=Math.round(img.width*sc),h=Math.round(img.height*sc);const cv=document.createElement("canvas");cv.width=w;cv.height=h;cv.getContext("2d").drawImage(img,0,0,w,h);cv.toBlob(b=>res(b||file),"image/jpeg",q);};img.onerror=()=>res(file);img.src=u;});}
+const ICONS={
+lock:'<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+check:'<path d="M20 6 9 17l-5-5"/>',
+landmark:'<path d="M10 18v-7"/><path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/>',
+settings:'<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/>',
+shieldlock:'<path d="M20 9.807V6a1 1 0 00-1-1c-2 0-4.49-1.19-6.24-2.72a1.17 1.17 0 00-1.52 0C9.5 3.8 7 5 5 5a1 1 0 00-1 1v7c0 3.88 2.107 6.254 5 7.796"/><path d="M19 17v-2a2 2 0 00-4 0v2"/><rect x="13" y="17" width="8" height="5" rx="1"/>',
+trash:'<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+pen:'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>',
+plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+keyround:'<path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>',
+crown:'<path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/>',
+badgecheck:'<path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m16 9-5.5 5.5L8 12"/>',
+chartcolumn:'<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
+image:'<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+vote:'<path d="m9 12 2 2 4-4"/><path d="M5 7c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v12H5V7Z"/><path d="M22 19H2"/>',
+upload:'<path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>',
+mute:'<path d="m2 2 20 20"/><path d="M4.93 4.929a10 10 0 0 0-1.938 11.412 2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 0 0 11.302-1.989"/><path d="M8.35 2.69A10 10 0 0 1 21.3 15.65"/>',
+sparkles:'<path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/>',
+camera:'<circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>',
+copy:'<path d="M13 13.74a2 2 0 0 1-2 0L2.5 8.87a1 1 0 0 1 0-1.74L11 2.26a2 2 0 0 1 2 0l8.5 4.87a1 1 0 0 1 0 1.74z"/><path d="m20 14.285 1.5.845a1 1 0 0 1 0 1.74L13 21.74a2 2 0 0 1-2 0l-8.5-4.87a1 1 0 0 1 0-1.74l1.5-.845"/>',
+logout:'<path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>',
+date:'<path d="M16 14v2.2l1.6 1"/><path d="M16 4h2a2 2 0 0 1 2 2v.832"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h2"/><circle cx="16" cy="16" r="6"/><rect x="8" y="2" width="8" height="4" rx="1"/>',
+bubbles:'<path d="M7.001 15.085A1.5 1.5 0 0 1 9 16.5"/><circle cx="18.5" cy="8.5" r="3.5"/><circle cx="7.5" cy="16.5" r="5.5"/><circle cx="7.5" cy="4.5" r="2.5"/>',
+save:'<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/>',
+chat:'<path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/>',
+privacy:'<path d="M15.686 15A14.5 14.5 0 0 1 12 22a14.5 14.5 0 0 1 0-20 10 10 0 1 0 9.542 13"/><path d="M2 12h8.5"/><path d="M20 6V4a2 2 0 1 0-4 0v2"/><rect width="8" height="5" x="14" y="6" rx="1"/>',
+note:'<path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>',
+online:'<path d="M16.247 7.761a6 6 0 0 1 0 8.478"/><path d="M19.075 4.933a10 10 0 0 1 0 14.134"/><path d="M4.925 19.067a10 10 0 0 1 0-14.134"/><path d="M7.753 16.239a6 6 0 0 1 0-8.478"/><circle cx="12" cy="12" r="2"/>',
+link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+eye:'<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>',
+sound:'<path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/>',
+pin:'<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>',
+globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+octagonx:'<path d="m15 9-6 6"/><path d="M2.586 16.726A2 2 0 0 1 2 15.312V8.688a2 2 0 0 1 .586-1.414l4.688-4.688A2 2 0 0 1 8.688 2h6.624a2 2 0 0 1 1.414.586l4.688 4.688A2 2 0 0 1 22 8.688v6.624a2 2 0 0 1-.586 1.414l-4.688 4.688a2 2 0 0 1-1.414.586H8.688a2 2 0 0 1-1.414-.586z"/><path d="m9 9 6 6"/>',
+ban:'<circle cx="12" cy="12" r="10"/><path d="M4.929 4.929 19.07 19.071"/>',
+click:'<path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/>',
+ghost:'<path d="M15 10v1"/><path d="M7.528 20.472a1.6 1.6 0 012.277 0l1.057 1.056a1.6 1.6 0 002.276 0l1.057-1.056a1.6 1.6 0 012.277 0l1.114 1.114a1.4 1.4 0 002.414-1V10a8 8 0 00-16 0v10.586a1.4 1.4 0 002.414 1z"/><path d="M9 10v1"/>',
+back:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/>',
+warning:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+rocket:'<path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09"/><path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05"/>',
+scroll:'<path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/>',
+cloudy:'<path d="M17.5 12a1 1 0 1 1 0 9H9.006a7 7 0 1 1 6.702-9z"/><path d="M21.832 9A3 3 0 0 0 19 7h-2.207a5.5 5.5 0 0 0-10.72.61"/>',
+offline:'<path d="M13.414 13.414a2 2 0 1 1-2.828-2.828"/><path d="M16.247 7.761a6 6 0 0 1 1.744 4.572"/><path d="M19.075 4.933a10 10 0 0 1 2.234 10.72"/><path d="m2 2 20 20"/><path d="M4.925 19.067a10 10 0 0 1 0-14.134"/><path d="M7.753 16.239a6 6 0 0 1 0-8.478"/>',
+users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/>',
+neutral:'<path d="M15 10V9"/><path d="M8 16h8"/><path d="M9 10V9"/><circle cx="12" cy="12" r="10"/>',
+unlock:'<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
+forbidden:'<path d="m2 2 20 20"/><path d="M8.35 2.69A10 10 0 0 1 21.3 15.65"/><path d="M19.08 19.08A10 10 0 1 1 4.92 4.92"/>',
+loading:'<path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/>',
+smile:'<path d="M15 10V9"/><path d="M16.472 15a6 6 0 01-8.943 0"/><path d="M9 10V9"/><circle cx="12" cy="12" r="10"/>',
+rb_radiation:'<path d="M12 12h.01"/><path d="M14 15.4641a4 4 0 0 1-4 0L7.52786 19.74597 A 1 1 0 0 0 7.99303 21.16211 10 10 0 0 0 16.00697 21.16211 1 1 0 0 0 16.47214 19.74597z"/><path d="M16 12a4 4 0 0 0-2-3.464l2.472-4.282a1 1 0 0 1 1.46-.305 10 10 0 0 1 4.006 6.94A1 1 0 0 1 21 12z"/><path d="M8 12a4 4 0 0 1 2-3.464L7.528 4.254a1 1 0 0 0-1.46-.305 10 10 0 0 0-4.006 6.94A1 1 0 0 0 3 12z"/>',
+rb_landmark:'<path d="M10 18v-7"/><path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/>',
+rb_shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+rb_star:'<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>',
+rb_galaxy:'<path d="M16.005 15.108a5.041 6.52 28.25 00-8.008-6.217 5.041 6.52 28.25 008.008 6.217A11.884 7.288-60.76 014.029 7.001"/><path d="M17 21h.01"/><path d="M7 3h.01"/><path d="M7.997 8.891a11.885 7.288-60.756 0111.977 8.107"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
+rb_swords:'<path d="m13 19 6-6"/><path d="M14.5 17.5 3.586 6.586A2 2 0 013 5.172V3h2.172a2 2 0 011.414.586L17.5 14.5"/><path d="m14.828 6.172 2.586-2.586A2 2 0 0118.828 3H21v2.172a2 2 0 01-.586 1.414l-2.586 2.586"/><path d="m16 16 4 4"/><path d="m19 21 2-2"/><path d="m5 14 4 4"/><path d="m5 21-2-2"/><path d="M7.5 16.5 4 20"/>',
+rb_anchor:'<path d="M12 6v16"/><path d="m19 13 2-1a9 9 0 0 1-18 0l2 1"/><path d="M9 11h6"/><circle cx="12" cy="4" r="2"/>',
+rb_gavel:'<path d="m14 13-8.381 8.38a1 1 0 0 1-3.001-3l8.384-8.381"/><path d="m16 16 6-6"/><path d="m21.5 10.5-8-8"/><path d="m8 8 6-6"/><path d="m8.5 7.5 8 8"/>',
+rb_gem:'<path d="M10.5 3 8 9l4 13 4-13-2.5-6"/><path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z"/><path d="M2 9h20"/>',
+rb_brain:'<path d="M12 18V5"/><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/><path d="M18 18a4 4 0 0 0 2-7.464"/><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/><path d="M6 18a4 4 0 0 1-2-7.464"/><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>',
+rb_flame:'<path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/>',
+rb_chartpie:'<path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>',
+rb_factory:'<path d="M12 16h.01"/><path d="M16 16h.01"/><path d="M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 10.5v-2a.5.5 0 0 0-.769-.422L9.77 10.922A.5.5 0 0 1 9 10.5V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/><path d="M8 16h.01"/>',
+rb_bowarrow:'<path d="M17 3h4v4"/><path d="M18.575 11.082a13 13 0 0 1 1.048 9.027 1.17 1.17 0 0 1-1.914.597L14 17"/><path d="M7 10 3.29 6.29a1.17 1.17 0 0 1 .6-1.91 13 13 0 0 1 9.03 1.05"/><path d="M7 14a1.7 1.7 0 0 0-1.207.5l-2.646 2.646A.5.5 0 0 0 3.5 18H5a1 1 0 0 1 1 1v1.5a.5.5 0 0 0 .854.354L9.5 18.207A1.7 1.7 0 0 0 10 17v-2a1 1 0 0 0-1-1z"/><path d="M9.707 14.293 21 3"/>',
+rb_circlestar:'<circle cx="12" cy="12" r="10"/><path d="M11.051 7.616a1 1 0 0 1 1.909.024l.737 1.452a1 1 0 0 0 .737.535l1.634.256a1 1 0 0 1 .588 1.806l-1.172 1.168a1 1 0 0 0-.282.866l.259 1.613a1 1 0 0 1-1.541 1.134l-1.465-.75a1 1 0 0 0-.912 0l-1.465.75a1 1 0 0 1-1.539-1.133l.258-1.613a1 1 0 0 0-.282-.867l-1.156-1.152a1 1 0 0 1 .572-1.822l1.633-.256a1 1 0 0 0 .737-.535z"/>'
+};
+function icon(name,size){size=size||18;return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px">${ICONS[name]||""}</svg>`;}
+
 
 const COLORS=["#00d4aa","#0096ff","#ff6b6b","#ffd166","#a78bfa","#34d399","#f59e0b","#ec4899"];
 const gc=s=>COLORS[[...s].reduce((a,c)=>a+c.charCodeAt(0),0)%COLORS.length];
@@ -1002,7 +1084,6 @@ async function openProfile(u){
 
   // Fingerprint SVG — unique geometric pattern generated from user's code, always visible (no privacy gate, purely decorative)
   renderFingerprint(uid,c);
-  $("prffplabel").style.display="block";
 
   // Load full profile from Supabase (fields are privacy-gated)
   try{
@@ -1027,8 +1108,9 @@ async function openProfile(u){
 
       // "الحالة" (mood/status) — gated by privacy_status
       const canSeeMood = isMe || (supaUser.privacy_status||"everyone")==="everyone";
-      if(canSeeMood&&(supaUser.status_text||supaUser.status_emoji)){
-        $("prfstatus").textContent=`${supaUser.status_emoji||""} ${supaUser.status_text||""}`.trim();
+      if(canSeeMood&&(supaUser.status_text||supaUser.status_emoji||supaUser.status_image_url)){
+        const statusIco=supaUser.status_image_url?`<img src="${supaUser.status_image_url}" style="width:16px;height:16px;border-radius:50%;object-fit:cover;vertical-align:-3px">`:(supaUser.status_emoji||"");
+        $("prfstatus").innerHTML=`${statusIco} ${supaUser.status_text||""}`.trim();
         $("prfstatus").style.display="flex";
       }
 
@@ -1171,20 +1253,42 @@ function renderFingerprint(uid,baseColor){
 
 window.editStatus=async()=>{
   const user=await sbOne("users",{code_hash:myHash});
-  const STATUS_EMOJIS=["🎵","📚","🌙","⚡","🎮","☕","🔥","🧠","✈️","💤"];
-  const emojiChoice=prompt(`اختر إيموجي للحالة (أو اتركه فارغًا):\n${STATUS_EMOJIS.join(" ")}`,user?.status_emoji||"");
-  if(emojiChoice===null)return;
-  const textChoice=prompt("نص الحالة (مثال: أستمع للموسيقى):",user?.status_text||"");
-  if(textChoice===null)return;
-  const status_emoji=emojiChoice.trim().slice(0,4)||null;
-  const status_text=textChoice.trim().slice(0,40)||null;
-  await sbUpd("users",{code_hash:myHash},{status_emoji,status_text});
-  if(status_text||status_emoji){
-    $("prfstatus").textContent=`${status_emoji||""} ${status_text||""}`.trim();
-    $("prfstatus").style.display="flex";
-  }else{
-    $("prfstatus").style.display="none";
+  window._selStatusImg=user?.status_image_url||null;
+  $("statImgPreview").innerHTML=window._selStatusImg?`<img src="${window._selStatusImg}" style="width:100%;height:100%;object-fit:cover">`:`<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`;
+  $("statTextInput").value=user?.status_text||"";
+  $("statSt").textContent="";
+  document.getElementById("statm").classList.add("on");
+  const fileInp=$("statImgFile");
+  if(!fileInp.dataset.built){
+    fileInp.dataset.built="1";
+    fileInp.onchange=async e=>{
+      const f=e.target.files[0];if(!f)return;
+      $("statSt").className="st";$("statSt").textContent="⬆️ جارٍ رفع الصورة...";
+      const cm=await compress(f,300,.85);
+      const{ok,url}=await sbUp("avatars",`status_${myHash}_${Date.now()}.jpg`,cm);
+      if(ok){
+        window._selStatusImg=url;
+        $("statImgPreview").innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+        $("statSt").className="st ok";$("statSt").textContent="✅ تم اختيار الصورة";
+      }else{
+        $("statSt").className="st er";$("statSt").textContent="❌ فشل رفع الصورة";
+      }
+      setTimeout(()=>$("statSt").textContent="",1800);
+    };
   }
+  $("btnStatSave").onclick=async()=>{
+    const status_text=$("statTextInput").value.trim().slice(0,40)||null;
+    const status_image_url=window._selStatusImg||null;
+    await sbUpd("users",{code_hash:myHash},{status_text,status_image_url});
+    if(status_text||status_image_url){
+      const statusIco=status_image_url?`<img src="${status_image_url}" style="width:16px;height:16px;border-radius:50%;object-fit:cover;vertical-align:-3px">`:"";
+      $("prfstatus").innerHTML=`${statusIco} ${status_text||""}`.trim();
+      $("prfstatus").style.display="flex";
+    }else{
+      $("prfstatus").style.display="none";
+    }
+    document.getElementById("statm").classList.remove("on");
+  };
 };
 
 window.editBio=async()=>{
@@ -1419,23 +1523,25 @@ async function logAuditEvent(gid,actionType,targetHash,details){
     if(!defaultChan)return;
     let targetName="";
     if(targetHash){const tu=await sbOne("users",{code_hash:targetHash});targetName=tu?.username||"";}
-    const sysText=`${meta.icon} ${myName} ${meta.label}${targetName?" "+targetName:""}${details?" ("+details+")":""}`;
+    const sysText=`${AUDIT_ICON_EMOJI[meta.icon]||""} ${myName} ${meta.label}${targetName?" "+targetName:""}${details?" ("+details+")":""}`;
     push(ref(db,`groups/${gid}/channels/${defaultChan.id}/messages`),{type:"system",text:sysText,ts:Date.now(),senderId:"system"});
   }catch(e){console.log("Audit system message failed:",e);}
 }
 
 const AUDIT_LABELS={
-  kick:{icon:"🚪",label:"طرد"},
-  role_change:{icon:"🎭",label:"غيّر رتبة"},
-  mute:{icon:"🔇",label:"كتم"},
-  unmute:{icon:"🔊",label:"رفع الكتم"},
-  delete_message:{icon:"🗑️",label:"حذف رسالة"},
-  role_created:{icon:"➕",label:"أنشأ رتبة"},
-  role_deleted:{icon:"❌",label:"حذف رتبة"},
-  role_edited:{icon:"✏️",label:"عدّل رتبة"},
-  channel_created:{icon:"#️⃣",label:"أنشأ غرفة"},
-  channel_deleted:{icon:"🗑️",label:"حذف غرفة"},
+  kick:{icon:"logout",label:"طرد"},
+  role_change:{icon:"users",label:"غيّر رتبة"},
+  mute:{icon:"mute",label:"كتم"},
+  unmute:{icon:"sound",label:"رفع الكتم"},
+  delete_message:{icon:"trash",label:"حذف رسالة"},
+  role_created:{icon:"plus",label:"أنشأ رتبة"},
+  role_deleted:{icon:"x",label:"حذف رتبة"},
+  role_edited:{icon:"pen",label:"عدّل رتبة"},
+  channel_created:{icon:"note",label:"أنشأ غرفة"},
+  channel_deleted:{icon:"trash",label:"حذف غرفة"},
 };
+// نفس الأيقونات كإيموجي نصي، تُستخدم فقط في رسائل النظام النصية داخل الدردشة (لا يمكن عرض SVG هناك)
+const AUDIT_ICON_EMOJI={logout:"🚪",users:"🎭",mute:"🔇",sound:"🔊",trash:"🗑️",plus:"➕",x:"❌",pen:"✏️",note:"📝"};
 
 async function renderAuditLog(gid){
   const list=$("auditloglist");
@@ -1446,10 +1552,10 @@ async function renderAuditLog(gid){
   for(const log of logs){
     const actor=await sbOne("users",{code_hash:log.actor_code_hash});
     const target=log.target_code_hash?await sbOne("users",{code_hash:log.target_code_hash}):null;
-    const meta=AUDIT_LABELS[log.action_type]||{icon:"📝",label:log.action_type};
+    const meta=AUDIT_LABELS[log.action_type]||{icon:"note",label:log.action_type};
     const row=document.createElement("div");row.className="auditrow";
     const time=new Date(log.created_at).toLocaleString("ar-EG",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
-    row.innerHTML=`<div class="auditico">${meta.icon}</div><div class="auditinf"><b>${actor?.username||"..."}</b> ${meta.label}${target?" <b>"+(target.username||"...")+"</b>":""}${log.details?" — "+log.details:""}<div class="audittime">${time}</div></div>`;
+    row.innerHTML=`<div class="auditico">${icon(meta.icon,16)}</div><div class="auditinf"><b>${actor?.username||"..."}</b> ${meta.label}${target?" <b>"+(target.username||"...")+"</b>":""}${log.details?" — "+log.details:""}<div class="audittime">${time}</div></div>`;
     list.appendChild(row);
   }
 }
@@ -1461,7 +1567,7 @@ async function renderPinBar(channelId){
   const pinned=await sbOne("group_pinned_messages",{channel_id:channelId});
   if(!pinned)return;
   const bar=document.createElement("div");bar.className="pinbar";
-  bar.innerHTML=`<span class="pinico">📌</span><span class="pintxt">${pinned.message_text}</span>`;
+  bar.innerHTML=`<span class="pinico">${icon("pin",13)}</span><span class="pintxt">${pinned.message_text}</span>`;
   const g=await sbOne("groups",{id:activeCh.id});
   const myRole=await myGroupRole(activeCh.id);
   const canUnpin=g?.owner_code_hash===myHash||!!myRole?.can_manage_group;
@@ -1500,7 +1606,7 @@ async function loadGroupCh(){
   $("chanbar").classList.add("on");
   const g=myGroups.find(x=>x.id===activeCh.id);
   const chan=(groupChannelsCache[activeCh.id]||[]).find(c=>c.id===activeChannelId);
-  area.innerHTML='<div class="sysmsg">👥 محادثة جماعية مشفّرة</div>';
+  area.innerHTML=`<div class="sysmsg">${icon("users",14)} محادثة جماعية مشفّرة</div>`;
   $("hdrn").textContent=(g?.name||"مجموعة")+(chan?" • #"+chan.name:"");
   $("hdrs").textContent="مجموعة • اضغط للتفاصيل";
   $("hdri").style.cursor="pointer";
@@ -1730,9 +1836,9 @@ async function renderPositionsList(gid){
     const holder=p.holder_code_hash?await sbOne("users",{code_hash:p.holder_code_hash}):null;
     const row=document.createElement("div");
     row.className="posrow";
-    const ico=document.createElement("div");ico.className="posico";ico.textContent="🏛️";
+    const ico=document.createElement("div");ico.className="posico";ico.innerHTML=icon("landmark",18);
     const inf=document.createElement("div");inf.className="posinf";
-    inf.innerHTML=`<div class="posnm">${p.name}</div><div class="posholder ${holder?"":"vacant"}">${holder?"👤 "+holder.username:"⚪ شاغر"}</div>`;
+    inf.innerHTML=`<div class="posnm">${p.name}</div><div class="posholder ${holder?"":"vacant"}">${holder?icon("user",12)+" "+holder.username:icon("neutral",12)+" شاغر"}</div>`;
     row.appendChild(ico);row.appendChild(inf);
     if(canManageGroup){
       const del=document.createElement("button");
@@ -1811,7 +1917,7 @@ async function computeWinner(v){
 async function renderVoteCard(v,canManage){
   const card=document.createElement("div");
   card.className="votecard";
-  const statusLabel=v.status==="nomination"?"🗳️ ترشح":v.status==="voting"?"📊 تصويت":"✅ مغلق";
+  const statusLabel=v.status==="nomination"?icon("vote",12)+" ترشح":v.status==="voting"?icon("chartcolumn",12)+" تصويت":icon("check",12)+" مغلق";
   const statusClass=v.status==="nomination"?"nom":v.status==="voting"?"vot":"cls";
   const endsTxt=v.ends_at?new Date(v.ends_at).toLocaleString("ar-EG",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}):"يُقفل يدويًا";
 
@@ -1824,7 +1930,7 @@ async function renderVoteCard(v,canManage){
     eligible=myMem?.role_id===v.eligible_role_id;
   }
 
-  card.innerHTML=`<div class="votehdr"><div class="voteq">${v.type==="election"?"🏛️ ":"📊 "}${v.question}</div><span class="votebadge ${statusClass}">${statusLabel}</span></div><div class="votesub">${v.status!=="closed"?"ينتهي: "+endsTxt:"انتهى"}${eligRoleName?" • 🔒 مقصور على رتبة: "+eligRoleName:""}</div>`;
+  card.innerHTML=`<div class="votehdr"><div class="voteq">${v.type==="election"?icon("landmark",14)+" ":icon("chartcolumn",14)+" "}${v.question}</div><span class="votebadge ${statusClass}">${statusLabel}</span></div><div class="votesub">${v.status!=="closed"?"ينتهي: "+endsTxt:"انتهى"}${eligRoleName?" • "+icon("lock",11)+" مقصور على رتبة: "+eligRoleName:""}</div>`;
 
   const myBallot=await sbOne("group_vote_ballots",{vote_id:v.id,voter_code_hash:myHash});
 
@@ -1939,10 +2045,10 @@ window.openNewVoteForm=async(type,parliamentary)=>{
       <div class="newvoteform">
         <select class="privsel" id="voteFormPos" style="width:100%;padding:10px;margin-bottom:8px">${positions.map(p=>`<option value="${p.id}">${p.name}</option>`).join("")}</select>
         <select class="privsel" id="voteFormElig" style="width:100%;padding:10px;margin-bottom:8px">${eligOptions}</select>
-        <div class="votesub" style="margin:0 0 8px">👆 يحدد مين يقدر يترشح ويصوّت في هذا الانتخاب</div>
+        <div class="votesub" style="margin:0 0 8px">${icon("click",12)} يحدد مين يقدر يترشح ويصوّت في هذا الانتخاب</div>
         <input class="inp" id="voteFormDuration" type="number" placeholder="مدة التصويت بالساعات (اتركه فارغًا للإقفال اليدوي)">
         <div class="voteactions" style="margin-top:8px">
-          <button class="selfnombtn" onclick="submitNewVote('election')">🗳️ بدء الترشح</button>
+          <button class="selfnombtn" onclick="submitNewVote('election')">${icon("vote",13)} بدء الترشح</button>
           <button class="closevotebtn" onclick="$('newVoteFormWrap').innerHTML=''">إلغاء</button>
         </div>
         <div class="st" id="voteFormSt"></div>
@@ -1952,16 +2058,16 @@ window.openNewVoteForm=async(type,parliamentary)=>{
     if(parliamentary&&parties.length<2){wrap.innerHTML='<div class="newvoteform" style="text-align:center;color:var(--tx3);font-size:12px">تحتاج حزبين على الأقل لبدء تصويت برلماني</div>';return;}
     wrap.innerHTML=`
       <div class="newvoteform">
-        ${parliamentary?'<div class="votesub" style="margin-bottom:8px">🏛️ تصويت برلماني: قادة الأحزاب فقط يصوّتون، وزن كل صوت = عدد مقاعد حزبه</div>':""}
+        ${parliamentary?`<div class="votesub" style="margin-bottom:8px">${icon("landmark",13)} تصويت برلماني: قادة الأحزاب فقط يصوّتون، وزن كل صوت = عدد مقاعد حزبه</div>`:""}
         <input class="inp" id="voteFormQuestion" placeholder="${parliamentary?"عنوان المرسوم":"سؤال الاستفتاء"}..." maxlength="100">
         <div id="voteFormOptions">
           <div class="optrow2"><input class="inp" placeholder="خيار 1" value="${parliamentary?"موافقة":""}"><input class="inp" placeholder="خيار 2" value="${parliamentary?"رفض":""}"></div>
         </div>
-        <button class="addgrpbtn" style="margin:6px 0" onclick="addVoteOptionRow()">➕ خيار إضافي</button>
-        ${parliamentary?"":`<select class="privsel" id="voteFormElig" style="width:100%;padding:10px;margin:8px 0">${eligOptions}</select><div class="votesub" style="margin:0 0 8px">👆 يحدد مين يقدر يصوّت (اختر رتبة لتحويلها لـ"مجلس" مصوّت)</div>`}
+        <button class="addgrpbtn" style="margin:6px 0" onclick="addVoteOptionRow()">${icon("plus",13)} خيار إضافي</button>
+        ${parliamentary?"":`<select class="privsel" id="voteFormElig" style="width:100%;padding:10px;margin:8px 0">${eligOptions}</select><div class="votesub" style="margin:0 0 8px">${icon("click",12)} يحدد مين يقدر يصوّت (اختر رتبة لتحويلها لـ"مجلس" مصوّت)</div>`}
         <input class="inp" id="voteFormDuration" type="number" placeholder="مدة التصويت بالساعات (اتركه فارغًا للإقفال اليدوي)">
         <div class="voteactions" style="margin-top:8px">
-          <button class="selfnombtn" onclick="submitNewVote('referendum',${!!parliamentary})">📊 بدء ${parliamentary?"التصويت البرلماني":"الاستفتاء"}</button>
+          <button class="selfnombtn" onclick="submitNewVote('referendum',${!!parliamentary})">${icon("chartcolumn",13)} بدء ${parliamentary?"التصويت البرلماني":"الاستفتاء"}</button>
           <button class="closevotebtn" onclick="$('${parliamentary?"parliamentVoteFormWrap":"newVoteFormWrap"}').innerHTML=''">إلغاء</button>
         </div>
         <div class="st" id="voteFormSt"></div>
@@ -2139,7 +2245,6 @@ async function renderVoteCardIntoMessage(vote,container){
 
 
 // ============================================
-const PARTY_BADGES=["🦅","🐺","🔥","⚔️","🛡️","🌹","⭐","🔱","☭","🐻","🦁","🕊️"];
 const PARTY_COLORS=["#ef4444","#3b82f6","#22c55e","#eab308","#a855f7","#f97316","#06b6d4","#ec4899","#64748b","#84cc16"];
 
 async function myCanManageParties(gid){
@@ -2322,7 +2427,7 @@ window.createParty=async()=>{
   if(roleId)await sbUpd("group_members",{group_id:activeGroup.id,code_hash:myHash},{role_id:roleId});
   $("newPartyName").value="";
   window._selPartyBadge=null;
-  $("partyBadgePreview").innerHTML="🏛️";
+  $("partyBadgePreview").innerHTML=icon("landmark",24);
   $("partyCreateSt").className="st ok";$("partyCreateSt").textContent="✅ تم تأسيس الحزب";
   setTimeout(()=>$("partyCreateSt").textContent="",1500);
   renderParliamentTab(activeGroup.id);
@@ -2382,8 +2487,8 @@ async function renderParliamentaryVotes(gid,parties,seatsMap){
   for(const v of votes.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))){
     if(v.status!=="closed"&&v.ends_at&&new Date(v.ends_at).getTime()<now){await closeVoteInternal(v);v.status="closed";}
     const card=document.createElement("div");card.className="votecard";
-    const statusLabel=v.status==="voting"?"📊 تصويت":"✅ مغلق";
-    card.innerHTML=`<div class="votehdr"><div class="voteq">🏛️ ${v.question}</div><span class="votebadge ${v.status==="voting"?"vot":"cls"}">${statusLabel}</span></div>`;
+    const statusLabel=v.status==="voting"?icon("chartcolumn",12)+" تصويت":icon("check",12)+" مغلق";
+    card.innerHTML=`<div class="votehdr"><div class="voteq">${icon("landmark",14)} ${v.question}</div><span class="votebadge ${v.status==="voting"?"vot":"cls"}">${statusLabel}</span></div>`;
 
     const options=(await sbGet("group_vote_options",{vote_id:v.id}))||[];
     const pBallots=(await sbGet("group_parliamentary_ballots",{vote_id:v.id}))||[];
@@ -2472,7 +2577,7 @@ async function openGroupInfo(gid,startTab){
   $("grpEditSec").style.display=canManageGroup?"block":"none";
   if(canManageGroup){
     $("grpEditName").value=g.name;
-    $("grpEditIco").innerHTML=g.avatar_url?`<img src="${g.avatar_url}"><input type="file" id="grpEditIcof" accept="image/*" style="display:none">`:`<span id="grpEditIcoph">🖼️</span><input type="file" id="grpEditIcof" accept="image/*" style="display:none">`;
+    $("grpEditIco").innerHTML=g.avatar_url?`<img src="${g.avatar_url}"><input type="file" id="grpEditIcof" accept="image/*" style="display:none">`:`<span id="grpEditIcoph">${icon("image",22)}</span><input type="file" id="grpEditIcof" accept="image/*" style="display:none">`;
     window._grpEditAv=null;
     $("grpEditSt").textContent="";
     bindGrpEditIcoInput();
@@ -2601,7 +2706,7 @@ async function renderGroupMembers(gid,canManage){
     const inf=document.createElement("div");
     inf.className="meminf";
     const displayName=m.nickname?`${m.nickname} <span style="color:var(--tx3);font-weight:400">(${u?.username||"..."})</span>`:(u?.username||"...");
-    inf.innerHTML=`<div class="memnm">${role?.badge?role.badge+" ":""}${displayName}${isOwner?" 👑":""}${m.muted?' <span class="mutebadge">🔇 مكتوم</span>':""}${m.nickname_locked?' <span style="font-size:10px">🔒</span>':""}</div>`;
+    inf.innerHTML=`<div class="memnm">${role?.badge?roleBadgeIcon(role.badge)+" ":""}${displayName}${isOwner?" "+icon("crown",13):""}${m.muted?' <span class="mutebadge">'+icon("mute",11)+' مكتوم</span>':""}${m.nickname_locked?' <span style="font-size:10px">'+icon("lock",10)+'</span>':""}</div>`;
     row.appendChild(av);row.appendChild(inf);
 
     // تعديل الكنية: أي عضو يقدر يعدّل كنية أي عضو تاني، إلا لو صاحبها قفلها (والقفل ما ينفعش إلا لصاحبها هو بس)
@@ -2636,7 +2741,7 @@ async function renderGroupMembers(gid,canManage){
       const sel=document.createElement("select");
       sel.className="privsel";
       sel.style.fontSize="10.5px";
-      sel.innerHTML=`<option value="">بلا رتبة</option>`+grantableRoles.map(r=>`<option value="${r.id}" ${r.id===m.role_id?"selected":""}>${r.badge?r.badge+" ":""}${r.name}</option>`).join("");
+      sel.innerHTML=`<option value="">بلا رتبة</option>`+grantableRoles.map(r=>`<option value="${r.id}" ${r.id===m.role_id?"selected":""}>${r.name}</option>`).join("");
       sel.onchange=async()=>{
         // إعادة فحص وقت التنفيذ الفعلي: هل الرتبة المختارة فعلاً أقل من رتبتي؟
         if(!(await checkGroupPerm(gid,"can_manage_members"))){alert("🔒 لا تملك صلاحية إدارة الأعضاء");renderGroupMembers(gid,canManage);return;}
@@ -2700,8 +2805,8 @@ async function renderGroupRoles(gid,canManage){
     const row=document.createElement("div");
     row.className="memrow";
     row.style.cssText="cursor:pointer;flex-direction:column;align-items:flex-start;gap:4px";
-    row.innerHTML=`<span class="rolechip" style="background:${r.color}22;color:${r.color};border:1px solid ${r.color}55">${r.badge?`<span class="rolebadgetag">${r.badge}</span>`:""}<span class="roledot" style="background:${r.color}"></span>${r.name}</span>${r.description?`<div style="font-size:11px;color:var(--tx3);padding:0 2px">${r.description}</div>`:""}`;
-    row.onclick=()=>{if(canManage)openRoleEditor(r);else if(r.description)alert(`${r.badge||""} ${r.name}\n\n${r.description}`);};
+    row.innerHTML=`<span class="rolechip" style="background:${r.color}22;color:${r.color};border:1px solid ${r.color}55">${r.badge?`<span class="rolebadgetag">${roleBadgeIcon(r.badge)}</span>`:""}<span class="roledot" style="background:${r.color}"></span>${r.name}</span>${r.description?`<div style="font-size:11px;color:var(--tx3);padding:0 2px">${r.description}</div>`:""}`;
+    row.onclick=()=>{if(canManage)openRoleEditor(r);else if(r.description)alert(`${r.name}\n\n${r.description}`);};
     list.appendChild(row);
   });
 }
@@ -2734,7 +2839,9 @@ async function renderGroupRequests(gid){
 }
 
 // ---- محرر الرتب ----
-const ROLE_BADGES=["👑","🛡️","⚔️","🎖️","⭐","🔱","🏛️","📯","🦅","🐺","🔥","💎","🎯","☠️","🕊️"];
+const ROLE_BADGES=["crown","rb_shield","rb_swords","rb_star","rb_galaxy","rb_gem","rb_flame","rb_brain","rb_anchor","rb_gavel","rb_chartpie","rb_factory","rb_bowarrow","rb_circlestar","rb_radiation"];
+// عرض شارة الرتبة: تدعم أسماء الأيقونات الجديدة، وتتوافق مع الإيموجي القديم المخزّن مسبقاً في قواعد بيانات قديمة
+function roleBadgeIcon(badge){if(!badge)return"";if(ICONS[badge])return icon(badge,15);return badge;}
 
 async function openRoleEditor(role){
   const canManageRoles=await checkGroupPerm(activeGroup.id,"can_manage_roles");
@@ -2772,13 +2879,13 @@ async function openRoleEditor(role){
   window._selRoleBadge=role?.badge||"";
   const noneBtn=document.createElement("div");
   noneBtn.className="badgeopt"+(!window._selRoleBadge?" sel":"");
-  noneBtn.textContent="🚫";
+  noneBtn.innerHTML=icon("forbidden",16);
   noneBtn.onclick=()=>{window._selRoleBadge="";badgeWrap.querySelectorAll(".badgeopt").forEach(d=>d.classList.remove("sel"));noneBtn.classList.add("sel");};
   badgeWrap.appendChild(noneBtn);
   ROLE_BADGES.forEach(b=>{
     const opt=document.createElement("div");
     opt.className="badgeopt"+(window._selRoleBadge===b?" sel":"");
-    opt.textContent=b;
+    opt.innerHTML=icon(b,16);
     opt.onclick=()=>{window._selRoleBadge=b;badgeWrap.querySelectorAll(".badgeopt").forEach(d=>d.classList.remove("sel"));opt.classList.add("sel");};
     badgeWrap.appendChild(opt);
   });
@@ -2912,7 +3019,7 @@ async function updBbl(id,msg){const row=document.querySelector(`.mrow[data-mid="
 function appendBbl(msg,isMe,path){const area=$("msgs");const empty=area.querySelector(".empty");if(empty)empty.remove();
 if(msg.type==="system"){const sm=document.createElement("div");sm.className="sysmsg";sm.dataset.mid=msg.id;sm.textContent=msg.text;area.appendChild(sm);area.scrollTop=area.scrollHeight;return;}
 if(msg.type==="vote_card"){const wrap=document.createElement("div");wrap.className="sysmsg";wrap.style.cssText="display:flex;justify-content:center";wrap.dataset.mid=msg.id;wrap.dataset.voteId=msg.voteId;const card=document.createElement("div");card.className="msgvotecard";wrap.appendChild(card);area.appendChild(wrap);area.scrollTop=area.scrollHeight;sbOne("group_votes",{id:msg.voteId}).then(vote=>{if(vote)renderVoteCardIntoMessage(vote,wrap);});return;}
-const prev=area.lastElementChild;const showAv=prev?.dataset?.sender!==msg.senderId;const row=document.createElement("div");row.className=`mrow ${isMe?"me":""}`;row.dataset.sender=msg.senderId;row.dataset.mid=msg.id;const avw=document.createElement("div");if(showAv){avw.style.cursor="pointer";avw.onclick=()=>openProfile({id:msg.senderId,name:msg.senderName,publicId:msg.publicId,avatarUrl:msg.avatarUrl,online:!!users[msg.senderId]?.online});avw.appendChild(mkAv(msg.senderName||"?",msg.senderId,30,msg.avatarUrl));}else{avw.className="mav gh";}const body=document.createElement("div");body.className="mbody";if(showAv&&!isMe){const n=document.createElement("div");n.className="msdr";n.textContent=`${msg.roleBadge?msg.roleBadge+" ":""}${msg.senderName} ${msg.publicId||""}`;body.appendChild(n);}const bbl=document.createElement("div");bbl.className=`bbl ${isMe?"mn":"th"}${msg.deleted?" del":""}`;if(msg.replyTo){const rp=document.createElement("div");rp.className="rply";rp.innerHTML=`<div class="rplynm">${msg.replyTo.senderName}</div><div>${(msg.replyTo.text||"").slice(0,60)}</div>`;bbl.appendChild(rp);}if(msg.deleted&&!isDev){bbl.innerHTML+='<span style="opacity:.5;font-style:italic;font-size:12px">🗑️ تم حذف هذه الرسالة</span>';}else if(msg.type==="image"&&msg.imageUrl){const img=document.createElement("img");img.className="cimg";img.src=msg.imageUrl;img.onclick=()=>window.open(msg.imageUrl,"_blank");bbl.appendChild(img);}else{const tx=document.createElement("div");tx.className="txtcnt";tx.textContent=msg.text;bbl.appendChild(tx);}if(msg.deleted&&isDev){const tag=document.createElement("div");tag.style.cssText="font-size:9px;color:var(--ac3);font-family:monospace;margin-top:3px";tag.textContent="🗑️ محذوفة (مرئية للمطور)";bbl.appendChild(tag);}if(msg.edited&&!msg.deleted){const tag=document.createElement("div");tag.className="edittag";tag.style.cssText="font-size:9px;color:var(--tx3);font-family:monospace;margin-top:2px";tag.textContent="(معدّلة)";bbl.appendChild(tag);}const ft2=document.createElement("div");ft2.className="mft";const tm=document.createElement("div");tm.className="mtime";tm.innerHTML=`🔒 ${ft(msg.ts)}`;const isGroupMsg=path.startsWith("groups/");if(isMe){const tick=document.createElement("span");tick.className="tick";tick.dataset.tid=msg.id;tick.textContent="✓";ft2.appendChild(tm);ft2.appendChild(tick);if(!msg.deleted){const eb=document.createElement("button");eb.className="mbtn2";eb.textContent="✏️";eb.onclick=e=>{e.stopPropagation();editMsg(msg.id,path,msg.text);};const db2=document.createElement("button");db2.className="mbtn2";db2.textContent="🗑️";db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(eb);ft2.appendChild(db2);}if(isGroupMsg&&!msg.deleted){const pb=document.createElement("button");pb.className="msgactpin";pb.textContent="📌";pb.title="تثبيت";pb.onclick=e=>{e.stopPropagation();pinGroupMessage(msg.id,msg.text);};ft2.appendChild(pb);}const rb=document.createElement("span");rb.className="rbtn";rb.textContent="☺";rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);}else{const rb=document.createElement("span");rb.className="rbtn";rb.textContent="☺";rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);if(isGroupMsg&&!msg.deleted){const pb=document.createElement("button");pb.className="msgactpin";pb.textContent="📌";pb.title="تثبيت";pb.onclick=e=>{e.stopPropagation();pinGroupMessage(msg.id,msg.text);};ft2.appendChild(pb);}if(isDev&&!msg.deleted){const db2=document.createElement("button");db2.className="mbtn2";db2.textContent="🗑️";db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(db2);}ft2.appendChild(tm);}body.appendChild(bbl);body.appendChild(ft2);const rbar=document.createElement("div");rbar.className="rbar";rbar.dataset.path=path;body.appendChild(rbar);let ptm;bbl.addEventListener("touchstart",()=>{ptm=setTimeout(()=>setReply(msg),500);});bbl.addEventListener("touchend",()=>clearTimeout(ptm));bbl.ondblclick=()=>setReply(msg);if(isMe){row.appendChild(body);row.appendChild(avw);}else{row.appendChild(avw);row.appendChild(body);}area.appendChild(row);area.scrollTop=area.scrollHeight;if(msg.reactions)updReacts(msg.id,msg.reactions);if(msg.readBy)updRead(msg.id,msg.readBy);}
+const prev=area.lastElementChild;const showAv=prev?.dataset?.sender!==msg.senderId;const row=document.createElement("div");row.className=`mrow ${isMe?"me":""}`;row.dataset.sender=msg.senderId;row.dataset.mid=msg.id;const avw=document.createElement("div");if(showAv){avw.style.cursor="pointer";avw.onclick=()=>openProfile({id:msg.senderId,name:msg.senderName,publicId:msg.publicId,avatarUrl:msg.avatarUrl,online:!!users[msg.senderId]?.online});avw.appendChild(mkAv(msg.senderName||"?",msg.senderId,30,msg.avatarUrl));}else{avw.className="mav gh";}const body=document.createElement("div");body.className="mbody";if(showAv&&!isMe){const n=document.createElement("div");n.className="msdr";n.textContent=`${msg.roleBadge?msg.roleBadge+" ":""}${msg.senderName} ${msg.publicId||""}`;body.appendChild(n);}const bbl=document.createElement("div");bbl.className=`bbl ${isMe?"mn":"th"}${msg.deleted?" del":""}`;if(msg.replyTo){const rp=document.createElement("div");rp.className="rply";rp.innerHTML=`<div class="rplynm">${msg.replyTo.senderName}</div><div>${(msg.replyTo.text||"").slice(0,60)}</div>`;bbl.appendChild(rp);}if(msg.deleted&&!isDev){bbl.innerHTML+=`<span style="opacity:.5;font-style:italic;font-size:12px">${icon("trash",12)} تم حذف هذه الرسالة</span>`;}else if(msg.type==="image"&&msg.imageUrl){const img=document.createElement("img");img.className="cimg";img.src=msg.imageUrl;img.onclick=()=>window.open(msg.imageUrl,"_blank");bbl.appendChild(img);}else{const tx=document.createElement("div");tx.className="txtcnt";tx.textContent=msg.text;bbl.appendChild(tx);}if(msg.deleted&&isDev){const tag=document.createElement("div");tag.style.cssText="font-size:9px;color:var(--ac3);font-family:monospace;margin-top:3px";tag.textContent="🗑️ محذوفة (مرئية للمطور)";bbl.appendChild(tag);}if(msg.edited&&!msg.deleted){const tag=document.createElement("div");tag.className="edittag";tag.style.cssText="font-size:9px;color:var(--tx3);font-family:monospace;margin-top:2px";tag.textContent="(معدّلة)";bbl.appendChild(tag);}const ft2=document.createElement("div");ft2.className="mft";const tm=document.createElement("div");tm.className="mtime";tm.innerHTML=`${icon("lock",10)} ${ft(msg.ts)}`;const isGroupMsg=path.startsWith("groups/");if(isMe){const tick=document.createElement("span");tick.className="tick";tick.dataset.tid=msg.id;tick.textContent="✓";ft2.appendChild(tm);ft2.appendChild(tick);if(!msg.deleted){const eb=document.createElement("button");eb.className="mbtn2";eb.innerHTML=icon("pen",13);eb.onclick=e=>{e.stopPropagation();editMsg(msg.id,path,msg.text);};const db2=document.createElement("button");db2.className="mbtn2";db2.innerHTML=icon("trash",13);db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(eb);ft2.appendChild(db2);}if(isGroupMsg&&!msg.deleted){const pb=document.createElement("button");pb.className="msgactpin";pb.innerHTML=icon("pin",13);pb.title="تثبيت";pb.onclick=e=>{e.stopPropagation();pinGroupMessage(msg.id,msg.text);};ft2.appendChild(pb);}const rb=document.createElement("span");rb.className="rbtn";rb.innerHTML=icon("smile",15);rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);}else{const rb=document.createElement("span");rb.className="rbtn";rb.innerHTML=icon("smile",15);rb.onclick=e=>{e.stopPropagation();showPkr(msg.id,path,row,rb);};ft2.appendChild(rb);if(isGroupMsg&&!msg.deleted){const pb=document.createElement("button");pb.className="msgactpin";pb.innerHTML=icon("pin",13);pb.title="تثبيت";pb.onclick=e=>{e.stopPropagation();pinGroupMessage(msg.id,msg.text);};ft2.appendChild(pb);}if(isDev&&!msg.deleted){const db2=document.createElement("button");db2.className="mbtn2";db2.innerHTML=icon("trash",13);db2.onclick=e=>{e.stopPropagation();delMsg(msg.id,path);};ft2.appendChild(db2);}ft2.appendChild(tm);}body.appendChild(bbl);body.appendChild(ft2);const rbar=document.createElement("div");rbar.className="rbar";rbar.dataset.path=path;body.appendChild(rbar);let ptm;bbl.addEventListener("touchstart",()=>{ptm=setTimeout(()=>setReply(msg),500);});bbl.addEventListener("touchend",()=>clearTimeout(ptm));bbl.ondblclick=()=>setReply(msg);if(isMe){row.appendChild(body);row.appendChild(avw);}else{row.appendChild(avw);row.appendChild(body);}area.appendChild(row);area.scrollTop=area.scrollHeight;if(msg.reactions)updReacts(msg.id,msg.reactions);if(msg.readBy)updRead(msg.id,msg.readBy);}
 
 function updReacts(id,reactions){const row=document.querySelector(`.mrow[data-mid="${id}"]`);if(!row)return;const bar=row.querySelector(".rbar");if(!bar)return;bar.innerHTML="";Object.entries(reactions).forEach(([emoji,uids])=>{if(!uids)return;const cnt=Object.keys(uids).length;if(!cnt)return;const mine=!!uids[myId];const chip=document.createElement("div");chip.className=`rchip ${mine?"mn":""}`;chip.innerHTML=`${emoji}<span>${cnt}</span>`;chip.onclick=()=>togReact(id,bar.dataset.path,emoji);bar.appendChild(chip);});}
 function updRead(id,readBy){const tick=document.querySelector(`[data-tid="${id}"]`);if(!tick)return;const others=Object.keys(readBy||{}).filter(i=>i!==myId);tick.textContent=others.length?"✓✓":"✓";if(others.length)tick.classList.add("seen");else tick.classList.remove("seen");}
@@ -2940,7 +3047,7 @@ function setReply(msg){replyTo={id:msg.id,senderName:msg.senderName,text:msg.tex
 async function delMsg(id,path){if(!confirm("حذف هذه الرسالة؟"))return;await update(ref(db,`${path}/${id}`),{deleted:true,deletedBy:myId,deletedAt:Date.now()});if(path.startsWith("groups/")){const gidMatch=path.match(/^groups\/([^/]+)\//);if(gidMatch)logAuditEvent(gidMatch[1],"delete_message");}}
 async function editMsg(id,path,old){const nt=prompt("تعديل الرسالة:",old);if(!nt||nt===old)return;const dkey=DMK(myId,activeCh.id);if(!dmk2[dkey])dmk2[dkey]=await dkf(RP+dkey,dkey);const ct=await enc(dmk2[dkey],nt);await update(ref(db,`${path}/${id}`),{ciphertext:ct,edited:true,editedAt:Date.now()});}
 
-async function openDev(){$("devp").classList.add("on");const all=await sbGet("users");if(!all)return;const onl=Object.values(users).filter(u=>u.online).length;$("stot").textContent=all.length;$("sonl").textContent=onl;$("sban").textContent=all.filter(u=>u.is_banned).length;$("stdy").textContent=all.filter(u=>new Date(u.created_at).toDateString()===new Date().toDateString()).length;const list=$("devul");list.innerHTML="";all.forEach(u=>{const row=document.createElement("div");row.className="urow";row.appendChild(mkAv(u.username,u.code_hash,30,u.avatar_url));const inf=document.createElement("div");inf.className="uri";inf.innerHTML=`<div class="urn">${u.username}${u.is_developer?" 👑":""}</div><div class="urid">${u.public_id}</div>`;row.appendChild(inf);if(!u.is_developer){if(u.is_banned){const t=document.createElement("span");t.style.cssText="font-size:10px;color:var(--ac3);font-family:monospace;font-weight:700";t.textContent="محظور";const btn=document.createElement("button");btn.className="unbanbtn";btn.textContent="رفع الحظر";btn.onclick=async()=>{await sbUpd("users",{id:u.id},{is_banned:false,ban_reason:null});const uid=u.code_hash.slice(0,12);await set(ref(db,`users/${uid}/banned`),false);openDev();};row.appendChild(t);row.appendChild(btn);}else{const btn=document.createElement("button");btn.className="banbtn";btn.textContent="حظر";btn.onclick=async()=>{const r=prompt("سبب الحظر:");if(!r)return;await sbUpd("users",{id:u.id},{is_banned:true,ban_reason:r});const uid=u.code_hash.slice(0,12);await set(ref(db,`users/${uid}/banned`),true);await set(ref(db,`users/${uid}/ban_reason`),r);openDev();};row.appendChild(btn);}}list.appendChild(row);});}
+async function openDev(){$("devp").classList.add("on");const all=await sbGet("users");if(!all)return;const onl=Object.values(users).filter(u=>u.online).length;$("stot").textContent=all.length;$("sonl").textContent=onl;$("sban").textContent=all.filter(u=>u.is_banned).length;$("stdy").textContent=all.filter(u=>new Date(u.created_at).toDateString()===new Date().toDateString()).length;const list=$("devul");list.innerHTML="";all.forEach(u=>{const row=document.createElement("div");row.className="urow";row.appendChild(mkAv(u.username,u.code_hash,30,u.avatar_url));const inf=document.createElement("div");inf.className="uri";inf.innerHTML=`<div class="urn">${u.username}${u.is_developer?" "+icon("badgecheck",13):""}</div><div class="urid">${u.public_id}</div>`;row.appendChild(inf);if(!u.is_developer){if(u.is_banned){const t=document.createElement("span");t.style.cssText="font-size:10px;color:var(--ac3);font-family:monospace;font-weight:700";t.textContent="محظور";const btn=document.createElement("button");btn.className="unbanbtn";btn.textContent="رفع الحظر";btn.onclick=async()=>{await sbUpd("users",{id:u.id},{is_banned:false,ban_reason:null});const uid=u.code_hash.slice(0,12);await set(ref(db,`users/${uid}/banned`),false);openDev();};row.appendChild(t);row.appendChild(btn);}else{const btn=document.createElement("button");btn.className="banbtn";btn.textContent="حظر";btn.onclick=async()=>{const r=prompt("سبب الحظر:");if(!r)return;await sbUpd("users",{id:u.id},{is_banned:true,ban_reason:r});const uid=u.code_hash.slice(0,12);await set(ref(db,`users/${uid}/banned`),true);await set(ref(db,`users/${uid}/ban_reason`),r);openDev();};row.appendChild(btn);}}list.appendChild(row);});}
 </script>
 </body>
 </html>
