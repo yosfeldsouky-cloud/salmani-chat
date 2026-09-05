@@ -687,15 +687,15 @@ video.cimg{height:auto;max-height:320px;cursor:default;object-fit:contain;backgr
       <div class="inpa" id="inpa">
         <div class="inpr">
           <button class="imgbtn" onclick="document.getElementById('imgf').click()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></button>
-          <input type="file" id="imgf" accept="image/*">
+          <input type="file" id="imgf" accept="image/*" style="display:none">
           <button class="imgbtn" onclick="document.getElementById('vidf').click()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></button>
-          <input type="file" id="vidf" accept="video/*">
-          <button class="imgbtn" id="audfbtn" onclick="document.getElementById('audf').click()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg></button>
-          <input type="file" id="audf" accept="audio/*">
-          <button class="imgbtn" id="micbtn" onclick="toggleRec()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg></button>
+          <input type="file" id="vidf" accept="video/*" style="display:none">
+          <input type="file" id="audf" accept="audio/*" style="display:none">
+          <button class="imgbtn" id="micbtn" onclick="toggleRec()" oncontextmenu="event.preventDefault();document.getElementById('audf').click();"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/></svg></button>
           <textarea class="msgi" id="msgi" rows="1" placeholder="اكتب رسالتك..."></textarea>
           <button class="sndbtn" onclick="sendMsg()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
         </div>
+        <div class="hint2" style="font-size:10px;color:var(--tx3);text-align:center;padding:2px 0 0">اضغط 🎤 للتسجيل • اضغط مطولاً لاختيار ملف صوتي</div>
         <div class="hint"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-1px"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> تُشفَّر تلقائياً • Enter للإرسال</div>
       </div>
     </div>
@@ -1010,7 +1010,13 @@ $("audf").onchange=async e=>{
   await sendAudioBlob(f,ext,dur);
 };
 let mediaRecorder=null,recChunks=[],recStream=null,recStartTs=0,recTimerInt=null;
+(()=>{const mb=document.getElementById("micbtn");if(!mb)return;let lpTimer=null,lpFired=false;
+mb.addEventListener("touchstart",()=>{lpFired=false;window._micLpFired=false;lpTimer=setTimeout(()=>{lpFired=true;window._micLpFired=true;if(navigator.vibrate)navigator.vibrate(30);document.getElementById("audf").click();},550);},{passive:true});
+mb.addEventListener("touchend",e=>{clearTimeout(lpTimer);if(lpFired)e.preventDefault();},{passive:false});
+mb.addEventListener("touchmove",()=>clearTimeout(lpTimer),{passive:true});
+})();
 async function toggleRec(){
+  if(window._micLpFired){window._micLpFired=false;return;}
   if(activeCh.type==="none")return;
   if(activeCh.type==="group"&&!activeChannelId){const em=document.createElement("div");em.className="sysmsg";em.textContent="❌ اختر غرفة أولاً";$("msgs").appendChild(em);return;}
   const btn=$("micbtn");
@@ -3126,13 +3132,40 @@ dlb.style.cssText="position:absolute;top:6px;left:6px;background:rgba(0,0,0,.55)
 dlb.onclick=e=>{e.stopPropagation();dlMedia(url,kind);};
 wrap.appendChild(dlb);
 return wrap;}
-function mkAudioWrap(url,dur){const wrap=document.createElement("div");wrap.style.cssText="display:flex;align-items:center;gap:8px;min-width:200px";
-const aud=document.createElement("audio");aud.src=url;aud.controls=true;aud.style.cssText="height:36px;max-width:200px";
-wrap.appendChild(aud);
-const dlb=document.createElement("button");dlb.className="mediadl";dlb.title="حفظ";dlb.innerHTML=icon("download",14);
-dlb.style.cssText="background:var(--sf2);border:none;border-radius:8px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--tx2);cursor:pointer;flex-shrink:0";
+function fmtSec(s){if(!isFinite(s)||s<0)s=0;const m=Math.floor(s/60),ss=Math.floor(s%60);return `${m}:${String(ss).padStart(2,"0")}`;}
+function mkAudioWrap(url,dur){
+const wrap=document.createElement("div");wrap.className="audplayer";wrap.style.cssText="display:flex;align-items:center;gap:10px;min-width:230px;max-width:260px;padding:6px 4px";
+const aud=document.createElement("audio");aud.src=url;aud.preload="metadata";aud.style.display="none";
+const playBtn=document.createElement("button");playBtn.type="button";
+playBtn.style.cssText="width:36px;height:36px;border-radius:50%;border:none;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;-webkit-tap-highlight-color:transparent";
+const playIcon='<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+const pauseIcon='<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+playBtn.innerHTML=playIcon;
+const mid=document.createElement("div");mid.style.cssText="flex:1;display:flex;flex-direction:column;gap:3px;min-width:0";
+const range=document.createElement("input");range.type="range";range.min="0";range.max=String(dur||0);range.step="0.1";range.value="0";
+range.style.cssText="width:100%;height:20px;accent-color:var(--ac);cursor:pointer;margin:0";
+const timeRow=document.createElement("div");timeRow.style.cssText="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);font-family:monospace";
+const curT=document.createElement("span");curT.textContent="0:00";
+const totT=document.createElement("span");totT.textContent=fmtSec(dur||0);
+timeRow.appendChild(curT);timeRow.appendChild(totT);
+mid.appendChild(range);mid.appendChild(timeRow);
+let seeking=false;
+playBtn.onclick=e=>{e.stopPropagation();
+  document.querySelectorAll("audio").forEach(a=>{if(a!==aud){a.pause();}});
+  document.querySelectorAll(".audplayer .playbtn-active").forEach(b=>{if(b!==playBtn){b.classList.remove("playbtn-active");b.innerHTML=playIcon;}});
+  if(aud.paused){aud.play();playBtn.innerHTML=pauseIcon;playBtn.classList.add("playbtn-active");}else{aud.pause();playBtn.innerHTML=playIcon;playBtn.classList.remove("playbtn-active");}
+};
+aud.ontimeupdate=()=>{if(!seeking){range.value=String(aud.currentTime);curT.textContent=fmtSec(aud.currentTime);}};
+aud.onloadedmetadata=()=>{if(isFinite(aud.duration)&&aud.duration>0){range.max=String(aud.duration);totT.textContent=fmtSec(aud.duration);}};
+aud.onended=()=>{playBtn.innerHTML=playIcon;playBtn.classList.remove("playbtn-active");range.value="0";curT.textContent="0:00";};
+range.addEventListener("pointerdown",()=>{seeking=true;});
+range.addEventListener("input",()=>{curT.textContent=fmtSec(Number(range.value));});
+range.addEventListener("change",()=>{aud.currentTime=Number(range.value);seeking=false;});
+range.addEventListener("click",e=>e.stopPropagation());
+const dlb=document.createElement("button");dlb.type="button";dlb.title="حفظ";dlb.innerHTML=icon("download",14);
+dlb.style.cssText="background:var(--sf2);border:none;border-radius:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--tx2);cursor:pointer;flex-shrink:0";
 dlb.onclick=e=>{e.stopPropagation();dlMedia(url,"audio");};
-wrap.appendChild(dlb);
+wrap.appendChild(aud);wrap.appendChild(playBtn);wrap.appendChild(mid);wrap.appendChild(dlb);
 return wrap;}
 function appendBbl(msg,isMe,path){const area=$("msgs");const empty=area.querySelector(".empty");if(empty)empty.remove();
 if(msg.type==="system"){const sm=document.createElement("div");sm.className="sysmsg";sm.dataset.mid=msg.id;sm.textContent=msg.text;area.appendChild(sm);area.scrollTop=area.scrollHeight;return;}
